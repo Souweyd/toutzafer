@@ -168,11 +168,24 @@ header.top :focus-visible{outline-color:var(--brand-fg)}
 .pk-loc:disabled{opacity:.6}
 .pk-com{flex:1;min-width:140px}
 .pk-com select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:980px;padding:8px 12px;font:inherit;font-size:13px}
-.pk-map svg{display:block;width:100%;height:auto}
-.pk-sea{fill:#eaf2fb}
-.pk-land{fill:#f6f3ea;stroke:#c9c2ad;stroke-width:2.5}
-.pk-peak{fill:#b7ad92}
-.pk-town{font:600 15px var(--font);fill:#8b8676}
+.pk-map{position:relative;border-radius:14px;overflow:hidden}
+.pk-map>svg{display:block;width:100%;height:auto}
+.pk-sea{fill:#dbeaf7}
+.pk-land{stroke:#a9b892;stroke-width:2;stroke-linejoin:round}
+.pk-peak{fill:#9a8f74}
+.pk-town{font:600 15px var(--font);fill:#6f7465;paint-order:stroke;stroke:#f3f1e6;stroke-width:4px}
+.pk-pk{font-size:13px;font-style:italic;fill:#857a5f}
+.lf{height:260px;width:100%;background:#dbeaf7;z-index:0}
+.lf-all{position:absolute;left:10px;bottom:10px;z-index:500;border:0;background:#fff;color:var(--fg);border-radius:980px;padding:6px 12px;font-size:12px;font-weight:700;box-shadow:0 1px 5px rgba(0,0,0,.25)}
+.lf-pin{display:block;width:30px;height:30px;border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,40,.4);position:relative}
+.lf-pin::after{content:"";position:absolute;inset:8px;border-radius:50%;background:#fff}
+.lf-pin.on{background:var(--pop);border-color:var(--brand)}
+.lf-pin.on::after{background:var(--brand)}
+.leaflet-tooltip.lf-tip{font:700 12px var(--font);padding:3px 8px;border-radius:980px;border:0;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.leaflet-tooltip.lf-tip.on{background:var(--fg);color:#fff}
+.leaflet-tooltip.lf-tip.on::before{border-top-color:var(--fg)}
+.leaflet-container{font-family:var(--font)}
+.leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane > svg,.leaflet-pane > canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer {position: absolute;left: 0;top: 0;}.leaflet-container {overflow: hidden;}.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow {-webkit-user-select: none;-moz-user-select: none;user-select: none;-webkit-user-drag: none;}.leaflet-tile::selection {background: transparent;}.leaflet-safari .leaflet-tile {image-rendering: -webkit-optimize-contrast;}.leaflet-safari .leaflet-tile-container {width: 1600px;height: 1600px;-webkit-transform-origin: 0 0;}.leaflet-marker-icon,.leaflet-marker-shadow {display: block;}.leaflet-container .leaflet-overlay-pane svg {max-width: none !important;max-height: none !important;}.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,.leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer,.leaflet-container .leaflet-tile {max-width: none !important;max-height: none !important;width: auto;padding: 0;}.leaflet-container img.leaflet-tile {mix-blend-mode: plus-lighter;}.leaflet-container.leaflet-touch-zoom {-ms-touch-action: pan-x pan-y;touch-action: pan-x pan-y;}.leaflet-container.leaflet-touch-drag {-ms-touch-action: pinch-zoom;touch-action: none;touch-action: pinch-zoom;}.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {-ms-touch-action: none;touch-action: none;}.leaflet-container {-webkit-tap-highlight-color: transparent;}.leaflet-container a {-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);}.leaflet-tile {filter: inherit;visibility: hidden;}.leaflet-tile-loaded {visibility: inherit;}.leaflet-zoom-box {width: 0;height: 0;-moz-box-sizing: border-box;box-sizing: border-box;z-index: 800;}.leaflet-overlay-pane svg {-moz-user-select: none;}.leaflet-pane         { z-index: 400; }.leaflet-tile-pane    { z-index: 200; }.leaflet-overlay-pane { z-index: 400; }.leaflet-shadow-pane  { z-index: 500; }.leaflet-marker-pane  { z-index: 600; }.leaflet-tooltip-pane   { z-index: 650; }.leaflet-popup-pane   { z-index: 700; }.leaflet-map-pane canvas { z-index: 100; }.leaflet-map-pane svg    { z-index: 200; }.leaflet-vml-shape {width: 1px;height: 1px;}.lvml {behavior: url(#default#VML);display: inline-block;position: absolute;}.leaflet-control {position: relative;z-index: 800;pointer-events: visiblePainted;pointer-events: auto;}.leaflet-top,.leaflet-bottom {position: absolute;z-index: 1000;pointer-events: none;}.leaflet-top {top: 0;}.leaflet-right {right: 0;}.leaflet-bottom {bottom: 0;}.leaflet-left {left: 0;}.leaflet-control {float: left;clear: both;}.leaflet-right .leaflet-control {float: right;}.leaflet-top .leaflet-control {margin-top: 10px;}.leaflet-bottom .leaflet-control {margin-bottom: 10px;}.leaflet-left .leaflet-control {margin-left: 10px;}.leaflet-right .leaflet-control {margin-right: 10px;}.leaflet-fade-anim .leaflet-popup {opacity: 0;-webkit-transition: opacity 0.2s linear;-moz-transition: opacity 0.2s linear;transition: opacity 0.2s linear;}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {opacity: 1;}.leaflet-zoom-animated {-webkit-transform-origin: 0 0;-ms-transform-origin: 0 0;transform-origin: 0 0;}svg.leaflet-zoom-animated {will-change: transform;}.leaflet-zoom-anim .leaflet-zoom-animated {-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);-moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);transition:         transform 0.25s cubic-bezier(0,0,0.25,1);}.leaflet-zoom-anim .leaflet-tile,.leaflet-pan-anim .leaflet-tile {-webkit-transition: none;-moz-transition: none;transition: none;}.leaflet-zoom-anim .leaflet-zoom-hide {visibility: hidden;}.leaflet-interactive {cursor: pointer;}.leaflet-grab {cursor: -webkit-grab;cursor:    -moz-grab;cursor:         grab;}.leaflet-crosshair,.leaflet-crosshair .leaflet-interactive {cursor: crosshair;}.leaflet-popup-pane,.leaflet-control {cursor: auto;}.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable {cursor: move;cursor: -webkit-grabbing;cursor:    -moz-grabbing;cursor:         grabbing;}.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-image-layer,.leaflet-pane > svg path,.leaflet-tile-container {pointer-events: none;}.leaflet-marker-icon.leaflet-interactive,.leaflet-image-layer.leaflet-interactive,.leaflet-pane > svg path.leaflet-interactive,svg.leaflet-image-layer.leaflet-interactive path {pointer-events: visiblePainted;pointer-events: auto;}.leaflet-container {background: #ddd;outline-offset: 1px;}.leaflet-container a {color: #0078A8;}.leaflet-zoom-box {border: 2px dotted #38f;background: rgba(255,255,255,0.5);}.leaflet-container {font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;font-size: 12px;font-size: 0.75rem;line-height: 1.5;}.leaflet-bar {box-shadow: 0 1px 5px rgba(0,0,0,0.65);border-radius: 4px;}.leaflet-bar a {background-color: #fff;border-bottom: 1px solid #ccc;width: 26px;height: 26px;line-height: 26px;display: block;text-align: center;text-decoration: none;color: black;}.leaflet-bar a,.leaflet-control-layers-toggle {background-position: 50% 50%;background-repeat: no-repeat;display: block;}.leaflet-bar a:hover,.leaflet-bar a:focus {background-color: #f4f4f4;}.leaflet-bar a:first-child {border-top-left-radius: 4px;border-top-right-radius: 4px;}.leaflet-bar a:last-child {border-bottom-left-radius: 4px;border-bottom-right-radius: 4px;border-bottom: none;}.leaflet-bar a.leaflet-disabled {cursor: default;background-color: #f4f4f4;color: #bbb;}.leaflet-touch .leaflet-bar a {width: 30px;height: 30px;line-height: 30px;}.leaflet-touch .leaflet-bar a:first-child {border-top-left-radius: 2px;border-top-right-radius: 2px;}.leaflet-touch .leaflet-bar a:last-child {border-bottom-left-radius: 2px;border-bottom-right-radius: 2px;}.leaflet-control-zoom-in,.leaflet-control-zoom-out {font: bold 18px 'Lucida Console', Monaco, monospace;text-indent: 1px;}.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {font-size: 22px;}.leaflet-control-layers {box-shadow: 0 1px 5px rgba(0,0,0,0.4);background: #fff;border-radius: 5px;}.leaflet-control-layers-toggle {background-image: url(images/layers.png);width: 36px;height: 36px;}.leaflet-retina .leaflet-control-layers-toggle {background-image: url(images/layers-2x.png);background-size: 26px 26px;}.leaflet-touch .leaflet-control-layers-toggle {width: 44px;height: 44px;}.leaflet-control-layers .leaflet-control-layers-list,.leaflet-control-layers-expanded .leaflet-control-layers-toggle {display: none;}.leaflet-control-layers-expanded .leaflet-control-layers-list {display: block;position: relative;}.leaflet-control-layers-expanded {padding: 6px 10px 6px 6px;color: #333;background: #fff;}.leaflet-control-layers-scrollbar {overflow-y: scroll;overflow-x: hidden;padding-right: 5px;}.leaflet-control-layers-selector {margin-top: 2px;position: relative;top: 1px;}.leaflet-control-layers label {display: block;font-size: 13px;font-size: 1.08333em;}.leaflet-control-layers-separator {height: 0;border-top: 1px solid #ddd;margin: 5px -10px 5px -6px;}.leaflet-default-icon-path {background-image: url(images/marker-icon.png);}.leaflet-container .leaflet-control-attribution {background: #fff;background: rgba(255, 255, 255, 0.8);margin: 0;}.leaflet-control-attribution,.leaflet-control-scale-line {padding: 0 5px;color: #333;line-height: 1.4;}.leaflet-control-attribution a {text-decoration: none;}.leaflet-control-attribution a:hover,.leaflet-control-attribution a:focus {text-decoration: underline;}.leaflet-attribution-flag {display: inline !important;vertical-align: baseline !important;width: 1em;height: 0.6669em;}.leaflet-left .leaflet-control-scale {margin-left: 5px;}.leaflet-bottom .leaflet-control-scale {margin-bottom: 5px;}.leaflet-control-scale-line {border: 2px solid #777;border-top: none;line-height: 1.1;padding: 2px 5px 1px;white-space: nowrap;-moz-box-sizing: border-box;box-sizing: border-box;background: rgba(255, 255, 255, 0.8);text-shadow: 1px 1px #fff;}.leaflet-control-scale-line:not(:first-child) {border-top: 2px solid #777;border-bottom: none;margin-top: -2px;}.leaflet-control-scale-line:not(:first-child):not(:last-child) {border-bottom: 2px solid #777;}.leaflet-touch .leaflet-control-attribution,.leaflet-touch .leaflet-control-layers,.leaflet-touch .leaflet-bar {box-shadow: none;}.leaflet-touch .leaflet-control-layers,.leaflet-touch .leaflet-bar {border: 2px solid rgba(0,0,0,0.2);background-clip: padding-box;}.leaflet-popup {position: absolute;text-align: center;margin-bottom: 20px;}.leaflet-popup-content-wrapper {padding: 1px;text-align: left;border-radius: 12px;}.leaflet-popup-content {margin: 13px 24px 13px 20px;line-height: 1.3;font-size: 13px;font-size: 1.08333em;min-height: 1px;}.leaflet-popup-content p {margin: 17px 0;margin: 1.3em 0;}.leaflet-popup-tip-container {width: 40px;height: 20px;position: absolute;left: 50%;margin-top: -1px;margin-left: -20px;overflow: hidden;pointer-events: none;}.leaflet-popup-tip {width: 17px;height: 17px;padding: 1px;margin: -10px auto 0;pointer-events: auto;-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);-ms-transform: rotate(45deg);transform: rotate(45deg);}.leaflet-popup-content-wrapper,.leaflet-popup-tip {background: white;color: #333;box-shadow: 0 3px 14px rgba(0,0,0,0.4);}.leaflet-container a.leaflet-popup-close-button {position: absolute;top: 0;right: 0;border: none;text-align: center;width: 24px;height: 24px;font: 16px/24px Tahoma, Verdana, sans-serif;color: #757575;text-decoration: none;background: transparent;}.leaflet-container a.leaflet-popup-close-button:hover,.leaflet-container a.leaflet-popup-close-button:focus {color: #585858;}.leaflet-popup-scrolled {overflow: auto;}.leaflet-oldie .leaflet-popup-content-wrapper {-ms-zoom: 1;}.leaflet-oldie .leaflet-popup-tip {width: 24px;margin: 0 auto;-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);}.leaflet-oldie .leaflet-control-zoom,.leaflet-oldie .leaflet-control-layers,.leaflet-oldie .leaflet-popup-content-wrapper,.leaflet-oldie .leaflet-popup-tip {border: 1px solid #999;}.leaflet-div-icon {background: #fff;border: 1px solid #666;}.leaflet-tooltip {position: absolute;padding: 6px;background-color: #fff;border: 1px solid #fff;border-radius: 3px;color: #222;white-space: nowrap;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;pointer-events: none;box-shadow: 0 1px 3px rgba(0,0,0,0.4);}.leaflet-tooltip.leaflet-interactive {cursor: pointer;pointer-events: auto;}.leaflet-tooltip-top:before,.leaflet-tooltip-bottom:before,.leaflet-tooltip-left:before,.leaflet-tooltip-right:before {position: absolute;pointer-events: none;border: 6px solid transparent;background: transparent;content: "";}.leaflet-tooltip-bottom {margin-top: 6px;}.leaflet-tooltip-top {margin-top: -6px;}.leaflet-tooltip-bottom:before,.leaflet-tooltip-top:before {left: 50%;margin-left: -6px;}.leaflet-tooltip-top:before {bottom: 0;margin-bottom: -12px;border-top-color: #fff;}.leaflet-tooltip-bottom:before {top: 0;margin-top: -12px;margin-left: -6px;border-bottom-color: #fff;}.leaflet-tooltip-left {margin-left: -6px;}.leaflet-tooltip-right {margin-left: 6px;}.leaflet-tooltip-left:before,.leaflet-tooltip-right:before {top: 50%;margin-top: -6px;}.leaflet-tooltip-left:before {right: 0;margin-right: -12px;border-left-color: #fff;}.leaflet-tooltip-right:before {left: 0;margin-left: -12px;border-right-color: #fff;}@media print {.leaflet-control {-webkit-print-color-adjust: exact;print-color-adjust: exact;}}
 .pk-pin{cursor:pointer}
 .pk-pin circle:first-child{fill:var(--brand);stroke:#fff;stroke-width:3;filter:drop-shadow(0 2px 3px rgba(0,0,40,.35))}
 .pk-pin .pk-dot{fill:#fff;stroke:none;filter:none}
@@ -649,17 +662,47 @@ const PICKUPS = PICKUP_POINTS.map(p=>p.name);
 // Communes de La Réunion (centre approximatif) pour trouver le point le plus proche sans GPS
 const COMMUNES = [["Bras-Panon",-21.002,55.677],["Cilaos",-21.135,55.472],["Entre-Deux",-21.247,55.472],["L'Étang-Salé",-21.266,55.366],["La Plaine-des-Palmistes",-21.134,55.629],["La Possession",-20.925,55.336],["Le Port",-20.937,55.292],["Le Tampon",-21.278,55.517],["Les Avirons",-21.241,55.334],["Les Trois-Bassins",-21.106,55.301],["Petite-Île",-21.354,55.566],["Saint-André",-20.963,55.650],["Saint-Benoît",-21.034,55.713],["Saint-Denis",-20.882,55.450],["Saint-Joseph",-21.378,55.619],["Saint-Leu",-21.171,55.288],["Saint-Louis",-21.286,55.411],["Saint-Paul",-21.010,55.270],["Saint-Philippe",-21.358,55.767],["Saint-Pierre",-21.339,55.478],["Sainte-Marie",-20.897,55.549],["Sainte-Rose",-21.128,55.796],["Sainte-Suzanne",-20.906,55.607],["Salazie",-21.027,55.539]];
 // Contour simplifié de l'île (longitude, latitude), dans le sens horaire depuis Saint-Denis
-const COAST=[[55.450,-20.874],[55.500,-20.884],[55.550,-20.892],[55.610,-20.904],[55.652,-20.935],[55.676,-20.978],[55.708,-21.018],[55.748,-21.058],[55.790,-21.100],[55.818,-21.152],[55.836,-21.210],[55.838,-21.272],[55.812,-21.330],[55.768,-21.366],[55.718,-21.381],[55.660,-21.386],[55.608,-21.386],[55.558,-21.366],[55.500,-21.352],[55.450,-21.334],[55.400,-21.294],[55.335,-21.268],[55.293,-21.218],[55.276,-21.168],[55.254,-21.112],[55.222,-21.060],[55.232,-21.020],[55.262,-20.992],[55.282,-20.952],[55.292,-20.928],[55.330,-20.922],[55.372,-20.902],[55.415,-20.884]];
+// Contour de l'île : Natural Earth 1:10 m (domaine public)
+const COAST=[[55.788,-21.1033],[55.8024,-21.1117],[55.8384,-21.1269],[55.8492,-21.1371],[55.8528,-21.1573],[55.8492,-21.1742],[55.842,-21.1911],[55.824,-21.2637],[55.8204,-21.2856],[55.824,-21.3042],[55.8204,-21.3245],[55.8132,-21.3431],[55.7916,-21.3498],[55.7556,-21.3481],[55.7376,-21.3515],[55.7052,-21.3667],[55.6836,-21.3701],[55.6584,-21.3701],[55.644,-21.3633],[55.626,-21.3701],[55.6008,-21.3701],[55.5756,-21.3684],[55.554,-21.3633],[55.536,-21.3549],[55.5072,-21.3329],[55.4748,-21.3262],[55.4352,-21.311],[55.4172,-21.3025],[55.41,-21.2941],[55.4028,-21.284],[55.3992,-21.2772],[55.3884,-21.2755],[55.356,-21.2738],[55.3488,-21.2721],[55.3416,-21.2569],[55.3092,-21.2198],[55.2948,-21.1995],[55.2912,-21.1759],[55.2912,-21.159],[55.2876,-21.1438],[55.248,-21.0915],[55.2336,-21.0695],[55.2264,-21.0476],[55.2264,-21.029],[55.23,-21.0104],[55.2408,-20.9935],[55.2768,-20.98],[55.2876,-20.9648],[55.2912,-20.9462],[55.2876,-20.9327],[55.2948,-20.926],[55.2948,-20.9226],[55.2948,-20.9175],[55.2876,-20.9125],[55.302,-20.9057],[55.3344,-20.9057],[55.3632,-20.8855],[55.4064,-20.8635],[55.4568,-20.8618],[55.4712,-20.8635],[55.5,-20.8736],[55.5144,-20.8753],[55.5288,-20.8703],[55.5432,-20.8753],[55.5792,-20.8753],[55.5936,-20.8804],[55.6044,-20.8888],[55.6512,-20.8973],[55.6656,-20.9057],[55.6728,-20.9125],[55.6944,-20.9344],[55.7016,-20.9496],[55.7052,-20.9817],[55.7124,-20.9935],[55.7376,-21.0172],[55.7412,-21.0239],[55.7412,-21.0442],[55.7448,-21.0543],[55.7484,-21.0628],[55.752,-21.0678],[55.77,-21.0746],[55.7736,-21.0796],[55.7772,-21.0847],[55.788,-21.1033]];
 const PROJ_COS=Math.cos(21.1*Math.PI/180);
-const proj=(lat,lon)=>[((lon-55.19)*PROJ_COS*1000),((-20.85-lat)*1000)];
-function coastPath(){const P=COAST.map(([lo,la])=>proj(la,lo)),n=P.length;let d=`M${P[0][0].toFixed(1)},${P[0][1].toFixed(1)}`;
-  for(let i=0;i<n;i++){const p0=P[(i-1+n)%n],p1=P[i],p2=P[(i+1)%n],p3=P[(i+2)%n];
-    const c1=[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6],c2=[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];
-    d+=`C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`}
-  return d+"Z"}
+const proj=(lat,lon)=>[((lon-55.18)*PROJ_COS*1000+8),((-20.84-lat)*1000+4)];
+function coastPath(){const P=COAST.map(([lo,la])=>proj(la,lo));return "M"+P.map(([x,y])=>x.toFixed(1)+","+y.toFixed(1)).join("L")+"Z"}
 const COAST_D=coastPath();
 function kmBetween(a,b){const R=6371,t=x=>x*Math.PI/180,dl=t(b.lat-a.lat),dn=t(b.lon-a.lon);const h=Math.sin(dl/2)**2+Math.cos(t(a.lat))*Math.cos(t(b.lat))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
 let pkPos=null; // {lat,lon,label,gps}
+// Carte réelle OpenStreetMap via Leaflet ; si les tuiles ne chargent pas (aperçu sécurisé, hors ligne), on garde la carte dessinée
+const ISLAND_BOUNDS=[[-21.395,55.215],[-20.865,55.84]];
+let leafState="idle", pkLeaf=null; // idle | loading | ok | failed
+function loadLeaflet(){
+  if(leafState!=="idle")return;leafState="loading";
+  const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
+  sc.onload=()=>{leafState=window.L?"ready":"failed";renderPicker()};sc.onerror=()=>{leafState="failed";renderPicker()};
+  document.head.appendChild(sc);
+}
+function leafMap(host,pts,sel,near,view){
+  if(!pkLeaf||!document.body.contains(pkLeaf.el)){
+    host.innerHTML='<div class="lf" id="pkLf"></div><button type="button" class="lf-all" id="lfAll">Voir toute l’île</button>';
+    const el=$("#pkLf");
+    const m=L.map(el,{zoomControl:true,attributionControl:true,dragging:!L.Browser.mobile,tap:false,scrollWheelZoom:false,touchZoom:true,doubleClickZoom:true,maxBounds:[[-21.6,55.0],[-20.6,56.05]],minZoom:9});
+    m.attributionControl.setPrefix("");
+    let loaded=0,errs=0;
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'})
+      .on("tileload",()=>{loaded++}).on("tileerror",()=>{errs++;if(!loaded&&errs>=2&&leafState!=="failed"){leafState="failed";try{m.remove()}catch(e){}pkLeaf=null;renderPicker()}}).addTo(m);
+    setTimeout(()=>{if(!loaded&&leafState==="ready"&&pkLeaf&&pkLeaf.map===m){leafState="failed";try{m.remove()}catch(e){}pkLeaf=null;renderPicker()}},6000);
+    m.fitBounds(ISLAND_BOUNDS,{padding:[6,6]});
+    pkLeaf={el,map:m,layer:L.layerGroup().addTo(m)};
+    $("#lfAll").onclick=()=>m.flyToBounds(ISLAND_BOUNDS,{padding:[6,6],duration:.8});
+  }
+  const {map:m,layer}=pkLeaf;layer.clearLayers();
+  if(pkPos){L.circle([pkPos.lat,pkPos.lon],{radius:pkPos.gps?400:1500,color:"#1a73e8",weight:1,fillColor:"#1a73e8",fillOpacity:.12}).addTo(layer);
+    L.circleMarker([pkPos.lat,pkPos.lon],{radius:7,color:"#fff",weight:3,fillColor:"#1a73e8",fillOpacity:1}).bindTooltip(pkPos.gps?"Vous êtes ici":esc(pkPos.label),{direction:"bottom",offset:[0,8]}).addTo(layer)}
+  pts.forEach(p=>{const on=p.name===sel;
+    L.marker([p.lat,p.lon],{icon:L.divIcon({className:"",html:`<span class="lf-pin${on?" on":""}"></span>`,iconSize:[30,30],iconAnchor:[15,15]}),title:p.name,zIndexOffset:on?1000:0,keyboard:true})
+      .bindTooltip(esc(p.short),{permanent:true,direction:"top",offset:[0,-14],className:"lf-tip"+(on?" on":"")})
+      .on("click",()=>{$("#fPick").value=p.name;$("#fPick").dispatchEvent(new Event("change"));renderPicker({focus:p.name})}).addTo(layer)});
+  if(view?.focus){const p=pts.find(x=>x.name===view.focus);if(p)m.flyTo([p.lat,p.lon],16,{duration:.9})}
+  else if(view?.fit&&pkPos){const p=pts.find(x=>x.name===near);if(p)m.flyToBounds([[pkPos.lat,pkPos.lon],[p.lat,p.lon]],{padding:[40,40],maxZoom:15,duration:.9})}
+}
 
 const CATS = [["all","Tout"],["cuisine","Cuisine"],["rangement","Rangement"],["maison","Maison"],["enfants","Bébé & enfants"],["animaux","Animaux"]];
 const CATNAME = Object.fromEntries(CATS);
@@ -1002,11 +1045,11 @@ function bindForm(){
     btn.href=valid?waLink(buildOrder()):"#"};
   const keep=()=>store.set("draft",{prenom:$("#fPrenom").value,nom:$("#fNom").value,tel:$("#fTel").value,pick:$("#fPick").value});
   renderPicker();
-  const choose=name=>{$("#fPick").value=name;$("#fPick").dispatchEvent(new Event("change"));renderPicker()};
+  const choose=(name,view)=>{$("#fPick").value=name;$("#fPick").dispatchEvent(new Event("change"));renderPicker(view||{focus:name})};
   $("#pkMap").onclick=e=>{const m=e.target.closest("[data-pk]");if(m)choose(m.dataset.pk)};
   $("#pkList").onclick=e=>{const m=e.target.closest("[data-pk]");if(m)choose(m.dataset.pk)};
-  const nearest=()=>{if(!pkPos)return;const best=[...PICKUP_POINTS].sort((a,b)=>kmBetween(pkPos,a)-kmBetween(pkPos,b))[0];choose(best.name);toast(`Point le plus proche : ${best.name}`)};
-  $("#pkCom").onchange=e=>{const c=COMMUNES.find(x=>x[0]===e.target.value);if(!c){pkPos=null;renderPicker();return}pkPos={lat:c[1],lon:c[2],label:c[0],gps:false};pkMsg("");nearest()};
+  const nearest=()=>{if(!pkPos)return;const best=[...PICKUP_POINTS].sort((a,b)=>kmBetween(pkPos,a)-kmBetween(pkPos,b))[0];choose(best.name,{fit:true});toast(`Point le plus proche : ${best.name}`)};
+  $("#pkCom").onchange=e=>{const c=COMMUNES.find(x=>x[0]===e.target.value);if(!c){pkPos=null;renderPicker({});return}pkPos={lat:c[1],lon:c[2],label:c[0],gps:false};pkMsg("");nearest()};
   $("#pkLoc").onclick=()=>{
     if(!("geolocation" in navigator)){pkMsg("La localisation n’est pas disponible sur cet appareil. Choisissez votre commune.");return}
     const b=$("#pkLoc");b.disabled=true;b.lastChild.textContent="Localisation…";
@@ -1038,23 +1081,33 @@ function buildOrder(){
 const recapOf=o=>`Demande ${o.id}\n${o.prenom} ${o.nom} · ${fmtTel(o.tel)}\nPoint de livraison : ${o.pick} (livraison ${o.shipFree?"offerte":"frais à confirmer"})\n\n${o.lines.map(l=>`• ${l.q} × ${l.name} (${eur(l.price*l.q)})`).join("\n")}\n\nTotal indicatif : ${eur(o.total)}`;
 const waLink=o=>`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Bonjour Tout'zafer, voici ma demande :\n\n"+recapOf(o))}`;
 function pkMsg(t){const m=$("#pkMsg");if(!m)return;m.textContent=t;m.hidden=!t}
-function renderPicker(){
+function renderPicker(view){
   const map=$("#pkMap"),list=$("#pkList");if(!map)return;
+  if(leafState==="idle")loadLeaflet();
   const sel=$("#fPick").value;
   const pts=PICKUP_POINTS.map(p=>({...p,km:pkPos?kmBetween(pkPos,p):null}));
   const order=pkPos?[...pts].sort((a,b)=>a.km-b.km):pts;
   const near=pkPos?order[0].name:null;
-  const towns=[["Saint-Denis",-20.905,55.452],["Saint-Paul",-21.030,55.300],["Saint-Benoît",-21.050,55.690],["Saint-Philippe",-21.330,55.740]];
+  if(leafState==="ready"&&window.L){leafMap(map,pts,sel,near,view);renderPkList(order,sel,near);return}
+  pkLeaf=null;
+  const towns=[["Saint-Denis",-20.912,55.452],["Saint-Paul",-21.012,55.300],["Saint-Benoît",-21.050,55.690],["Saint-Philippe",-21.345,55.760],["Le Port",-20.950,55.322],["Saint-Louis",-21.270,55.430],["Saint-André",-20.975,55.640]];
+  const peaks=[["Piton des Neiges",-21.098,55.478],["Piton de la Fournaise",-21.244,55.709]];
   const me=pkPos?proj(pkPos.lat,pkPos.lon):null;
-  map.innerHTML=`<svg viewBox="0 0 630 560" role="img" aria-label="Carte de La Réunion avec les points de livraison">
-    <rect x="0" y="0" width="630" height="560" rx="18" class="pk-sea"/>
-    <path d="${COAST_D}" class="pk-land"/>
-    <circle cx="${proj(-21.098,55.478)[0]}" cy="${proj(-21.098,55.478)[1]}" r="5" class="pk-peak"/><text x="${proj(-21.098,55.478)[0]+10}" y="${proj(-21.098,55.478)[1]+4}" class="pk-town">Piton des Neiges</text>
+  map.innerHTML=`<svg viewBox="0 0 650 560" role="img" aria-label="Carte de La Réunion avec les points de livraison">
+    <defs><radialGradient id="pkRel" cx="45%" cy="42%" r="60%"><stop offset="0" stop-color="#cfdcbf"/><stop offset=".55" stop-color="#e2e9d6"/><stop offset="1" stop-color="#f3f1e6"/></radialGradient>
+      <filter id="pkSh" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#2a4a6a" flood-opacity=".22"/></filter></defs>
+    <rect x="0" y="0" width="650" height="560" rx="18" class="pk-sea"/>
+    <path d="${COAST_D}" fill="url(#pkRel)" class="pk-land" filter="url(#pkSh)"/>
+    ${peaks.map(([n,la,lo])=>{const [x,y]=proj(la,lo);return `<path d="M${x-9},${y+6}L${x},${y-9}L${x+9},${y+6}Z" class="pk-peak"/><text x="${x}" y="${y+24}" class="pk-town pk-pk" text-anchor="middle">${n}</text>`}).join("")}
     ${towns.map(([n,la,lo])=>{const [x,y]=proj(la,lo);return `<text x="${x}" y="${y}" class="pk-town" text-anchor="middle">${n}</text>`}).join("")}
     ${me?`<circle cx="${me[0]}" cy="${me[1]}" r="22" class="pk-me-halo"/><circle cx="${me[0]}" cy="${me[1]}" r="9" class="pk-me"/>`:""}
     ${pts.map(p=>{const [x,y]=proj(p.lat,p.lon),on=p.name===sel;return `<g class="pk-pin${on?" on":""}${p.name===near?" near":""}" data-pk="${esc(p.name)}" tabindex="-1"><circle cx="${x}" cy="${y}" r="${on?15:11}"/><circle cx="${x}" cy="${y}" r="${on?5.5:4}" class="pk-dot"/></g>`}).join("")}
-    ${(()=>{const s=pts.find(p=>p.name===sel);if(!s)return"";const [x,y]=proj(s.lat,s.lon);const w=s.short.length*11+26,lx=Math.min(Math.max(x-w/2,8),630-w-8);return `<g class="pk-tag"><rect x="${lx}" y="${y-56}" width="${w}" height="34" rx="17"/><text x="${lx+w/2}" y="${y-33}" text-anchor="middle">${esc(s.short)}</text></g>`})()}
+    ${(()=>{const s=pts.find(p=>p.name===sel);if(!s)return"";const [x,y]=proj(s.lat,s.lon);const w=s.short.length*11+26,lx=Math.min(Math.max(x-w/2,8),650-w-8);return `<g class="pk-tag"><rect x="${lx}" y="${y-56}" width="${w}" height="34" rx="17"/><text x="${lx+w/2}" y="${y-33}" text-anchor="middle">${esc(s.short)}</text></g>`})()}
   </svg>`;
+  renderPkList(order,sel,near);
+}
+function renderPkList(order,sel,near){
+  const list=$("#pkList");
   list.innerHTML=order.map(p=>`<button type="button" role="radio" aria-checked="${p.name===sel}" class="pk-item${p.name===sel?" on":""}" data-pk="${esc(p.name)}">
       <span class="pk-radio"></span><span class="pk-name">${esc(p.name)}${p.name===near?'<span class="pk-near">Le plus proche</span>':""}</span>
       ${p.km!=null?`<span class="pk-km tabnum">≈ ${p.km<10?p.km.toFixed(1).replace(".",","):Math.round(p.km)} km</span>`:""}</button>`).join("")
