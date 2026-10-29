@@ -255,9 +255,15 @@ mark.todo{background:var(--hl);color:inherit;border-radius:3px;padding:0 3px}
 .info .desc{margin:4px 0 0;font-size:15px;line-height:1.55}
 .info ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:4px}
 .info .fine{margin:0 0 8px;font-size:12px;color:var(--muted)}
+.grab{display:none}
+@media (max-width:700px){.grab{display:block;position:absolute;top:8px;left:50%;transform:translateX(-50%);width:44px;height:5px;border-radius:980px;background:rgba(255,255,255,.85);box-shadow:0 0 0 1px rgba(0,0,0,.08);z-index:3;pointer-events:none}}
 .sheetx{position:absolute;top:14px;right:14px;z-index:3;width:34px;height:34px;border-radius:50%;border:0;background:var(--glass);color:var(--fg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 1px 4px rgba(0,0,0,.18);display:grid;place-items:center}
 .sheetx:hover{background:var(--bg)}
-.info .cta{margin-top:auto}
+.buyrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:4px 0 6px}
+.buyrow .cta{padding:12px 18px;font-size:15px;border-radius:980px}
+.buyrow .step{align-self:center}
+.buyrow .step button{width:40px;height:40px;font-size:20px}
+.buyrow .step span{font-size:16px;min-width:28px}
 
 /* Tiroir panier */
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--bg);z-index:41;transform:translateX(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1);
@@ -711,21 +717,20 @@ function afterCartChange(){save();refreshQuick();renderCount();if($("#drawer").c
 
 /* ---------- Fiche produit ---------- */
 function openSheet(id){sheetId=id;sheetImg=0;renderSheet();$("#sheet").classList.add("on");$("#scrim").classList.add("on");$("#sheet").setAttribute("aria-hidden","false");$("#sheet .x")?.focus()}
-function closeSheet(){sheetId=null;$("#sheet").classList.remove("on");$("#sheet").setAttribute("aria-hidden","true");if(!$("#drawer").classList.contains("on"))$("#scrim").classList.remove("on")}
+function closeSheet(){sheetId=null;const sh=$("#sheet");sh.style.transform="";sh.style.transition="";$("#scrim").style.opacity="";sh.classList.remove("on");$("#sheet").setAttribute("aria-hidden","true");if(!$("#drawer").classList.contains("on"))$("#scrim").classList.remove("on")}
 function renderSheet(){
   const p=byId(sheetId);if(!p)return;const out=outOfStock.has(p.id);
-  $("#sheet").innerHTML=`<button class="sheetx" id="closeSheet" aria-label="Fermer la fiche"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button><div class="gal"><div class="stage">
+  $("#sheet").innerHTML=`<span class="grab" aria-hidden="true"></span><button class="sheetx" id="closeSheet" aria-label="Fermer la fiche"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button><div class="gal"><div class="stage">
       <div class="track" id="track">${p.imgs.map((s,i)=>`<img src="${s}" alt="${esc(p.name)}, photo ${i+1} sur ${p.imgs.length}">`).join("")}</div>
       <button class="nav prev" data-go="-1" aria-label="Photo précédente">‹</button><button class="nav next" data-go="1" aria-label="Photo suivante">›</button>
       <span class="counter tabnum" id="counter"></span></div>
     <div class="thumbs">${p.imgs.map((s,i)=>`<button data-img="${i}" aria-label="Voir la photo ${i+1}"><img src="${s}" alt=""></button>`).join("")}</div></div>
     <div class="info">
       <span class="cat">${CATNAME[p.cat]}</span><h2 id="sTitle">${esc(p.name)}</h2>
-      <span class="big">${priceHTML(p.price)}</span>
+      <div class="buyrow"><span class="big">${priceHTML(p.price)}</span><div id="sheetAct">${actionHTML(p,true)}</div></div>
       ${out?'<span class="badge" style="position:static;align-self:flex-start">En rupture</span>':""}
       <p class="desc">${esc(p.desc)}</p>
-      <ul>${p.specs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
-      <div id="sheetAct">${actionHTML(p,true)}</div></div>`;
+      <ul>${p.specs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
   $("#closeSheet").onclick=closeSheet;
   const tr=$("#track");
   tr.scrollLeft=sheetImg*tr.clientWidth;
@@ -890,6 +895,17 @@ document.addEventListener("click",e=>{
   if(pb){const o=orders.find(x=>x.id===pb.dataset.pay);if(!o)return;o.paiement=pb.dataset.mode;save();renderOrders();toast(`Paiement enregistré : ${o.paiement==="cb"?"CB":"Espèces"}`)}
 });
 document.addEventListener("change",e=>{const id=e.target.dataset?.livreur;if(!id)return;const o=orders.find(x=>x.id===id);if(!o)return;o.livreur=e.target.value||undefined;save();renderOrders();if(o.livreur)toast(`Livreur : ${o.livreur}`)});
+/* Glisser vers le bas pour fermer la fiche (téléphone) */
+(()=>{const sh=$("#sheet");let y0=0,x0=0,dy=0,t0=0,mode=null;
+  const mobile=()=>matchMedia("(max-width:700px)").matches;
+  sh.addEventListener("touchstart",e=>{if(!mobile()||!sheetId)return;const t=e.touches[0];y0=t.clientY;x0=t.clientX;dy=0;t0=Date.now();mode=sh.scrollTop<=0?"maybe":null},{passive:true});
+  sh.addEventListener("touchmove",e=>{if(!mode)return;const t=e.touches[0],dX=t.clientX-x0,dY=t.clientY-y0;
+    if(mode==="maybe"){if(Math.abs(dX)<8&&Math.abs(dY)<8)return;mode=(dY>0&&Math.abs(dY)>Math.abs(dX))?"drag":null;if(!mode)return;sh.style.transition="none"}
+    dy=Math.max(0,dY);e.preventDefault();sh.style.transform=`translateY(${dy}px)`;$("#scrim").style.opacity=String(Math.max(.15,1-dy/500))},{passive:false});
+  const end=()=>{if(mode!=="drag"){mode=null;return}mode=null;const v=dy/Math.max(1,Date.now()-t0);sh.style.transition="";$("#scrim").style.opacity="";
+    if(dy>110||v>.6){closeSheet()}else{sh.style.transform=""}};
+  sh.addEventListener("touchend",end);sh.addEventListener("touchcancel",end);
+})();
 $("#tabStock").onclick=()=>{$("#tabStock").setAttribute("aria-selected","true");$("#tabOrders").setAttribute("aria-selected","false");$("#stockList").hidden=false;$("#orderList").hidden=true};
 $("#tabOrders").onclick=()=>{$("#tabOrders").setAttribute("aria-selected","true");$("#tabStock").setAttribute("aria-selected","false");$("#stockList").hidden=true;$("#orderList").hidden=false};
 $("#q").addEventListener("input",e=>{query=e.target.value;renderGrid()});
