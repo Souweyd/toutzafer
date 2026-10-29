@@ -259,6 +259,17 @@ mark.todo{background:var(--hl);color:inherit;border-radius:3px;padding:0 3px}
 @media (max-width:700px){.grab{display:block;position:absolute;top:8px;left:50%;transform:translateX(-50%);width:44px;height:5px;border-radius:980px;background:rgba(255,255,255,.85);box-shadow:0 0 0 1px rgba(0,0,0,.08);z-index:3;pointer-events:none}}
 .sheetx{position:absolute;top:14px;right:14px;z-index:3;width:34px;height:34px;border-radius:50%;border:0;background:var(--glass);color:var(--fg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 1px 4px rgba(0,0,0,.18);display:grid;place-items:center}
 .sheetx:hover{background:var(--bg)}
+.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.shbtn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:980px;padding:8px 14px 8px 10px;font-size:13px;font-weight:600;text-decoration:none}
+.shbtn:hover{background:var(--bg-alt)}
+.similar{margin-top:14px;padding-top:16px;border-top:1px solid var(--line)}
+.similar h3{margin:0 0 10px;font-family:var(--font-display);font-size:17px;font-weight:700}
+.simgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.simcard{border:0;background:none;padding:0;text-align:left;display:flex;flex-direction:column;gap:4px;min-width:0}
+.simcard img{width:100%;height:auto;aspect-ratio:1;max-width:100%;object-fit:cover;border-radius:12px;background:var(--tile)}
+.simcard .sn{font-size:12px;font-weight:600;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.simcard .sp{font-size:12px}
+.simcard .pr{padding:1px 4px 1px 2px;margin-left:-2px}
 .buyrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:4px 0 6px}
 .buyrow .cta{padding:12px 18px;font-size:15px;border-radius:980px}
 .buyrow .step{align-self:center}
@@ -717,7 +728,20 @@ function afterCartChange(){save();refreshQuick();renderCount();if($("#drawer").c
 
 /* ---------- Fiche produit ---------- */
 let sheetPushed=false,curView=null;
-function openSheet(id){if(location.hash!=="#produit-"+id){sheetPushed=true;location.hash="produit-"+id}else openSheetRaw(id)}
+const SITE_URL="https://souweyd.github.io/toutzafer/"; // à remplacer par le nom de domaine définitif
+const productURL=p=>SITE_URL+"#produit-"+p.id;
+const shareWA=p=>"https://wa.me/?text="+encodeURIComponent(`${p.name} à ${eur(p.price)} chez Tout'zafer : ${productURL(p)}`);
+function similarHTML(p){
+  const ok=x=>x.id!==p.id&&!outOfStock.has(x.id);
+  let list=PRODUCTS.filter(x=>ok(x)&&x.cat===p.cat);
+  if(list.length<3)list=list.concat(PRODUCTS.filter(x=>ok(x)&&x.cat!==p.cat&&!list.includes(x)));
+  const seed=[...p.id].reduce((a,c)=>a+c.charCodeAt(0),0); // ordre stable par article
+  list=list.map((x,i)=>[x,(i*7+seed)%13]).sort((a,b)=>a[1]-b[1]).map(a=>a[0]).slice(0,3);
+  return `<div class="similar"><h3>Vous aimerez aussi</h3><div class="simgrid">${list.map(x=>`<button class="simcard" data-open="${x.id}" aria-label="Voir ${esc(x.name)}"><img src="${x.imgs[0]}" alt="" loading="lazy" width="720" height="720"><span class="sn">${esc(x.name)}</span><span class="sp">${priceHTML(x.price)}</span></button>`).join("")}</div></div>`;
+}
+function openSheet(id){
+  if(sheetId&&sheetId!==id){try{history.replaceState(null,"","#produit-"+id)}catch(e){}openSheetRaw(id);$("#sheet").scrollTo({top:0});return}
+  if(location.hash!=="#produit-"+id){sheetPushed=true;location.hash="produit-"+id}else openSheetRaw(id)}
 function clearHash(){try{history.replaceState(null,"",location.href.split("#")[0])}catch(e){location.hash=""}}
 function closeSheet(){const was=!!sheetId;closeSheetRaw();if(was&&/^#produit-/.test(location.hash)){if(sheetPushed){sheetPushed=false;history.back()}else clearHash()}}
 function openSheetRaw(id){sheetId=id;sheetImg=0;renderSheet();$("#sheet").classList.add("on");$("#scrim").classList.add("on");$("#sheet").setAttribute("aria-hidden","false");$("#sheet .x")?.focus()}
@@ -734,8 +758,11 @@ function renderSheet(){
       <div class="buyrow"><span class="big">${priceHTML(p.price)}</span><div id="sheetAct">${actionHTML(p,true)}</div></div>
       ${out?'<span class="badge" style="position:static;align-self:flex-start">En rupture</span>':""}
       <p class="desc">${esc(p.desc)}</p>
-      <ul>${p.specs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
+      <ul>${p.specs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+      <div class="share"><a class="shbtn" href="${shareWA(p)}" target="_blank" rel="noopener"><img src="img/ico/whatsapp.png" alt="" width="20" height="20">Partager</a><button class="shbtn" id="copyLink" type="button"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Copier le lien</button></div>
+      ${similarHTML(p)}</div>`;
   $("#closeSheet").onclick=closeSheet;
+  $("#copyLink").onclick=()=>{const u=productURL(p);try{navigator.clipboard.writeText(u).then(()=>toast("Lien copié"),()=>toast(u))}catch(e){toast(u)}};
   const tr=$("#track");
   tr.scrollLeft=sheetImg*tr.clientWidth;
   syncGal();
