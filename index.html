@@ -206,6 +206,13 @@ header.top :focus-visible{outline-color:var(--brand-fg)}
 .pk-km{flex:none;font-size:13px;font-weight:700;color:var(--muted)}
 .pk-note{margin:2px 0 0;font-size:11px;color:var(--muted)}
 
+.cta.smsb{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--bg);color:var(--fg);border:1.5px solid var(--line);text-decoration:none;font-size:15px;padding:12px}
+.cta.smsb svg{flex:none;color:var(--brand-text)}
+.cta.smsb.dis{color:var(--muted);cursor:not-allowed}
+.cta.smsb.dis svg{color:var(--muted)}
+.sms-ck{background:var(--brand-soft)!important;color:var(--brand-text)}
+.sms-ck svg{width:28px;height:28px}
+
 /* Contact */
 .contact{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;background:var(--brand-soft);border-radius:24px;padding:28px;margin-bottom:56px}
 .contact h2{margin:0;font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-.02em}
@@ -1026,8 +1033,9 @@ function renderDrawer(){
       <label class="fl">Point de livraison<select id="fPick"><option value="">Choisir un point de livraison</option>${PICKUPS.map(p=>`<option${d.pick===p?" selected":""}>${esc(p)}</option>`).join("")}</select></label>
       <label class="consent"><input type="checkbox" id="fOk"> <span>J'accepte que Tout’zafer utilise mes coordonnées uniquement pour traiter cette demande et me rappeler. Elles ne sont ni revendues ni utilisées pour de la publicité.</span></label>
     </form>
-    <div class="sendbar"><a class="cta wa" id="send" href="#" target="_blank" rel="noopener" aria-disabled="true"><img src="img/ico/whatsapp.png" alt="" width="22" height="22">Envoyer ma demande sur WhatsApp</a>
-      <p class="mutedline">Sans engagement. Votre demande s’ouvre dans WhatsApp : appuyez sur Envoyer.</p></div>`;
+    <div class="sendbar"><a class="cta wa" id="send" data-ch="wa" href="#" target="_blank" rel="noopener" aria-disabled="true"><img src="img/ico/whatsapp.png" alt="" width="22" height="22">Envoyer ma demande sur WhatsApp</a>
+      <a class="cta smsb" id="sendSms" data-ch="sms" href="#" aria-disabled="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H4l2.3-2.6A8 8 0 1 1 21 12Z"/><path d="M8.5 11h7M8.5 14.5h4.5"/></svg>Pas de WhatsApp ? Envoyer par SMS</a>
+      <p class="mutedline">Sans engagement. Votre message s’ouvre déjà rédigé : appuyez simplement sur Envoyer.</p></div>`;
   bindForm();
 }
 function mode(){return "retrait"}
@@ -1036,29 +1044,32 @@ function bindForm(){
   const ok=()=>{
     const free=shipIsFree(),miss=FREE_SHIP_MIN-total();
     const valid=!!($("#fPrenom").value.trim()&&$("#fNom").value.trim()&&normTel($("#fTel").value)&&$("#fPick").value&&$("#fOk").checked);
-    const btn=$("#send");btn.setAttribute("aria-disabled",String(!valid));btn.classList.toggle("dis",!valid);
-    btn.href=valid?waLink(buildOrder()):"#"};
+    ["#send","#sendSms"].forEach(id=>{const btn=$(id);btn.setAttribute("aria-disabled",String(!valid));btn.classList.toggle("dis",!valid)});
+    $("#send").href=valid?waLink(buildOrder()):"#";$("#sendSms").href=valid?smsLink(buildOrder()):"#"};
   const keep=()=>store.set("draft",{prenom:$("#fPrenom").value,nom:$("#fNom").value,tel:$("#fTel").value,pick:$("#fPick").value});
 
   ["fPrenom","fNom","fTel","fPick","fOk"].forEach(id=>{const el=$("#"+id);el.addEventListener("input",()=>{ok();keep()});el.addEventListener("change",()=>{ok();keep()})});
   ok();
   $("#f").addEventListener("submit",e=>e.preventDefault());
-  $("#send").addEventListener("click",e=>{
-    if($("#send").classList.contains("dis")){e.preventDefault();
+  const onSend=e=>{const btn=e.currentTarget,ch=btn.dataset.ch;
+    if(btn.classList.contains("dis")){e.preventDefault();
       const tel=$("#fTel").value.trim();$("#eTel").hidden=!tel||!!normTel(tel);
       const miss=[!$("#fPrenom").value.trim()&&"prénom",!$("#fNom").value.trim()&&"nom",!normTel($("#fTel").value)&&"téléphone",!$("#fPick").value&&"point de livraison",!$("#fOk").checked&&"case d'accord"].filter(Boolean);
       toast("À compléter : "+miss.join(", "));return}
     const gone=Object.keys(cart).filter(k=>outOfStock.has(kid(k)));
     if(gone.length){e.preventDefault();removedNotice=gone.map(lineName);gone.forEach(k=>delete cart[k]);save();renderGrid();renderCount();renderDrawer();removedNotice=[];return}
-    $("#send").href=waLink(buildOrder()); // le lien s'ouvre (WhatsApp), puis on enregistre la demande
-    setTimeout(submitOrder,0);
-  });
+    btn.href=ch==="sms"?smsLink(buildOrder()):waLink(buildOrder()); // le lien s'ouvre (WhatsApp ou SMS), puis on enregistre la demande
+    setTimeout(()=>submitOrder(ch),0);
+  };
+  $("#send").addEventListener("click",onSend);$("#sendSms").addEventListener("click",onSend);
 }
 function buildOrder(){
   return {id:"D"+String(orders.length+1).padStart(4,"0"),date:new Date().toISOString(),prenom:$("#fPrenom").value.trim(),nom:$("#fNom").value.trim(),tel:normTel($("#fTel").value),mode:"retrait",pick:$("#fPick").value,shipFree:shipIsFree(),
     lines:Object.entries(cart).map(([k,q])=>({name:lineName(k),q,price:byId(kid(k)).price})),total:total(),status:"appeler"};
 }
 const recapOf=o=>`Demande ${o.id}\n${o.prenom} ${o.nom} · ${fmtTel(o.tel)}\nPoint de livraison : ${o.pick} (livraison ${o.shipFree?"offerte":"frais à confirmer"})\n\n${o.lines.map(l=>`• ${l.q} × ${l.name} (${eur(l.price*l.q)})`).join("\n")}\n\nTotal indicatif : ${eur(o.total)}`;
+// SMS : iPhone attend « &body= », Android « ?body= »
+const smsLink=o=>`sms:+${WA_NUMBER}${/iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)&&"ontouchend" in document?"&":"?"}body=${encodeURIComponent("Bonjour Tout'zafer, voici ma demande :\n\n"+recapOf(o))}`;
 const waLink=o=>`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Bonjour Tout'zafer, voici ma demande :\n\n"+recapOf(o))}`;
 function pkMsg(t){const m=$("#pkMsg");if(!m)return;m.textContent=t;m.hidden=!t}
 function renderPicker(view){
@@ -1096,13 +1107,15 @@ function renderPkList(order,sel,near){
 function normTel(t){const d=t.replace(/[^\d+]/g,"");if(/^0\d{9}$/.test(d))return d;if(/^\+262\d{9}$/.test(d))return "0"+d.slice(4);if(/^262\d{9}$/.test(d))return "0"+d.slice(3);return null}
 
 let lastDoneHTML="";
-function submitOrder(){
-  const o=buildOrder();orders.unshift(o);
-  const recap=recapOf(o),wa=waLink(o);
-  lastDoneHTML = `<div class="done"><div class="ck wa-ck"><img src="img/ico/whatsapp.png" alt="" width="30" height="30"></div>
-    <h3>Plus qu’une étape, ${esc(o.prenom)}</h3><p>WhatsApp s’est ouvert avec votre demande. Appuyez sur <b>Envoyer</b> pour la transmettre à Tout’zafer, qui vous rappelle au ${esc(fmtTel(o.tel))}.</p></div>
+function submitOrder(ch="wa"){
+  const o=buildOrder();o.canal=ch;orders.unshift(o);
+  const recap=recapOf(o),wa=waLink(o),sms=smsLink(o),isSms=ch==="sms";
+  const tel=esc("0"+WA_NUMBER.slice(3).replace(/(\d{3})(\d{2})(\d{2})(\d{2})/,"$1 $2 $3 $4"));
+  lastDoneHTML = `<div class="done"><div class="ck ${isSms?"sms-ck":"wa-ck"}">${isSms?'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H4l2.3-2.6A8 8 0 1 1 21 12Z"/><path d="M8.5 11h7M8.5 14.5h4.5"/></svg>':'<img src="img/ico/whatsapp.png" alt="" width="30" height="30">'}</div>
+    <h3>Plus qu’une étape, ${esc(o.prenom)}</h3><p>${isSms?"Votre application Messages":"WhatsApp"} s’est ouvert${isSms?"e":""} avec votre demande. Appuyez sur <b>Envoyer</b> pour la transmettre à Tout’zafer${isSms?` (${tel})`:""}, qui vous rappelle au ${esc(fmtTel(o.tel))}.</p></div>
     <div class="recap tabnum" id="recap">${esc(recap)}</div>
-    <div class="stack"><a class="cta wa" href="${wa}" target="_blank" rel="noopener"><img src="img/ico/whatsapp.png" alt="" width="22" height="22">WhatsApp ne s’est pas ouvert ? Réessayer</a>
+    <div class="stack">${isSms?`<a class="cta smsb" href="${sms}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H4l2.3-2.6A8 8 0 1 1 21 12Z"/><path d="M8.5 11h7M8.5 14.5h4.5"/></svg>Le SMS ne s’est pas ouvert ? Réessayer</a><a class="cta wa" href="${wa}" target="_blank" rel="noopener"><img src="img/ico/whatsapp.png" alt="" width="22" height="22">Envoyer plutôt sur WhatsApp</a>`
+      :`<a class="cta wa" href="${wa}" target="_blank" rel="noopener"><img src="img/ico/whatsapp.png" alt="" width="22" height="22">WhatsApp ne s’est pas ouvert ? Réessayer</a><a class="cta smsb" href="${sms}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H4l2.3-2.6A8 8 0 1 1 21 12Z"/><path d="M8.5 11h7M8.5 14.5h4.5"/></svg>Envoyer plutôt par SMS</a>`}
     <button class="ghost" id="copy">Copier le récapitulatif</button><button class="ghost" id="again">Continuer mes achats</button></div>`;
   cart={};store.set("draft",{});save();renderGrid();renderCount();renderOrders();
   drawerView="done";renderDrawer();
@@ -1144,6 +1157,7 @@ function orderCard(o){
   if(o.livreur&&st!=="appeler")pills.push(`<span class="st st-liv">Livreur : ${esc(o.livreur)}</span>`);
   if(st==="livree")pills.push(o.paiement==="especes"?'<span class="st st-cash">Payé · Espèces</span>':o.paiement==="cb"?'<span class="st st-card">Payé · CB</span>':'<span class="st st-unpaid">Paiement à saisir</span>');
   if(st==="annulee"){pills.push(`<span class="st st-why">${o.cancelFrom==="livraison"?"À la livraison":"À l'appel"}</span>`);if(o.cancelReason)pills.push(`<span class="st st-why">${esc(o.cancelReason)}</span>`)}
+  if(o.canal==="sms")pills.push('<span class="st st-liv">Reçue par SMS</span>');
   if(o.demo)pills.push('<span class="st st-demo">Exemple</span>');
   let act="";
   const cxUI=cancelOpen.has(o.id)?`<div class="cxbox"><label class="ofield">Motif d'annulation<select id="cxr_${o.id}">${CANCEL_REASONS.map(r=>`<option>${esc(r)}</option>`).join("")}</select></label>
