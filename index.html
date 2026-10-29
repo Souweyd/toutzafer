@@ -623,6 +623,18 @@ function showSlide(i){
 }
 function startHero(){clearInterval(heroTimer);heroTimer=setInterval(()=>{if(!document.hidden&&!$("#shop").hidden)showSlide(heroIdx+1)},5500)}
 const norm = t => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+function quickHTML(p){const out=outOfStock.has(p.id),q=cart[p.id]||0;
+  return out?"":q?`<div class="qpill" role="group" aria-label="Quantité"><button data-dec="${p.id}" aria-label="Retirer un">−</button><span class="tabnum">${q}</span><button data-inc="${p.id}" aria-label="Ajouter un">+</button></div>`
+      :`<button class="qadd" data-inc="${p.id}" aria-label="Ajouter ${esc(p.name)} au panier"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>`;}
+function refreshQuick(){
+  document.querySelectorAll("#grid article.card[data-id]").forEach(a=>{
+    const p=byId(a.dataset.id),cur=a.querySelector(".qadd,.qpill"),q=cart[p.id]||0;
+    if(cur&&cur.classList.contains("qpill")&&q){cur.querySelector("span").textContent=q;return}
+    const html=quickHTML(p),tmp=document.createElement("div");tmp.innerHTML=html;const n=tmp.firstElementChild;
+    if(cur){n?cur.replaceWith(n):cur.remove()}else if(n)a.querySelector(".media").appendChild(n);
+  });
+}
+function refreshSheetAct(){const el=document.getElementById("sheetAct"),p=byId(sheetId);if(el&&p)el.innerHTML=actionHTML(p,true)}
 function renderGrid(){
   const words = norm(query).split(/\s+/).filter(Boolean);
   let list = PRODUCTS.filter(p=>{if(cat!=="all"&&p.cat!==cat)return false;const hay=norm([p.name,p.d,p.desc,CATNAME[p.cat],...p.specs].join(" "));return words.every(w=>hay.includes(w))});
@@ -638,10 +650,8 @@ function renderGrid(){
     const out = outOfStock.has(p.id);
     let head="";
     if(grouped&&p.cat!==prevCat){prevCat=p.cat;const k=list.filter(x=>x.cat===p.cat).length;head=`<h2 class="ghead">${CATNAME[p.cat]}<span class="tabnum">${k}</span></h2>`}
-    const q=cart[p.id]||0;
-    const quick=out?"":q?`<div class="qpill" role="group" aria-label="Quantité"><button data-dec="${p.id}" aria-label="Retirer un">−</button><span class="tabnum">${q}</span><button data-inc="${p.id}" aria-label="Ajouter un">+</button></div>`
-      :`<button class="qadd" data-inc="${p.id}" aria-label="Ajouter ${esc(p.name)} au panier"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>`;
-    return head+`<article class="card${out?" out":""}">
+    const quick=quickHTML(p);
+    return head+`<article class="card${out?" out":""}" data-id="${p.id}">
       <div class="media"><button class="thumb" data-open="${p.id}" aria-label="Voir ${esc(p.name)}">${out?'<span class="badge">En rupture</span>':`<span class="tags">${tagsFor(p)}</span>`}<img src="${p.imgs[0]}" alt="" loading="lazy" width="720" height="720"><img class="alt" src="${p.imgs[1]}" alt="" loading="lazy" width="720" height="720"></button>${quick}</div>
       <div class="meta">${grouped?"":`<span class="cat">${CATNAME[p.cat]}</span>`}<button class="name" data-open="${p.id}">${esc(p.name)}</button><span class="price">${priceHTML(p.price)}</span></div>
       </article>`;
@@ -655,7 +665,7 @@ function bump(){[$("#cartCount"),$("#cbT")].forEach(el=>{el.classList.remove("bu
 
 function inc(id){if(outOfStock.has(id))return;cart[id]=(cart[id]||0)+1;if(cart[id]===1)toast("Ajouté au panier");afterCartChange();bump()}
 function dec(id){if(!cart[id])return;cart[id]--;if(!cart[id])delete cart[id];afterCartChange()}
-function afterCartChange(){save();renderGrid();renderCount();if($("#drawer").classList.contains("on"))renderDrawer();if(sheetId)renderSheet()}
+function afterCartChange(){save();refreshQuick();renderCount();if($("#drawer").classList.contains("on"))renderDrawer();if(sheetId)refreshSheetAct()}
 
 /* ---------- Fiche produit ---------- */
 function openSheet(id){sheetId=id;sheetImg=0;renderSheet();$("#sheet").classList.add("on");$("#scrim").classList.add("on");$("#sheet").setAttribute("aria-hidden","false");$("#sheet .x")?.focus()}
@@ -673,7 +683,7 @@ function renderSheet(){
       ${out?'<span class="badge" style="position:static;align-self:flex-start">En rupture</span>':""}
       <p class="desc">${esc(p.desc)}</p>
       <ul>${p.specs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
-      ${actionHTML(p,true)}</div>`;
+      <div id="sheetAct">${actionHTML(p,true)}</div></div>`;
   $("#closeSheet").onclick=closeSheet;
   const tr=$("#track");
   tr.scrollLeft=sheetImg*tr.clientWidth;
