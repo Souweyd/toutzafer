@@ -639,19 +639,17 @@ label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:5
 const WA_NUMBER = "262693473945"; // numéro WhatsApp de l'entreprise : +262 693 47 39 45
 const FREE_SHIP_MIN = 0; // livraison offerte, sans minimum
 function shipIsFree(){return total()>=FREE_SHIP_MIN}
-// Points de livraison (exemples, liste à définir) : nom affiché + coordonnées GPS
+// Points de livraison : nom affiché + coordonnées GPS (ajouter une ligne par nouveau point)
 const PICKUP_POINTS = [
-  {name:"Saint-Pierre — Centre-ville",short:"St-Pierre Centre",lat:-21.3393,lon:55.4781},
-  {name:"Saint-Pierre — Ravine Blanche",short:"Ravine Blanche",lat:-21.3305,lon:55.4602},
-  {name:"Le Tampon — 14e km",short:"Tampon 14e km",lat:-21.2402,lon:55.5410},
-  {name:"Saint-Louis — Centre",short:"St-Louis",lat:-21.2860,lon:55.4110},
-  {name:"Saint-Joseph — Centre",short:"St-Joseph",lat:-21.3780,lon:55.6190}
+  {name:"Saint-Denis — Rue du Maréchal Leclerc (près de la mosquée)",short:"St-Denis · Mosquée",lat:-20.87932,lon:55.45233},
+  {name:"Saint-Pierre — Parking Kiabi",short:"Kiabi St-Pierre",lat:-21.33944,lon:55.47547},
+  {name:"Saint-Leu — Parking E.Leclerc Le Portail",short:"Leclerc Le Portail",lat:-21.21845,lon:55.30119}
 ];
 const PICKUPS = PICKUP_POINTS.map(p=>p.name);
 // Communes de La Réunion (centre approximatif) pour trouver le point le plus proche sans GPS
 const COMMUNES = [["Bras-Panon",-21.002,55.677],["Cilaos",-21.135,55.472],["Entre-Deux",-21.247,55.472],["L'Étang-Salé",-21.266,55.366],["La Plaine-des-Palmistes",-21.134,55.629],["La Possession",-20.925,55.336],["Le Port",-20.937,55.292],["Le Tampon",-21.278,55.517],["Les Avirons",-21.241,55.334],["Les Trois-Bassins",-21.106,55.301],["Petite-Île",-21.354,55.566],["Saint-André",-20.963,55.650],["Saint-Benoît",-21.034,55.713],["Saint-Denis",-20.882,55.450],["Saint-Joseph",-21.378,55.619],["Saint-Leu",-21.171,55.288],["Saint-Louis",-21.286,55.411],["Saint-Paul",-21.010,55.270],["Saint-Philippe",-21.358,55.767],["Saint-Pierre",-21.339,55.478],["Sainte-Marie",-20.897,55.549],["Sainte-Rose",-21.128,55.796],["Sainte-Suzanne",-20.906,55.607],["Salazie",-21.027,55.539]];
 // Contour simplifié de l'île (longitude, latitude), dans le sens horaire depuis Saint-Denis
-const COAST=[[55.450,-20.874],[55.500,-20.884],[55.550,-20.892],[55.610,-20.904],[55.652,-20.935],[55.676,-20.978],[55.708,-21.018],[55.748,-21.058],[55.790,-21.100],[55.818,-21.152],[55.836,-21.210],[55.838,-21.272],[55.812,-21.330],[55.768,-21.366],[55.718,-21.381],[55.660,-21.386],[55.608,-21.386],[55.558,-21.366],[55.500,-21.352],[55.450,-21.334],[55.400,-21.294],[55.356,-21.262],[55.322,-21.222],[55.286,-21.172],[55.254,-21.112],[55.222,-21.060],[55.232,-21.020],[55.262,-20.992],[55.282,-20.952],[55.292,-20.928],[55.330,-20.922],[55.372,-20.902],[55.415,-20.884]];
+const COAST=[[55.450,-20.874],[55.500,-20.884],[55.550,-20.892],[55.610,-20.904],[55.652,-20.935],[55.676,-20.978],[55.708,-21.018],[55.748,-21.058],[55.790,-21.100],[55.818,-21.152],[55.836,-21.210],[55.838,-21.272],[55.812,-21.330],[55.768,-21.366],[55.718,-21.381],[55.660,-21.386],[55.608,-21.386],[55.558,-21.366],[55.500,-21.352],[55.450,-21.334],[55.400,-21.294],[55.335,-21.268],[55.293,-21.218],[55.276,-21.168],[55.254,-21.112],[55.222,-21.060],[55.232,-21.020],[55.262,-20.992],[55.282,-20.952],[55.292,-20.928],[55.330,-20.922],[55.372,-20.902],[55.415,-20.884]];
 const PROJ_COS=Math.cos(21.1*Math.PI/180);
 const proj=(lat,lon)=>[((lon-55.19)*PROJ_COS*1000),((-20.85-lat)*1000)];
 function coastPath(){const P=COAST.map(([lo,la])=>proj(la,lo)),n=P.length;let d=`M${P[0][0].toFixed(1)},${P[0][1].toFixed(1)}`;
@@ -1098,11 +1096,11 @@ function seedDemo(){
   if(orders.length||store.get("seeded",false))return;
   const h=n=>new Date(Date.now()-n*3600e3).toISOString();
   orders=[
-    {id:"D0004",demo:true,date:h(1),prenom:"Marie",nom:"Hoarau",tel:"0692123456",pick:PICKUPS[0],lines:[{name:"4 étagères magnétiques frigo",q:2,price:24.99},{name:"Lot de 5 boîtes en verre",q:1,price:29.99}],total:79.97,status:"appeler"},
-    {id:"D0003",demo:true,date:h(3),prenom:"Kévin",nom:"Payet",tel:"0693456789",pick:PICKUPS[2],lines:[{name:"Gamelle pour chat",q:1,price:29.99},{name:"Boîte à croquettes",q:2,price:4.99}],total:39.97,status:"appeler"},
-    {id:"D0002",demo:true,date:h(26),prenom:"Nadia",nom:"Grondin",tel:"0692987654",pick:PICKUPS[3],lines:[{name:"Porte-vêtements",q:1,price:29.99}],total:29.99,status:"livraison",livreur:"Sandrine"},
-    {id:"D0001",demo:true,date:h(50),prenom:"Teddy",nom:"Rivière",tel:"0693112233",pick:PICKUPS[1],lines:[{name:"Meuble bibliothèque",q:1,price:49.99},{name:"Kit ustensiles 14 pièces",q:1,price:19.99}],total:69.98,status:"livree",livreur:"Jean-Marc",paiement:"especes"},
-    {id:"D0000",demo:true,date:h(30),prenom:"Johan",nom:"Hoareau",tel:"0692445566",pick:PICKUPS[4],lines:[{name:"Étendoir à linge",q:1,price:29.99}],total:29.99,status:"annulee",cancelFrom:"appeler",cancelReason:"Injoignable"}
+    {id:"D0004",demo:true,date:h(1),prenom:"Marie",nom:"Hoarau",tel:"0692123456",pick:PICKUPS[0%PICKUPS.length],lines:[{name:"4 étagères magnétiques frigo",q:2,price:24.99},{name:"Lot de 5 boîtes en verre",q:1,price:29.99}],total:79.97,status:"appeler"},
+    {id:"D0003",demo:true,date:h(3),prenom:"Kévin",nom:"Payet",tel:"0693456789",pick:PICKUPS[2%PICKUPS.length],lines:[{name:"Gamelle pour chat",q:1,price:29.99},{name:"Boîte à croquettes",q:2,price:4.99}],total:39.97,status:"appeler"},
+    {id:"D0002",demo:true,date:h(26),prenom:"Nadia",nom:"Grondin",tel:"0692987654",pick:PICKUPS[3%PICKUPS.length],lines:[{name:"Porte-vêtements",q:1,price:29.99}],total:29.99,status:"livraison",livreur:"Sandrine"},
+    {id:"D0001",demo:true,date:h(50),prenom:"Teddy",nom:"Rivière",tel:"0693112233",pick:PICKUPS[1%PICKUPS.length],lines:[{name:"Meuble bibliothèque",q:1,price:49.99},{name:"Kit ustensiles 14 pièces",q:1,price:19.99}],total:69.98,status:"livree",livreur:"Jean-Marc",paiement:"especes"},
+    {id:"D0000",demo:true,date:h(30),prenom:"Johan",nom:"Hoareau",tel:"0692445566",pick:PICKUPS[4%PICKUPS.length],lines:[{name:"Étendoir à linge",q:1,price:29.99}],total:29.99,status:"annulee",cancelFrom:"appeler",cancelReason:"Injoignable"}
   ];
   store.set("seeded",true);save();
 }
