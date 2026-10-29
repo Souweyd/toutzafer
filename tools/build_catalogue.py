@@ -2,7 +2,10 @@
 """Synchronisation Gestion -> boutique.
 
 Usage (depuis la racine du dépôt) :
-  python3 tools/build_catalogue.py <dossier_produits> [<dossier_photos>]
+  python3 tools/build_catalogue.py <dossier_produits> [<dossier_photos>] [--all]
+
+Par défaut, seuls les articles fournis (ceux marqués dirty dans la base) sont reportés
+sur le catalogue déjà en ligne ; les autres restent tels quels. --all remplace tout le catalogue.
 
 <dossier_produits> : un fichier JSON par article, tels qu'exportés de la base Gestion
                      (ArtifactData list collection "products" avec out_dir) — ou un seul fichier .json (liste).
@@ -14,7 +17,8 @@ Effets :
   - index.html est régénéré ;
   - un compte rendu JSON est écrit dans .sync/result.json :
       {"photos": {"<productId>": [{"a": assetId, "w": nom}, ...]}, "new_files": [...], "warnings": [...], "count": n}
-    -> réécrire ensuite dans la base le champ photos des articles listés (pour qu'ils gardent le nom w).
+      + "pub": {"<productId>": {...}} = version publiée de chaque article reporté, à écrire dans le champ pub
+        de la base (avec dirty:false) ; elle sert à la page Gestion pour afficher l'onglet « À publier ».
 """
 import json,os,sys,glob,re,subprocess
 from PIL import Image,ImageOps
@@ -43,9 +47,13 @@ def square(im,size):
     return im
 
 def main():
-    prods=load(sys.argv[1]); phdir=sys.argv[2] if len(sys.argv)>2 else None
-    res={'photos':{},'new_files':[],'warnings':[]}
-    cat=[]
+    args=[a for a in sys.argv[1:] if not a.startswith('--')]; full='--all' in sys.argv
+    prods=load(args[0]); phdir=args[1] if len(args)>1 else None
+    res={'photos':{},'new_files':[],'warnings':[],'pub':{},'updated':[]}
+    art=os.path.join(ROOT,'artifact.html'); s=open(art,encoding='utf-8').read()
+    ia=s.index('/*CATALOGUE-DEBUT*/'); ib=s.index('/*CATALOGUE-FIN*/')
+    old=json.loads(s[ia:ib].split('window.TZ_CATALOGUE=',1)[1].rstrip().rstrip(';'))
+    cur={} if full else {c['id']:c for c in old}
     for p in sorted(prods,key=lambda x:int(x.get('n') or 0)):
         pid=p['id']; base=[]; changed=False; photos=[]
         for ph in p.get('photos') or []:
@@ -61,23 +69,24 @@ def main():
                 while os.path.exists(os.path.join(W,f'{pid}-u{k}-720.webp')): k+=1
                 name=f'{pid}-u{k}'
                 im=Image.open(src)
-                for s in (360,720):
-                    out=os.path.join(W,f'{name}-{s}.webp'); square(im,s).save(out,'WEBP',quality=82,method=6)
+                for sz in (360,720):
+                    out=os.path.join(W,f'{name}-{sz}.webp'); square(im,sz).save(out,'WEBP',quality=82,method=6)
                     res['new_files'].append(os.path.relpath(out,ROOT))
                 ph['w']=name; changed=True
             photos.append(ph); base.append(ph['w'])
         if changed: res['photos'][pid]=photos
         if not base: res['warnings'].append(f'{pid} : aucune photo, article non publié'); continue
+        pub={k:(photos if k=='photos' else p.get(k)) for k in ['name','price','cat','d','desc','specs','photos','variants','oos','hidden']}
+        res['pub'][pid]=pub; res['updated'].append(pid)
         if not str(p.get('desc','')).strip(): res['warnings'].append(f'{pid} : description vide')
         e={'id':pid,'n':int(p['n']),'cat':p['cat'],'name':p['name'],'price':round(float(p['price']),2),'d':p.get('d',''),
            'desc':p.get('desc',''),'specs':p.get('specs') or [],'base':base,'oos':bool(p.get('oos'))}
         if p.get('variants'):
             e['variants']=[{'name':v['name'],'img':min(int(v.get('img',0)),len(base)-1)} for v in p['variants']]
         if p.get('hidden'): e['hidden']=True
-        cat.append(e)
-    art=os.path.join(ROOT,'artifact.html'); s=open(art,encoding='utf-8').read()
-    a=s.index('/*CATALOGUE-DEBUT*/'); b=s.index('/*CATALOGUE-FIN*/')
-    s=s[:a]+'/*CATALOGUE-DEBUT*/window.TZ_CATALOGUE='+json.dumps(cat,ensure_ascii=False,separators=(',',':'))+';'+s[b:]
+        cur[pid]=e
+    cat=sorted(cur.values(),key=lambda c:c['n'])
+    s=s[:ia]+'/*CATALOGUE-DEBUT*/window.TZ_CATALOGUE='+json.dumps(cat,ensure_ascii=False,separators=(',',':'))+';'+s[ib:]
     open(art,'w',encoding='utf-8').write(s)
     subprocess.run([sys.executable,os.path.join(ROOT,'tools','build_site.py')],check=True)
     res['count']=len(cat); res['visible']=sum(1 for c in cat if not c.get('hidden'))

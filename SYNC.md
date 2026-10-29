@@ -16,7 +16,11 @@ Lire `sync/state` dans la base de la page Gestion (`ArtifactData get`, collectio
 
 1. `ArtifactData update` sur `sync/state` (avec `if_version`) : `status: "running"`, `startedAt` (ISO).
 2. Attacher le dépôt `Souweyd/toutzafer` en écriture (outil add_repo, `access: "push"`), le cloner, puis travailler à sa racine.
-3. Exporter la base : `ArtifactData list` sur `products` (limit 1000, `out_dir: .sync/db`), puis `imports`.
+3. Lire **uniquement ce qui est à publier** :
+   - `ArtifactData query` sur `products` avec `where: [["dirty","==",true]]` (`out_dir: .sync/db`) ;
+   - `ArtifactData query` sur `imports` avec `where: [["status","==","en_attente"]]`.
+   Ne pas relire tout le catalogue : le catalogue en ligne (dans `artifact.html`) est la base, les articles `dirty` viennent s'y reporter. Chaque article à publier contient `pub` (sa version en ligne) : comparer `pub` et l'article donne la liste exacte des changements.
+   Si rien n'est à publier : passer directement à l'étape 6 avec le message « Rien à publier ».
 
 ## 2. Catalogues PDF déposés (`imports`, `status: "en_attente"`)
 
@@ -30,6 +34,7 @@ Pour chacun, dans l'ordre de dépôt :
    - **noms / précisions** corrigés → mettre à jour `name`, `d` ;
    - **articles nouveaux** → créer un document `products/aNN` (`n` = plus grand `n` + 1), avec `cat`, `name`, `price`, `d`, `specs`, `desc` rédigée, `oos: false`, `isNew: true`, `dirty: true` ;
    - **articles absents du catalogue** → `oos: true` (ne pas supprimer, ne pas masquer) ;
+   - pour cette comparaison seulement, lire tous les articles (`ArtifactData list` sur `products`, `out_dir: .sync/all`) : un catalogue PDF concerne toute la gamme ;
    - **articles revenus** dans le catalogue → `oos: false` ;
    - **photos** : les photos du nouveau catalogue sont prioritaires. Les recadrer sans les bandeaux de prix ni les textes, les téléverser dans la page Gestion (`Artifact publish`, `url` = page Gestion, `asset: true`, `file_paths`) et les mettre en tête du champ `photos` sous la forme `{a: <id>}`.
    - Tout article modifié reçoit `dirty: true`.
@@ -37,13 +42,13 @@ Pour chacun, dans l'ordre de dépôt :
 
 ## 3. Descriptions vides
 
-Pour chaque article non masqué dont `desc` est vide : regarder ses photos (fichiers `img/w/<w>-720.webp` du dépôt, ou l'asset téléchargé), son nom, sa précision et ses caractéristiques, puis rédiger 2 à 3 phrases dans le style des autres fiches : concret, vouvoiement, bénéfice d'usage au quotidien, sans superlatif ni promesse invérifiable. Si les caractéristiques sont vides, en proposer 3 à 4 à partir de ce qui se voit. Écrire `desc`, `descBy: "claude"`, `dirty: true` dans la base.
+Pour chaque article à publier (non masqué) dont `desc` est vide : regarder ses photos (fichiers `img/w/<w>-720.webp` du dépôt, ou l'asset téléchargé), son nom, sa précision et ses caractéristiques, puis rédiger 2 à 3 phrases dans le style des autres fiches : concret, vouvoiement, bénéfice d'usage au quotidien, sans superlatif ni promesse invérifiable. Si les caractéristiques sont vides, en proposer 3 à 4 à partir de ce qui se voit. Écrire `desc`, `descBy: "claude"`, `dirty: true` dans la base.
 
 ## 4. Construire le site
 
-1. Ré-exporter `products` (`out_dir: .sync/db`) pour avoir les dernières versions.
+1. Refaire la requête `dirty == true` sur `products` (`out_dir: .sync/db`, vider le dossier avant) pour avoir les dernières versions, y compris les articles touchés aux étapes 2 et 3.
 2. Télécharger chaque photo `{a}` sans `w` : `Artifact read` avec `path` = id de l'asset, enregistrée sous `.sync/photos/<id>.<ext>`.
-3. `python3 tools/build_catalogue.py .sync/db/products .sync/photos`
+3. `python3 tools/build_catalogue.py .sync/db/products .sync/photos` : reporte ces articles sur le catalogue en ligne, les autres ne bougent pas. (`--all` reconstruit tout le catalogue à partir d'un export complet : seulement en cas de réparation.)
 4. Lire `.sync/result.json` : traiter les `warnings` (photo manquante, description vide).
 5. Vérifier la page : servir le dossier (`python3 -m http.server`) et l'ouvrir avec Playwright : pas d'erreur JavaScript, nombre de fiches attendu, une fiche s'ouvre.
 
@@ -54,7 +59,7 @@ Pour chaque article non masqué dont `desc` est vide : regarder ses photos (fich
 
 ## 6. Clore
 
-1. Base Gestion, en un `batch` (50 écritures maximum par lot) : pour chaque article publié avec `dirty: true`, `update` avec `if_version` de l'export : `dirty: false`, `isNew` supprimé (`{"__delete__": true}`), `publishedAt`, et `photos` repris de `result.photos` s'il est listé. Si un article a été modifié entre-temps (conflit de version), ne pas forcer : il restera « modifié » pour la prochaine publication.
+1. Base Gestion, en un `batch` (50 écritures maximum par lot) : pour chaque article publié avec `dirty: true`, `update` avec `if_version` de l'export : `dirty: false`, `pub` = `result.pub[id]`, `photos` = `result.pub[id].photos`, `isNew` supprimé (`{"__delete__": true}`), `publishedAt`. L'onglet « À publier » de Gestion se vide alors. Si un article a été modifié entre-temps (conflit de version), ne pas forcer : il restera « modifié » pour la prochaine publication.
 2. `sync/state` : `status: "done"`, `doneAt`, `message` = résumé en une ligne (ex. « 3 articles publiés, 1 description rédigée, catalogue du 30/10 traité »).
 3. En cas d'échec à une étape : `sync/state` → `status: "error"`, `message` = cause en une phrase compréhensible par l'entrepreneur ; ne pas laisser `running`.
 
