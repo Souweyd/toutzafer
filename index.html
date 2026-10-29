@@ -161,6 +161,38 @@ header.top :focus-visible{outline-color:var(--brand-fg)}
 .vars button img{width:34px;height:34px;border-radius:8px;object-fit:cover}
 .vars button[aria-checked="true"]{border-color:var(--brand);background:var(--brand-soft);color:var(--brand-text)}
 
+/* Choix du point de livraison */
+.picker{border:1px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:10px;font-weight:400}
+.pk-tools{display:flex;gap:8px;flex-wrap:wrap}
+.pk-loc{display:inline-flex;align-items:center;gap:7px;border:0;background:var(--brand);color:#fff;border-radius:980px;padding:9px 14px;font-size:13px;font-weight:700;flex:none}
+.pk-loc:disabled{opacity:.6}
+.pk-com{flex:1;min-width:140px}
+.pk-com select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:980px;padding:8px 12px;font:inherit;font-size:13px}
+.pk-map svg{display:block;width:100%;height:auto}
+.pk-sea{fill:#eaf2fb}
+.pk-land{fill:#f6f3ea;stroke:#c9c2ad;stroke-width:2.5}
+.pk-peak{fill:#b7ad92}
+.pk-town{font:600 15px var(--font);fill:#8b8676}
+.pk-pin{cursor:pointer}
+.pk-pin circle:first-child{fill:var(--brand);stroke:#fff;stroke-width:3;filter:drop-shadow(0 2px 3px rgba(0,0,40,.35))}
+.pk-pin .pk-dot{fill:#fff;stroke:none;filter:none}
+.pk-pin.on circle:first-child{fill:var(--pop);stroke:var(--brand);stroke-width:4}
+.pk-pin.on .pk-dot{fill:var(--brand)}
+.pk-me{fill:#1a73e8;stroke:#fff;stroke-width:3}
+.pk-me-halo{fill:rgba(26,115,232,.18)}
+.pk-tag rect{fill:var(--fg)}
+.pk-tag text{fill:#fff;font:700 17px var(--font)}
+.pk-msg{margin:0;font-size:12px;color:var(--warn);background:var(--warn-soft);border-radius:10px;padding:8px 10px}
+.pk-list{display:flex;flex-direction:column;gap:6px}
+.pk-item{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 12px;text-align:left;font-size:14px;font-weight:600;color:var(--fg)}
+.pk-item.on{border-color:var(--brand);background:var(--brand-soft)}
+.pk-radio{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--line);background:var(--bg)}
+.pk-item.on .pk-radio{border:5px solid var(--brand)}
+.pk-name{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.pk-near{font-size:11px;font-weight:700;background:var(--s3-bg);color:var(--s3);border-radius:980px;padding:2px 8px}
+.pk-km{flex:none;font-size:13px;font-weight:700;color:var(--muted)}
+.pk-note{margin:2px 0 0;font-size:11px;color:var(--muted)}
+
 /* Contact */
 .contact{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;background:var(--brand-soft);border-radius:24px;padding:28px;margin-bottom:56px}
 .contact h2{margin:0;font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-.02em}
@@ -607,7 +639,29 @@ label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:5
 const WA_NUMBER = "262693473945"; // numéro WhatsApp de l'entreprise : +262 693 47 39 45
 const FREE_SHIP_MIN = 0; // livraison offerte, sans minimum
 function shipIsFree(){return total()>=FREE_SHIP_MIN}
-const PICKUPS = ["Saint-Pierre — Centre-ville","Saint-Pierre — Ravine Blanche","Le Tampon — 14e km","Saint-Louis — Centre","Saint-Joseph — Centre"]; // exemples, liste à définir
+// Points de livraison (exemples, liste à définir) : nom affiché + coordonnées GPS
+const PICKUP_POINTS = [
+  {name:"Saint-Pierre — Centre-ville",short:"St-Pierre Centre",lat:-21.3393,lon:55.4781},
+  {name:"Saint-Pierre — Ravine Blanche",short:"Ravine Blanche",lat:-21.3305,lon:55.4602},
+  {name:"Le Tampon — 14e km",short:"Tampon 14e km",lat:-21.2402,lon:55.5410},
+  {name:"Saint-Louis — Centre",short:"St-Louis",lat:-21.2860,lon:55.4110},
+  {name:"Saint-Joseph — Centre",short:"St-Joseph",lat:-21.3780,lon:55.6190}
+];
+const PICKUPS = PICKUP_POINTS.map(p=>p.name);
+// Communes de La Réunion (centre approximatif) pour trouver le point le plus proche sans GPS
+const COMMUNES = [["Bras-Panon",-21.002,55.677],["Cilaos",-21.135,55.472],["Entre-Deux",-21.247,55.472],["L'Étang-Salé",-21.266,55.366],["La Plaine-des-Palmistes",-21.134,55.629],["La Possession",-20.925,55.336],["Le Port",-20.937,55.292],["Le Tampon",-21.278,55.517],["Les Avirons",-21.241,55.334],["Les Trois-Bassins",-21.106,55.301],["Petite-Île",-21.354,55.566],["Saint-André",-20.963,55.650],["Saint-Benoît",-21.034,55.713],["Saint-Denis",-20.882,55.450],["Saint-Joseph",-21.378,55.619],["Saint-Leu",-21.171,55.288],["Saint-Louis",-21.286,55.411],["Saint-Paul",-21.010,55.270],["Saint-Philippe",-21.358,55.767],["Saint-Pierre",-21.339,55.478],["Sainte-Marie",-20.897,55.549],["Sainte-Rose",-21.128,55.796],["Sainte-Suzanne",-20.906,55.607],["Salazie",-21.027,55.539]];
+// Contour simplifié de l'île (longitude, latitude), dans le sens horaire depuis Saint-Denis
+const COAST=[[55.450,-20.874],[55.500,-20.884],[55.550,-20.892],[55.610,-20.904],[55.652,-20.935],[55.676,-20.978],[55.708,-21.018],[55.748,-21.058],[55.790,-21.100],[55.818,-21.152],[55.836,-21.210],[55.838,-21.272],[55.812,-21.330],[55.768,-21.366],[55.718,-21.381],[55.660,-21.386],[55.608,-21.386],[55.558,-21.366],[55.500,-21.352],[55.450,-21.334],[55.400,-21.294],[55.356,-21.262],[55.322,-21.222],[55.286,-21.172],[55.254,-21.112],[55.222,-21.060],[55.232,-21.020],[55.262,-20.992],[55.282,-20.952],[55.292,-20.928],[55.330,-20.922],[55.372,-20.902],[55.415,-20.884]];
+const PROJ_COS=Math.cos(21.1*Math.PI/180);
+const proj=(lat,lon)=>[((lon-55.19)*PROJ_COS*1000),((-20.85-lat)*1000)];
+function coastPath(){const P=COAST.map(([lo,la])=>proj(la,lo)),n=P.length;let d=`M${P[0][0].toFixed(1)},${P[0][1].toFixed(1)}`;
+  for(let i=0;i<n;i++){const p0=P[(i-1+n)%n],p1=P[i],p2=P[(i+1)%n],p3=P[(i+2)%n];
+    const c1=[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6],c2=[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];
+    d+=`C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`}
+  return d+"Z"}
+const COAST_D=coastPath();
+function kmBetween(a,b){const R=6371,t=x=>x*Math.PI/180,dl=t(b.lat-a.lat),dn=t(b.lon-a.lon);const h=Math.sin(dl/2)**2+Math.cos(t(a.lat))*Math.cos(t(b.lat))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+let pkPos=null; // {lat,lon,label,gps}
 
 const CATS = [["all","Tout"],["cuisine","Cuisine"],["rangement","Rangement"],["maison","Maison"],["enfants","Bébé & enfants"],["animaux","Animaux"]];
 const CATNAME = Object.fromEntries(CATS);
@@ -921,7 +975,16 @@ function renderDrawer(){
         <label class="fl">Nom<input id="fNom" autocomplete="family-name" value="${esc(d.nom||"")}" required></label>
       </div>
       <label class="fl">Téléphone<input id="fTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="0692 12 34 56" value="${esc(d.tel||"")}" required><span class="err" id="eTel" hidden>Indiquez un numéro à 10 chiffres (ex. 0692 12 34 56) ou au format +262.</span></label>
-      <label class="fl">Point de livraison<select id="fPick"><option value="">Choisir un point de livraison</option>${PICKUPS.map(p=>`<option${d.pick===p?" selected":""}>${esc(p)}</option>`).join("")}</select></label>
+      <div class="fl">Point de livraison
+        <div class="picker">
+          <div class="pk-tools"><button type="button" class="pk-loc" id="pkLoc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/></svg>Me localiser</button>
+            <label class="pk-com"><span class="sr">Ma commune</span><select id="pkCom"><option value="">ou ma commune…</option>${COMMUNES.map(([n])=>`<option${pkPos&&!pkPos.gps&&pkPos.label===n?" selected":""}>${esc(n)}</option>`).join("")}</select></label></div>
+          <div class="pk-map" id="pkMap"></div>
+          <p class="pk-msg" id="pkMsg" hidden></p>
+          <div class="pk-list" id="pkList" role="radiogroup" aria-label="Points de livraison"></div>
+        </div>
+        <select id="fPick" hidden aria-hidden="true" tabindex="-1"><option value=""></option>${PICKUPS.map(p=>`<option${d.pick===p?" selected":""}>${esc(p)}</option>`).join("")}</select>
+      </div>
       <div id="shipNote"></div>
       <label class="consent"><input type="checkbox" id="fOk"> <span>J'accepte que Tout’zafer utilise mes coordonnées uniquement pour traiter cette demande et me rappeler. Elles ne sont ni revendues ni utilisées pour de la publicité.</span></label>
     </form>
@@ -940,6 +1003,22 @@ function bindForm(){
     const btn=$("#send");btn.setAttribute("aria-disabled",String(!valid));btn.classList.toggle("dis",!valid);
     btn.href=valid?waLink(buildOrder()):"#"};
   const keep=()=>store.set("draft",{prenom:$("#fPrenom").value,nom:$("#fNom").value,tel:$("#fTel").value,pick:$("#fPick").value});
+  renderPicker();
+  const choose=name=>{$("#fPick").value=name;$("#fPick").dispatchEvent(new Event("change"));renderPicker()};
+  $("#pkMap").onclick=e=>{const m=e.target.closest("[data-pk]");if(m)choose(m.dataset.pk)};
+  $("#pkList").onclick=e=>{const m=e.target.closest("[data-pk]");if(m)choose(m.dataset.pk)};
+  const nearest=()=>{if(!pkPos)return;const best=[...PICKUP_POINTS].sort((a,b)=>kmBetween(pkPos,a)-kmBetween(pkPos,b))[0];choose(best.name);toast(`Point le plus proche : ${best.name}`)};
+  $("#pkCom").onchange=e=>{const c=COMMUNES.find(x=>x[0]===e.target.value);if(!c){pkPos=null;renderPicker();return}pkPos={lat:c[1],lon:c[2],label:c[0],gps:false};pkMsg("");nearest()};
+  $("#pkLoc").onclick=()=>{
+    if(!("geolocation" in navigator)){pkMsg("La localisation n’est pas disponible sur cet appareil. Choisissez votre commune.");return}
+    const b=$("#pkLoc");b.disabled=true;b.lastChild.textContent="Localisation…";
+    navigator.geolocation.getCurrentPosition(pos=>{b.disabled=false;b.lastChild.textContent="Me localiser";
+        const here={lat:pos.coords.latitude,lon:pos.coords.longitude};
+        if(kmBetween(here,{lat:-21.115,lon:55.536})>90){pkMsg("Vous semblez être hors de La Réunion. Choisissez votre commune pour voir le point le plus proche.");return}
+        pkPos={...here,label:"Vous êtes ici",gps:true};$("#pkCom").value="";pkMsg("");nearest()},
+      err=>{b.disabled=false;b.lastChild.textContent="Me localiser";pkMsg(err.code===1?"Localisation refusée. Autorisez-la dans votre navigateur, ou choisissez votre commune.":"Position introuvable pour le moment. Choisissez votre commune.")},
+      {enableHighAccuracy:false,timeout:10000,maximumAge:600000});
+  };
   ["fPrenom","fNom","fTel","fPick","fOk"].forEach(id=>{const el=$("#"+id);el.addEventListener("input",()=>{ok();keep()});el.addEventListener("change",()=>{ok();keep()})});
   ok();
   $("#f").addEventListener("submit",e=>e.preventDefault());
@@ -960,6 +1039,29 @@ function buildOrder(){
 }
 const recapOf=o=>`Demande ${o.id}\n${o.prenom} ${o.nom} · ${fmtTel(o.tel)}\nPoint de livraison : ${o.pick} (livraison ${o.shipFree?"offerte":"frais à confirmer"})\n\n${o.lines.map(l=>`• ${l.q} × ${l.name} (${eur(l.price*l.q)})`).join("\n")}\n\nTotal indicatif : ${eur(o.total)}`;
 const waLink=o=>`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Bonjour Tout'zafer, voici ma demande :\n\n"+recapOf(o))}`;
+function pkMsg(t){const m=$("#pkMsg");if(!m)return;m.textContent=t;m.hidden=!t}
+function renderPicker(){
+  const map=$("#pkMap"),list=$("#pkList");if(!map)return;
+  const sel=$("#fPick").value;
+  const pts=PICKUP_POINTS.map(p=>({...p,km:pkPos?kmBetween(pkPos,p):null}));
+  const order=pkPos?[...pts].sort((a,b)=>a.km-b.km):pts;
+  const near=pkPos?order[0].name:null;
+  const towns=[["Saint-Denis",-20.905,55.452],["Saint-Paul",-21.030,55.300],["Saint-Benoît",-21.050,55.690],["Saint-Philippe",-21.330,55.740]];
+  const me=pkPos?proj(pkPos.lat,pkPos.lon):null;
+  map.innerHTML=`<svg viewBox="0 0 630 560" role="img" aria-label="Carte de La Réunion avec les points de livraison">
+    <rect x="0" y="0" width="630" height="560" rx="18" class="pk-sea"/>
+    <path d="${COAST_D}" class="pk-land"/>
+    <circle cx="${proj(-21.098,55.478)[0]}" cy="${proj(-21.098,55.478)[1]}" r="5" class="pk-peak"/><text x="${proj(-21.098,55.478)[0]+10}" y="${proj(-21.098,55.478)[1]+4}" class="pk-town">Piton des Neiges</text>
+    ${towns.map(([n,la,lo])=>{const [x,y]=proj(la,lo);return `<text x="${x}" y="${y}" class="pk-town" text-anchor="middle">${n}</text>`}).join("")}
+    ${me?`<circle cx="${me[0]}" cy="${me[1]}" r="22" class="pk-me-halo"/><circle cx="${me[0]}" cy="${me[1]}" r="9" class="pk-me"/>`:""}
+    ${pts.map(p=>{const [x,y]=proj(p.lat,p.lon),on=p.name===sel;return `<g class="pk-pin${on?" on":""}${p.name===near?" near":""}" data-pk="${esc(p.name)}" tabindex="-1"><circle cx="${x}" cy="${y}" r="${on?15:11}"/><circle cx="${x}" cy="${y}" r="${on?5.5:4}" class="pk-dot"/></g>`}).join("")}
+    ${(()=>{const s=pts.find(p=>p.name===sel);if(!s)return"";const [x,y]=proj(s.lat,s.lon);const w=s.short.length*11+26,lx=Math.min(Math.max(x-w/2,8),630-w-8);return `<g class="pk-tag"><rect x="${lx}" y="${y-56}" width="${w}" height="34" rx="17"/><text x="${lx+w/2}" y="${y-33}" text-anchor="middle">${esc(s.short)}</text></g>`})()}
+  </svg>`;
+  list.innerHTML=order.map(p=>`<button type="button" role="radio" aria-checked="${p.name===sel}" class="pk-item${p.name===sel?" on":""}" data-pk="${esc(p.name)}">
+      <span class="pk-radio"></span><span class="pk-name">${esc(p.name)}${p.name===near?'<span class="pk-near">Le plus proche</span>':""}</span>
+      ${p.km!=null?`<span class="pk-km tabnum">≈ ${p.km<10?p.km.toFixed(1).replace(".",","):Math.round(p.km)} km</span>`:""}</button>`).join("")
+    +(pkPos?`<p class="pk-note">Distances à vol d’oiseau depuis ${pkPos.gps?"votre position":esc(pkPos.label)}.</p>`:"");
+}
 function normTel(t){const d=t.replace(/[^\d+]/g,"");if(/^0\d{9}$/.test(d))return d;if(/^\+262\d{9}$/.test(d))return "0"+d.slice(4);if(/^262\d{9}$/.test(d))return "0"+d.slice(3);return null}
 
 let lastDoneHTML="";
