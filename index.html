@@ -1016,16 +1016,7 @@ function renderDrawer(){
         <label class="fl">Nom<input id="fNom" autocomplete="family-name" value="${esc(d.nom||"")}" required></label>
       </div>
       <label class="fl">Téléphone<input id="fTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="0692 12 34 56" value="${esc(d.tel||"")}" required><span class="err" id="eTel" hidden>Indiquez un numéro à 10 chiffres (ex. 0692 12 34 56) ou au format +262.</span></label>
-      <div class="fl">Point de livraison
-        <div class="picker">
-          <div class="pk-tools"><button type="button" class="pk-loc" id="pkLoc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/></svg>Me localiser</button>
-            <label class="pk-com"><span class="sr">Ma commune</span><select id="pkCom"><option value="">ou ma commune…</option>${COMMUNES.map(([n])=>`<option${pkPos&&!pkPos.gps&&pkPos.label===n?" selected":""}>${esc(n)}</option>`).join("")}</select></label></div>
-          <div class="pk-map" id="pkMap"></div>
-          <p class="pk-msg" id="pkMsg" hidden></p>
-          <div class="pk-list" id="pkList" role="radiogroup" aria-label="Points de livraison"></div>
-        </div>
-        <select id="fPick" hidden aria-hidden="true" tabindex="-1"><option value=""></option>${PICKUPS.map(p=>`<option${d.pick===p?" selected":""}>${esc(p)}</option>`).join("")}</select>
-      </div>
+      <label class="fl">Point de livraison<select id="fPick"><option value="">Choisir un point de livraison</option>${PICKUPS.map(p=>`<option${d.pick===p?" selected":""}>${esc(p)}</option>`).join("")}</select></label>
       <div id="shipNote"></div>
       <label class="consent"><input type="checkbox" id="fOk"> <span>J'accepte que Tout’zafer utilise mes coordonnées uniquement pour traiter cette demande et me rappeler. Elles ne sont ni revendues ni utilisées pour de la publicité.</span></label>
     </form>
@@ -1044,22 +1035,7 @@ function bindForm(){
     const btn=$("#send");btn.setAttribute("aria-disabled",String(!valid));btn.classList.toggle("dis",!valid);
     btn.href=valid?waLink(buildOrder()):"#"};
   const keep=()=>store.set("draft",{prenom:$("#fPrenom").value,nom:$("#fNom").value,tel:$("#fTel").value,pick:$("#fPick").value});
-  renderPicker();
-  const choose=(name,view)=>{$("#fPick").value=name;$("#fPick").dispatchEvent(new Event("change"));renderPicker(view||{focus:name})};
-  $("#pkMap").onclick=e=>{const m=e.target.closest("[data-pk]");if(m)choose(m.dataset.pk)};
-  $("#pkList").onclick=e=>{const m=e.target.closest("[data-pk]");if(m)choose(m.dataset.pk)};
-  const nearest=()=>{if(!pkPos)return;const best=[...PICKUP_POINTS].sort((a,b)=>kmBetween(pkPos,a)-kmBetween(pkPos,b))[0];choose(best.name,{fit:true});toast(`Point le plus proche : ${best.name}`)};
-  $("#pkCom").onchange=e=>{const c=COMMUNES.find(x=>x[0]===e.target.value);if(!c){pkPos=null;renderPicker({});return}pkPos={lat:c[1],lon:c[2],label:c[0],gps:false};pkMsg("");nearest()};
-  $("#pkLoc").onclick=()=>{
-    if(!("geolocation" in navigator)){pkMsg("La localisation n’est pas disponible sur cet appareil. Choisissez votre commune.");return}
-    const b=$("#pkLoc");b.disabled=true;b.lastChild.textContent="Localisation…";
-    navigator.geolocation.getCurrentPosition(pos=>{b.disabled=false;b.lastChild.textContent="Me localiser";
-        const here={lat:pos.coords.latitude,lon:pos.coords.longitude};
-        if(kmBetween(here,{lat:-21.115,lon:55.536})>90){pkMsg("Vous semblez être hors de La Réunion. Choisissez votre commune pour voir le point le plus proche.");return}
-        pkPos={...here,label:"Vous êtes ici",gps:true};$("#pkCom").value="";pkMsg("");nearest()},
-      err=>{b.disabled=false;b.lastChild.textContent="Me localiser";pkMsg(err.code===1?"Localisation refusée. Autorisez-la dans votre navigateur, ou choisissez votre commune.":"Position introuvable pour le moment. Choisissez votre commune.")},
-      {enableHighAccuracy:false,timeout:10000,maximumAge:600000});
-  };
+
   ["fPrenom","fNom","fTel","fPick","fOk"].forEach(id=>{const el=$("#"+id);el.addEventListener("input",()=>{ok();keep()});el.addEventListener("change",()=>{ok();keep()})});
   ok();
   $("#f").addEventListener("submit",e=>e.preventDefault());
