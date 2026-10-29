@@ -360,7 +360,14 @@ mark.todo{background:var(--hl);color:inherit;border-radius:3px;padding:0 3px}
 .line .t{font-size:14px;font-weight:600;overflow-wrap:anywhere}
 .line .u{font-size:13px;color:var(--muted)}
 .line .r{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.total{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 6px;font-size:17px;font-weight:600}
+.total{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 8px;font-size:17px;font-weight:600}
+.freeship{display:flex;align-items:center;gap:8px;background:var(--s3-bg);color:var(--s3);border-radius:12px;padding:10px 12px;font-size:14px;font-weight:700}
+.freeship span{flex:1}
+.freeship b{font-variant-numeric:tabular-nums}
+.paylater{display:flex;gap:12px;align-items:flex-start;margin:22px 0 26px;padding:14px;border:1.5px dashed var(--line);border-radius:14px;background:var(--bg-alt)}
+.paylater svg{flex:none;color:var(--brand-text);margin-top:1px}
+.paylater b{display:block;font-size:15px;margin-bottom:2px}
+.paylater span{display:block;font-size:13px;color:var(--muted);line-height:1.45}
 .note{font-size:12px;color:var(--muted);margin:0 0 20px}
 .alert{background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:12px 14px;font-size:13px;margin:14px 0}
 form.f{display:flex;flex-direction:column;gap:14px}
@@ -1008,8 +1015,8 @@ function renderDrawer(){
   const d = store.get("draft",{});
   b.innerHTML = notice + lines + `
     <div class="total"><span>Total indicatif</span><span class="tabnum">${eur(total())}</span></div>
-    <div class="sumrow"><span>Livraison</span><b>Offerte</b></div>
-    <p class="note">Aucun paiement en ligne. Vous réglez à la livraison, après confirmation par téléphone.</p>
+    <div class="freeship"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span>Livraison offerte</span><b>0,00 €</b></div>
+    <div class="paylater"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18"/><path d="M16 15h2"/></svg><div><b>Rien à payer maintenant</b><span>Vous réglez uniquement à la livraison, après confirmation de votre demande par téléphone.</span></div></div>
     <form class="f" id="f" novalidate>
       <div class="row2">
         <label class="fl">Prénom<input id="fPrenom" autocomplete="given-name" value="${esc(d.prenom||"")}" required></label>
@@ -1017,7 +1024,6 @@ function renderDrawer(){
       </div>
       <label class="fl">Téléphone<input id="fTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="0692 12 34 56" value="${esc(d.tel||"")}" required><span class="err" id="eTel" hidden>Indiquez un numéro à 10 chiffres (ex. 0692 12 34 56) ou au format +262.</span></label>
       <label class="fl">Point de livraison<select id="fPick"><option value="">Choisir un point de livraison</option>${PICKUPS.map(p=>`<option${d.pick===p?" selected":""}>${esc(p)}</option>`).join("")}</select></label>
-      <div id="shipNote"></div>
       <label class="consent"><input type="checkbox" id="fOk"> <span>J'accepte que Tout’zafer utilise mes coordonnées uniquement pour traiter cette demande et me rappeler. Elles ne sont ni revendues ni utilisées pour de la publicité.</span></label>
     </form>
     <div class="sendbar"><a class="cta wa" id="send" href="#" target="_blank" rel="noopener" aria-disabled="true"><img src="img/ico/whatsapp.png" alt="" width="22" height="22">Envoyer ma demande sur WhatsApp</a>
@@ -1029,8 +1035,6 @@ function bindForm(){
   const T='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>';
   const ok=()=>{
     const free=shipIsFree(),miss=FREE_SHIP_MIN-total();
-    $("#shipNote").innerHTML=free?`<div class="shipnote">${T}Livraison offerte</div>`
-      :`<div class="shipnote warn">${T}Plus que ${eur(miss)} pour la livraison offerte. Sinon, les frais vous seront indiqués lors de l'appel.</div>`;
     const valid=!!($("#fPrenom").value.trim()&&$("#fNom").value.trim()&&normTel($("#fTel").value)&&$("#fPick").value&&$("#fOk").checked);
     const btn=$("#send");btn.setAttribute("aria-disabled",String(!valid));btn.classList.toggle("dis",!valid);
     btn.href=valid?waLink(buildOrder()):"#"};
