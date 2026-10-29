@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tout'zafer : les articles du quotidien à petit prix à La Réunion. Livraison offerte en point de retrait, paiement au retrait.">
+<title>Tout'zafer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@700;800&display=swap">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
+<style>
+/* Layout : colonne centrée de 1080px, grille produits 4→2 colonnes, fiche produit en modale, panier en tiroir latéral */
+:root{
+  --bg:#ffffff; --bg-alt:#f5f5f7; --fg:#1d1d1f; --muted:#6e6e73; --line:#d2d2d7;
+  --brand:#0020fe; --brand-fg:#ffffff; --brand-soft:#e8ebff; --brand-text:#0020fe;
+  --warn:#b25000; --warn-soft:#fff1e3; --ok:#1f8a3e; --pop:#ffe600; --pop-fg:#141414; --wa:#128c4a; --fb:#1b5fd9; --hl:rgba(255,226,0,.5);
+  --tile:#f5f5f7; --hero-bg:#0a1240; --overlay:rgba(0,0,0,.36); --glass:rgba(255,255,255,.8); --knob:#ffffff;
+  --font:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --font-display:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --r:18px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#000000; --bg-alt:#111113; --fg:#f5f5f7; --muted:#a1a1a6; --line:#38383d;
+  --brand:#2a46ff; --brand-fg:#ffffff; --brand-soft:#0f1640; --brand-text:#8c9cff;
+  --warn:#ff9f4a; --warn-soft:#2e1d0c; --ok:#4cd07d;
+  --tile:#1c1c1e; --overlay:rgba(0,0,0,.6); --glass:rgba(22,22,23,.82); --knob:#f5f5f7; --hl:rgba(255,226,0,.3); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000000; --bg-alt:#111113; --fg:#f5f5f7; --muted:#a1a1a6; --line:#38383d;
+  --brand:#2a46ff; --brand-fg:#ffffff; --brand-soft:#0f1640; --brand-text:#8c9cff;
+  --warn:#ff9f4a; --warn-soft:#2e1d0c; --ok:#4cd07d;
+  --tile:#1c1c1e; --overlay:rgba(0,0,0,.6); --glass:rgba(22,22,23,.82); --knob:#f5f5f7; --hl:rgba(255,226,0,.3); color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.47;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--brand)}
+.wrap{max-width:1080px;margin:0 auto}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.tabnum{font-variant-numeric:tabular-nums}
+img{display:block}
+
+/* En-tête */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--brand);color:var(--brand-fg);
+  margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:0 max(16px,env(safe-area-inset-left,0px))}
+.top .wrap{display:flex;align-items:center;gap:16px;height:52px}
+.logo{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:-.035em;background:none;border:0;padding:0;color:var(--brand-fg)}
+.top .sp{flex:1}
+.top .link{background:none;border:0;color:var(--brand-fg);opacity:.8;font-size:13px;padding:6px 4px}
+.top .link:hover{opacity:1}
+.cartbtn{display:flex;align-items:center;gap:8px;background:var(--brand-fg);color:var(--brand);border:0;border-radius:980px;padding:7px 14px;font-size:13px;font-weight:600}
+header.top :focus-visible{outline-color:var(--brand-fg)}
+.cartbtn .n{background:var(--brand);color:var(--brand-fg);border-radius:980px;min-width:20px;height:20px;display:inline-grid;place-items:center;font-size:12px;padding:0 6px}
+
+/* Hero */
+/* Hero photo plein cadre, texte en surimpression */
+.hero{position:relative;overflow:hidden;color:#fff;background:var(--hero-bg);margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));min-height:clamp(480px,66vh,640px);display:flex;align-items:center}
+.slides{position:absolute;inset:0}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease}
+.slide.on{opacity:1}
+.slide img{width:100%;height:100%;object-fit:cover;transform:scale(1.07);transition:transform 7s linear}
+.slide.on img{transform:scale(1)}
+.shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,8,45,.78) 0%,rgba(0,8,45,.5) 42%,rgba(0,8,45,.08) 72%,rgba(0,8,45,0) 100%)}
+.hero .in{position:relative;z-index:1;width:100%;max-width:1080px;margin:0 auto;padding:56px max(16px,env(safe-area-inset-right,0px)) 96px max(16px,env(safe-area-inset-left,0px))}
+@media (min-width:1112px){.hero .in{padding-left:0;padding-right:0}}
+.copy{max-width:560px}
+.ship{display:inline-flex;align-items:center;gap:8px;background:var(--pop);color:var(--pop-fg);font-weight:800;font-size:14px;border-radius:980px;padding:7px 14px 7px 12px;margin-bottom:18px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.hero h1{font-family:var(--font-display);font-size:clamp(56px,10vw,104px);line-height:.98;font-weight:800;letter-spacing:-.04em;margin:0;text-wrap:balance;text-shadow:0 2px 24px rgba(0,0,0,.25)}
+.lead{font-family:var(--font-display);font-size:clamp(22px,3.2vw,34px);line-height:1.15;font-weight:700;letter-spacing:-.02em;margin:12px 0 0;max-width:20ch;text-wrap:balance;text-shadow:0 2px 18px rgba(0,0,0,.25)}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.btn-o{border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.08);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;border-radius:980px;padding:12px 20px;font-weight:600;font-size:15px}
+.btn-o:hover{background:rgba(255,255,255,.18)}
+.hero :focus-visible{outline-color:#fff}
+.trust{list-style:none;padding:0;margin:22px 0 0;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px;font-weight:600}
+.trust li{display:flex;align-items:center;gap:6px}
+.trust svg{color:var(--pop)}
+.hero-foot{position:absolute;z-index:2;left:0;right:0;bottom:22px;max-width:1080px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+@media (min-width:1112px){.hero-foot{padding:0}}
+.dots{display:flex;gap:6px}
+.dots button{width:8px;height:8px;border-radius:980px;border:0;padding:0;background:rgba(255,255,255,.5);transition:width .3s,background .3s}
+.dots button[aria-current="true"]{width:24px;background:#fff}
+.sticker{border:0;background:var(--pop);color:var(--pop-fg);border-radius:14px;padding:8px 12px 9px;line-height:1;text-align:left;box-shadow:0 8px 20px rgba(0,0,0,.3);display:flex;align-items:center;gap:12px;transition:transform .2s}
+.sticker:hover{transform:translateY(-2px)}
+.sticker small{display:block;font-size:11px;font-weight:600;margin-bottom:4px;max-width:20ch;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sticker .go{font-size:12px;font-weight:700;border-left:1px solid rgba(0,0,0,.2);padding-left:12px;align-self:stretch;display:flex;align-items:center}
+@media (max-width:720px){
+  .hero{align-items:flex-end;min-height:600px}
+  .shade{background:linear-gradient(0deg,rgba(0,8,45,.9) 0%,rgba(0,8,45,.7) 45%,rgba(0,8,45,.15) 80%,rgba(0,8,45,.05) 100%)}
+  .hero .in{padding-top:40px;padding-bottom:92px}
+  .sticker .go{display:none}
+}
+@media (prefers-reduced-motion:reduce){.slide img{transform:none!important}}
+
+/* Comment ça marche */
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding-block:44px 36px}
+@media (max-width:720px){.how{grid-template-columns:1fr;gap:18px;padding-block:32px 24px}}
+.how>div{display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:start}
+.how .num{grid-row:span 2;width:36px;height:36px;border-radius:50%;background:var(--brand-soft);color:var(--brand-text);display:grid;place-items:center;font-weight:800}
+.how h3{margin:4px 0 2px;font-size:16px;font-weight:700}
+.how p{margin:0;color:var(--muted);font-size:14px}
+
+/* Prix façon étiquette */
+.pr{display:inline-flex;align-items:flex-start;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;padding:2px 6px 3px 4px;margin-left:-4px;border-radius:4px;background:linear-gradient(transparent 38%,var(--hl) 38%)}
+.sticker .pr{background:none;padding:0;margin:0}
+.pr b{font-weight:800;font-size:1.45em}
+.pr span{font-weight:700;font-size:.8em;margin-left:1px;margin-top:.12em}
+
+/* Pastilles produits */
+.tags{position:absolute;top:10px;left:10px;display:flex;flex-wrap:wrap;gap:6px;z-index:1}
+.tag{font-size:11px;font-weight:700;border-radius:980px;padding:4px 9px;background:var(--pop);color:var(--pop-fg)}
+.tag.deal{background:var(--brand);color:var(--brand-fg)}
+
+/* Mode de réception */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg-alt);border-radius:14px;padding:4px}
+.seg label{display:flex;flex-direction:column;align-items:center;gap:2px;border-radius:11px;padding:10px 6px;cursor:pointer;text-align:center;font-size:14px;font-weight:600}
+.seg label small{font-size:11px;font-weight:500;color:var(--muted)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--bg);box-shadow:0 1px 4px rgba(0,0,0,.1);color:var(--brand-text)}
+.seg label:has(input:focus-visible){outline:2px solid var(--brand)}
+.shipnote{display:flex;align-items:center;gap:8px;font-size:13px;border-radius:12px;padding:10px 12px;background:var(--brand-soft);color:var(--brand-text);font-weight:600}
+.shipnote.warn{background:var(--warn-soft);color:var(--warn)}
+.sumrow{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);padding-top:6px}
+.sumrow b{color:var(--ok);font-weight:700}
+.shipline{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--brand-text)}
+
+.blk{display:flex;flex-direction:column;gap:14px}
+.shipnote svg,.ship svg,.shipline svg{flex:none;width:18px;height:18px}
+
+.media{position:relative}
+.qadd{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;border:0;background:var(--brand);color:var(--brand-fg);display:grid;place-items:center;box-shadow:0 6px 16px -4px rgba(0,20,120,.55);transition:transform .15s}
+.qadd:hover{transform:scale(1.08)}
+.qadd:active{transform:scale(.94)}
+.qpill{position:absolute;right:10px;bottom:10px;display:flex;align-items:center;background:var(--brand);color:var(--brand-fg);border-radius:980px;box-shadow:0 6px 16px -4px rgba(0,20,120,.55);height:40px}
+.qpill button{background:none;border:0;color:inherit;width:36px;height:40px;font-size:19px;line-height:1}
+.qpill span{min-width:16px;text-align:center;font-weight:800;font-size:15px}
+.card .meta{padding-bottom:6px}
+
+.ghead{grid-column:1/-1;display:flex;align-items:baseline;gap:10px;margin:18px 0 -8px;font-family:var(--font-display);font-size:clamp(22px,3vw,28px);font-weight:800;letter-spacing:-.025em}
+.ghead:first-child{margin-top:0}
+.ghead span{font-size:14px;font-weight:600;color:var(--muted);letter-spacing:0}
+
+/* Contact */
+.contact{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;background:var(--brand-soft);border-radius:24px;padding:28px;margin-bottom:56px}
+.contact h2{margin:0;font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-.02em}
+.contact p{margin:4px 0 0;color:var(--muted)}
+.contact-r{display:flex;align-items:center;flex-wrap:wrap;gap:14px}
+.tel{font-weight:700;font-size:17px;user-select:all}
+.btn-b{background:var(--brand);color:var(--brand-fg);border-radius:980px;padding:12px 20px;font-weight:700;text-decoration:none}
+
+/* Barre panier flottante */
+.cartbar{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 32px));display:flex;align-items:center;gap:14px;border:0;border-radius:18px;background:var(--fg);color:var(--bg);padding:12px 14px 12px 18px;box-shadow:0 12px 32px -8px rgba(0,0,0,.4);text-align:left}
+.cartbar .cb-n{font-size:13px;opacity:.7}
+.cartbar .cb-t{font-weight:800;font-size:17px;flex:1}
+.cartbar .cb-go{display:flex;align-items:center;gap:6px;background:var(--brand);color:var(--brand-fg);border-radius:12px;padding:9px 14px;font-weight:700;font-size:14px}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+.bump{animation:bump .35s ease}
+@keyframes rise{from{transform:translate(-50%,24px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+.cartbar.show{animation:rise .3s ease}
+
+/* Recherche + filtre (collés sous l'en-tête) */
+.toolbar{position:sticky;top:calc(env(safe-area-inset-top,0px) + 52px);z-index:15;background:var(--bg);display:flex;gap:10px;padding-block:12px;
+  margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line)}
+@media (min-width:1112px){.toolbar{margin:0;padding-left:0;padding-right:0}}
+.search{position:relative;flex:1;min-width:0}
+.search input{width:100%;border:1px solid var(--line);background:var(--bg-alt);color:var(--fg);border-radius:12px;padding:11px 14px 11px 38px;font:inherit}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.selectwrap{position:relative;flex:none;width:clamp(150px,30%,240px)}
+.selectwrap select{appearance:none;-webkit-appearance:none;width:100%;border:1px solid var(--line);background:var(--bg-alt);color:var(--fg);border-radius:12px;padding:11px 34px 11px 14px;font:inherit;font-weight:500;cursor:pointer}
+.selectwrap svg{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+@media (max-width:480px){.selectwrap{width:36%}.search input{padding-left:34px}.search svg{left:11px}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.resultline{color:var(--muted);font-size:13px;margin:18px 0 18px}
+/* Grille */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 20px;padding-bottom:56px}
+@media (max-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 14px}}
+.card{display:flex;flex-direction:column;gap:10px;min-width:0}
+.thumb{aspect-ratio:1;max-width:100%;width:100%;border-radius:var(--r);background:var(--tile);position:relative;overflow:hidden;border:0;padding:0}
+.thumb img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease,opacity .35s ease}
+.thumb img.alt{position:absolute;inset:0;opacity:0}
+@media (hover:hover){.card:hover .thumb img{transform:scale(1.04)}.card:hover .thumb img.alt{opacity:1}}
+.card.out .thumb img{filter:grayscale(1);opacity:.55}
+.badge{position:absolute;top:10px;left:10px;z-index:1;font-size:11px;font-weight:600;letter-spacing:.02em;border-radius:980px;padding:3px 9px;background:var(--warn-soft);color:var(--warn)}
+.meta{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cat{font-size:12px;color:var(--muted)}
+.name{font-size:15px;font-weight:600;line-height:1.3;overflow-wrap:anywhere;background:none;border:0;padding:0;text-align:left}
+.detail{font-size:13px;color:var(--muted)}
+.price{font-size:15px;color:var(--fg);margin-top:2px}
+.card.out .name,.card.out .price{color:var(--muted)}
+.add{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;border:0;border-radius:980px;background:var(--brand);color:var(--brand-fg);padding:7px 15px 7px 12px;font-size:13px;font-weight:600}
+.add svg,.cta svg{flex:none}
+.cta{display:flex;align-items:center;justify-content:center;gap:8px}
+.add:disabled{background:var(--bg-alt);color:var(--muted);cursor:not-allowed}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:980px;overflow:hidden;align-self:flex-start}
+.step button{background:none;border:0;width:32px;height:30px;font-size:17px;line-height:1}
+.step span{min-width:24px;text-align:center;font-size:14px;font-weight:600}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:48px 0}
+
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px;padding-block:36px 48px;background:var(--bg-alt);margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+footer .wrap{display:grid;grid-template-columns:2fr 1fr;gap:28px}
+@media (max-width:720px){footer .wrap{grid-template-columns:1fr;gap:24px}}
+.fcol{display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:0}
+.flogo{font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-.035em;color:var(--fg)}
+.fh{font-weight:700;color:var(--fg);font-size:13px;margin-bottom:4px}
+footer button{background:none;border:0;color:var(--muted);font-size:13px;padding:0;text-align:left}
+footer button:hover{color:var(--fg);text-decoration:underline}
+.socials{display:flex;flex-wrap:wrap;gap:8px}
+.soc{display:inline-flex;align-items:center;gap:10px;border-radius:980px;padding:8px 18px 8px 8px;font-weight:700;font-size:14px;text-decoration:none;color:var(--fg);background:var(--bg);border:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.06);transition:transform .15s,box-shadow .15s}
+.soc img{flex:none;width:24px;height:24px}
+.soc:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+
+/* Mentions légales */
+.legal{max-width:760px;padding-block:32px 72px}
+.legal .back{background:none;border:0;padding:0;color:var(--brand-text);font-weight:600;font-size:14px}
+.legal h1{font-family:var(--font-display);font-weight:800;font-size:clamp(30px,5vw,44px);letter-spacing:-.03em;margin:16px 0 4px}
+.legal .upd{color:var(--muted);font-size:13px;margin:0 0 16px}
+.legal h2{font-family:var(--font-display);font-size:19px;font-weight:700;margin:36px 0 12px;padding-top:20px;border-top:1px solid var(--line)}
+.legal p{line-height:1.6;margin:0 0 10px;max-width:68ch}
+.legal dl{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:10px 20px;margin:0}
+.legal dt{color:var(--muted);font-size:14px}
+.legal dd{margin:0;line-height:1.5;overflow-wrap:anywhere}
+@media (max-width:560px){.legal dl{grid-template-columns:1fr;gap:2px}.legal dd{margin-bottom:12px}}
+mark.todo{background:var(--hl);color:inherit;border-radius:3px;padding:0 3px}
+.todo-note{font-size:13px;color:var(--muted)}
+.hint{color:var(--muted);font-size:13px}
+
+/* Fiche produit */
+.scrim{position:fixed;inset:0;background:var(--overlay);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;top:50%;width:min(880px,calc(100% - 32px));max-height:calc(100% - 48px);overflow:auto;background:var(--bg);border-radius:24px;z-index:45;
+  transform:translate(-50%,-46%) scale(.98);opacity:0;pointer-events:none;transition:.28s cubic-bezier(.2,.8,.2,1);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+.sheet.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+@media (max-width:700px){.sheet{grid-template-columns:1fr;left:0;right:0;top:auto;bottom:0;width:100%;max-height:92%;border-radius:24px 24px 0 0;transform:translateY(100%);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .sheet.on{transform:none}}
+.gal{background:var(--tile);display:flex;flex-direction:column;min-width:0;position:relative}
+.track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;aspect-ratio:1;width:100%;max-width:100%;max-height:min(70vh,560px)}
+.track::-webkit-scrollbar{display:none}
+.track img{flex:0 0 100%;width:100%;height:100%;object-fit:contain;scroll-snap-align:center;background:var(--tile)}
+.stage{position:relative}
+.nav{position:absolute;top:50%;margin-top:-18px;width:36px;height:36px;border-radius:50%;border:0;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:20px;line-height:1;display:grid;place-items:center;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.nav.prev{left:12px}.nav.next{right:12px}
+.nav:disabled{opacity:0;pointer-events:none}
+.counter{position:absolute;top:14px;left:14px;font-size:12px;font-weight:600;background:var(--glass);border-radius:980px;padding:3px 10px}
+.gal .thumbs{display:flex;gap:8px;padding:12px;justify-content:center}
+.gal .thumbs button{border:2px solid transparent;border-radius:12px;padding:0;overflow:hidden;width:64px;height:64px;background:var(--bg)}
+.gal .thumbs button[aria-current="true"]{border-color:var(--brand)}
+.gal .thumbs img{width:100%;height:100%;object-fit:cover}
+.info{padding:32px 28px;display:flex;flex-direction:column;gap:12px;min-width:0;position:relative}
+.info h2{font-family:var(--font-display);font-weight:700;font-size:28px;line-height:1.12;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.info .big{font-size:24px}
+.info .desc{margin:4px 0 0;font-size:15px;line-height:1.55}
+.info ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:4px}
+.info .fine{margin:0 0 8px;font-size:12px;color:var(--muted)}
+.sheetx{position:absolute;top:14px;right:14px;z-index:3;width:34px;height:34px;border-radius:50%;border:0;background:var(--glass);color:var(--fg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 1px 4px rgba(0,0,0,.18);display:grid;place-items:center}
+.sheetx:hover{background:var(--bg)}
+.info .cta{margin-top:auto}
+
+/* Tiroir panier */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--bg);z-index:41;transform:translateX(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1);
+  display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px);border-left:1px solid var(--line)}
+.drawer.on{transform:none}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line)}
+.dh h2{font-family:var(--font-display);font-size:21px;font-weight:700;letter-spacing:-.01em;margin:0}
+.x{background:var(--bg-alt);border:0;border-radius:50%;width:30px;height:30px;font-size:15px;color:var(--muted);flex:none}
+.db{flex:1;overflow-y:auto;padding:8px 22px 24px}
+.line{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.mini{width:56px;height:56px;border-radius:12px;object-fit:cover;background:var(--tile)}
+.line .t{font-size:14px;font-weight:600;overflow-wrap:anywhere}
+.line .u{font-size:13px;color:var(--muted)}
+.line .r{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.total{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 6px;font-size:17px;font-weight:600}
+.note{font-size:12px;color:var(--muted);margin:0 0 20px}
+.alert{background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:12px 14px;font-size:13px;margin:14px 0}
+form.f{display:flex;flex-direction:column;gap:14px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:400px){.row2{grid-template-columns:1fr}}
+label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500}
+.fl input,.fl select{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:11px 12px;font:inherit;font-weight:400;width:100%}
+.fl .err{color:var(--warn);font-size:12px;font-weight:400}
+.consent{display:flex;gap:10px;font-size:12px;color:var(--muted);align-items:flex-start}
+.consent input{margin-top:2px;accent-color:var(--brand)}
+.cta{border:0;border-radius:14px;background:var(--brand);color:var(--brand-fg);padding:15px;font-size:16px;font-weight:600;text-align:center;text-decoration:none}
+.cta:disabled{opacity:.4;cursor:not-allowed}
+.ghost{border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:13px;font-size:15px;font-weight:500}
+.done{text-align:center;padding:28px 0 8px}
+.done .ck{width:56px;height:56px;border-radius:50%;background:var(--brand-soft);color:var(--brand-text);display:grid;place-items:center;margin:0 auto 16px}
+.done h3{font-family:var(--font-display);font-weight:700;font-size:24px;margin:0 0 8px;letter-spacing:-.01em}
+.done p{color:var(--muted);margin:0 auto;max-width:32ch}
+.recap{background:var(--bg-alt);border-radius:14px;padding:14px 16px;font-size:13px;white-space:pre-wrap;text-align:left;margin:20px 0 14px;overflow-wrap:anywhere}
+.stack{display:flex;flex-direction:column;gap:10px}
+.mutedline{font-size:12px;color:var(--muted);text-align:center}
+
+/* Admin */
+.admin{padding-block:40px 64px}
+.admin h1{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,4vw,40px);letter-spacing:-.02em;margin:0}
+.admin .sub{color:var(--muted);margin:6px 0 0}
+.demo{display:inline-block;margin-top:14px;font-size:12px;background:var(--warn-soft);color:var(--warn);border-radius:980px;padding:4px 12px}
+.tabs{display:flex;gap:4px;background:var(--bg-alt);border-radius:12px;padding:4px;margin:28px 0 20px;width:max-content;max-width:100%}
+.tabs button{border:0;background:none;border-radius:9px;padding:7px 16px;font-size:14px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--bg);color:var(--fg);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.list{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.item{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .mini{width:48px;height:48px;border-radius:10px}
+.item .t{font-weight:600;font-size:14px;overflow-wrap:anywhere}
+.item .u{font-size:12px;color:var(--muted)}
+.sw{display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer}
+.sw input{appearance:none;-webkit-appearance:none;width:44px;height:26px;border-radius:980px;background:var(--line);position:relative;cursor:pointer;transition:background .2s;margin:0;flex:none}
+.sw input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--knob);box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.sw input:checked{background:var(--ok)}
+.sw input:checked::after{transform:translateX(18px)}
+.sw .lbl{min-width:70px;text-align:right}
+.sw .lbl.in{color:var(--ok)} .sw .lbl.outl{color:var(--warn)}
+@media (max-width:480px){.sw .lbl{display:none}}
+.order{padding:16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.order:last-child{border-bottom:0}
+.order .h{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.order .who{font-weight:600}
+.order .when{font-size:12px;color:var(--muted)}
+.order ul{margin:4px 0 0;padding-left:18px;font-size:14px}
+.pill{font-size:11px;font-weight:600;border-radius:980px;padding:3px 9px;background:var(--brand-soft);color:var(--brand-text)}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--fg);color:var(--bg);border-radius:980px;padding:10px 18px;font-size:14px;opacity:0;transition:.25s;z-index:60;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <button class="logo" id="goHome" aria-label="Tout'zafer, accueil">Tout’zafer.</button>
+    <div class="sp"></div>
+    <button class="link" id="goAdmin">Espace vendeur</button>
+    <button class="cartbtn" id="openCart" aria-label="Ouvrir le panier">Panier <span class="n tabnum" id="cartCount">0</span></button>
+  </div>
+</header>
+
+<main id="shop">
+  <section class="hero" id="hero">
+    <div class="slides" id="slides" aria-hidden="true"></div>
+    <div class="shade"></div>
+    <div class="in">
+      <div class="copy">
+        <span class="ship"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>Livraison offerte</span>
+        <h1>Tout’zafer.</h1>
+        <p class="lead">Les articles du quotidien à petit prix.</p>
+        <ul class="trust">
+          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>Paiement au retrait</li>
+          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>Sans engagement</li>
+          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>Contact rapide</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hero-foot"><div class="dots" id="dots"></div><button class="sticker" id="heroSticker"></button></div>
+  </section>
+  <div class="wrap">
+    <section class="how" id="how" aria-label="Comment ça marche">
+      <div><span class="num">1</span><h3>Composez votre panier</h3><p>Parcourez le catalogue et ajoutez les articles qui vous plaisent.</p></div>
+      <div><span class="num">2</span><h3>Choisissez un point de retrait</h3><p>Votre commande y est livrée gratuitement, au plus près de chez vous.</p></div>
+      <div><span class="num">3</span><h3>On vous appelle</h3><p>Tout'zafer confirme la disponibilité et le créneau. Vous payez au retrait.</p></div>
+    </section>
+    <section class="toolbar" aria-label="Recherche et filtre">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Rechercher un article" aria-label="Rechercher par mot-clé">
+      </div>
+      <label class="selectwrap"><span class="sr">Catégorie</span>
+        <select id="catSel" aria-label="Filtrer par catégorie"></select>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+      </label>
+    </section>
+    <p class="resultline tabnum" id="resultLine"></p>
+    <section class="grid" id="grid" aria-live="polite"></section>
+    <section class="contact">
+      <div><h2>Une question sur un article ?</h2><p>Écrivez-nous sur WhatsApp au <span class="tel tabnum" id="waText"></span>, on vous répond rapidement.</p></div>
+      <div class="contact-r"><a class="soc soc-wa" id="waLink" target="_blank" rel="noopener"><img src="img/ico/whatsapp.png" alt="" width="24" height="24">WhatsApp</a><a class="soc soc-fb" href="https://www.facebook.com/p/Toutzafer-61572552450737/" target="_blank" rel="noopener"><img src="img/ico/facebook.png" alt="" width="24" height="24">Facebook</a></div>
+    </section>
+  </div>
+</main>
+
+<main id="admin" hidden>
+  <div class="wrap admin">
+    <h1>Espace vendeur</h1>
+    <p class="sub">Gérez la disponibilité des articles et consultez les demandes reçues.</p>
+    <span class="demo">Maquette : les changements restent dans ce navigateur</span>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tabStock" aria-selected="true">Disponibilité</button>
+      <button role="tab" id="tabOrders" aria-selected="false">Demandes <span id="ordCount" class="tabnum"></span></button>
+    </div>
+    <div class="list" id="stockList"></div>
+    <div class="list" id="orderList" hidden></div>
+  </div>
+</main>
+
+<main id="legalView" hidden>
+  <article class="wrap legal">
+    <p class="crumb"><button class="back" data-home>← Retour à la boutique</button></p>
+    <h1>Mentions légales</h1>
+    <p class="upd">Dernière mise à jour : 29 octobre 2026</p>
+    <p class="todo-note">Les éléments <mark class="todo">surlignés</mark> sont à compléter ou à confirmer avant la mise en ligne.</p>
+
+    <h2>Éditeur du site</h2>
+    <dl>
+      <dt>Exploitant</dt><dd>Aiman CASSAM, entrepreneur individuel (EI)</dd>
+      <dt>Nom commercial</dt><dd>Tout’zafer</dd>
+      <dt>SIREN</dt><dd class="tabnum">938 090 263</dd>
+      <dt>SIRET</dt><dd class="tabnum">938 090 263 <mark class="todo">_ _ _ _ _</mark></dd>
+      <dt>Immatriculation</dt><dd>Registre national des entreprises (RNE) <mark class="todo">+ RCS de Saint-Pierre ou Saint-Denis si l’activité est commerciale</mark></dd>
+      <dt>Adresse</dt><dd><mark class="todo">Adresse de l’établissement, 974xx Commune, La Réunion</mark></dd>
+      <dt>Téléphone</dt><dd class="tabnum" id="legalTel"></dd>
+      <dt>E-mail</dt><dd><mark class="todo">contact@…</mark></dd>
+      <dt>TVA</dt><dd><mark class="todo">TVA non applicable, article 293 B du CGI</mark> <span class="hint">(si l’entreprise relève de la franchise en base ; sinon indiquer le n° de TVA intracommunautaire)</span></dd>
+      <dt>Directeur de la publication</dt><dd>Aiman CASSAM</dd>
+    </dl>
+
+    <h2>Hébergement</h2>
+    <p><mark class="todo">Nom de l’hébergeur, adresse postale et numéro de téléphone</mark></p>
+
+    <h2>Activité</h2>
+    <p>Tout’zafer présente un catalogue d’articles du quotidien (maison, rangement, cuisine, puériculture, animaux). Le site permet d’envoyer une demande de réservation sans engagement et sans paiement en ligne. La vente est conclue lors de la confirmation par téléphone, et le paiement intervient au retrait. Les prix sont indiqués en euros, toutes taxes comprises. La livraison au point de retrait est offerte.</p>
+
+    <h2>Propriété intellectuelle</h2>
+    <p>Le nom Tout’zafer, le logo et les textes du site appartiennent à leur titulaire. Toute reproduction sans autorisation est interdite. Les photographies des produits sont utilisées <mark class="todo">avec l’autorisation de leurs auteurs ou des fournisseurs</mark>.</p>
+
+    <h2>Données personnelles</h2>
+    <dl>
+      <dt>Responsable du traitement</dt><dd>Aiman CASSAM (Tout’zafer), aux coordonnées ci-dessus.</dd>
+      <dt>Données collectées</dt><dd>Nom, prénom, numéro de téléphone, point de retrait choisi et contenu de la demande.</dd>
+      <dt>Finalités</dt><dd>Traiter votre demande de réservation, vous rappeler pour la confirmer et organiser le retrait.</dd>
+      <dt>Base légale</dt><dd>Mesures précontractuelles prises à votre demande (article 6.1.b du RGPD). En cas de vente, respect des obligations comptables (article 6.1.c).</dd>
+      <dt>Durée de conservation</dt><dd><mark class="todo">3 mois</mark> après la demande si elle n’aboutit pas. En cas de vente, les pièces comptables sont conservées 10 ans (article L.123-22 du Code de commerce).</dd>
+      <dt>Destinataires</dt><dd>Uniquement Tout’zafer et son hébergeur. Vos données ne sont ni vendues ni utilisées pour de la publicité sans votre accord.</dd>
+      <dt>Vos droits</dt><dd>Vous pouvez demander l’accès, la rectification, l’effacement ou la limitation de vos données, et vous opposer à leur traitement, en écrivant aux coordonnées ci-dessus. En cas de difficulté, vous pouvez saisir la CNIL (cnil.fr).</dd>
+      <dt>WhatsApp et Facebook</dt><dd>Si vous nous écrivez via WhatsApp ou Facebook, vos échanges sont aussi soumis aux conditions de ces services, édités par Meta.</dd>
+    </dl>
+
+    <h2>Cookies</h2>
+    <p>Le site n’utilise ni cookie publicitaire ni outil de mesure d’audience. Votre panier et le brouillon de votre demande sont mémorisés dans votre navigateur, uniquement pour le fonctionnement du site. Ce stockage est strictement nécessaire et ne demande donc pas de consentement.</p>
+
+    <h2>Médiation de la consommation</h2>
+    <p>En cas de litige, vous pouvez recourir gratuitement à un médiateur de la consommation (articles L.612-1 et suivants du Code de la consommation) : <mark class="todo">nom, site internet et adresse du médiateur désigné</mark>.</p>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fcol"><span class="flogo">Tout’zafer.</span><span>Les articles du quotidien à petit prix</span><span>La Réunion · Livraison offerte · Paiement au retrait</span></div>
+    <div class="fcol"><span class="fh">Informations</span><button id="legal">Mentions légales</button><button id="cgv">Conditions de réservation</button></div>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle" aria-hidden="true"></section>
+<aside class="drawer" id="drawer" aria-label="Panier" aria-hidden="true">
+  <div class="dh"><h2 id="dTitle">Votre panier</h2><button class="x" id="closeCart" aria-label="Fermer">✕</button></div>
+  <div class="db" id="dBody"></div>
+</aside>
+<button class="cartbar" id="cartBar" hidden><span class="cb-n tabnum" id="cbN"></span><span class="cb-t tabnum" id="cbT"></span><span class="cb-go">Voir le panier<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const WA_NUMBER = "262692000000"; // numéro WhatsApp de l'entreprise (à remplacer)
+const FREE_SHIP_MIN = 0; // livraison offerte en point de retrait, sans minimum
+function shipIsFree(){return total()>=FREE_SHIP_MIN}
+const PICKUPS = ["Saint-Pierre — Centre-ville","Saint-Pierre — Ravine Blanche","Le Tampon — 14e km","Saint-Louis — Centre","Saint-Joseph — Centre"]; // exemples, liste à définir
+
+const CATS = [["all","Tout"],["cuisine","Cuisine"],["rangement","Rangement"],["maison","Maison"],["enfants","Bébé & enfants"],["animaux","Animaux"]];
+const CATNAME = Object.fromEntries(CATS);
+
+// Catalogue issu du PDF fourni (29 articles), descriptions rédigées à partir des photos
+const PRODUCTS = [
+  {n:5,cat:"cuisine",name:"Support micro-ondes",price:29.99,d:"Avec porte-ustensiles · 64 × 36 × 46 cm",
+   desc:"Surélevez votre micro-ondes et gagnez un vrai plan de rangement en dessous pour vos épices, bocaux et huiles. Le porte-ustensiles fixé sur le côté garde couverts et spatules à portée de main.",
+   specs:["Dimensions : 64 × 36 × 46 cm (L × P × H)","Structure en métal noir","Porte-ustensiles amovible sur le côté","Accueille un micro-ondes standard sur le dessus"]},
+  {n:6,cat:"cuisine",name:"Lot de 6 verres",price:24.99,d:"Verres ondulés · 530 ml",
+   desc:"Des verres en verre transparent au design ondulé, avec un bord festonné. Parfaits pour les cafés glacés, matchas latte, jus de fruits ou cocktails : ils mettent en valeur toutes les boissons.",
+   specs:["Lot de 6 verres","Contenance : 530 ml","Verre transparent, forme ondulée","Pour boissons chaudes ou froides"]},
+  {n:7,cat:"cuisine",name:"Carafe 1,8 L",price:12.99,d:"Verre avec couvercle inox · 1800 ml",
+   desc:"Une grande carafe en verre transparent avec couvercle en inox et poignée. Idéale pour servir l'eau citronnée, les jus maison ou le thé glacé à table et la garder au frais au réfrigérateur.",
+   specs:["Contenance : 1800 ml","Verre transparent","Couvercle inox avec bec verseur","Poignée intégrée"]},
+  {n:10,cat:"cuisine",name:"7 boîtes pour frigo",price:29.99,d:"Boîtes transparentes empilables",
+   desc:"Organisez votre réfrigérateur avec ces 7 boîtes transparentes de plusieurs tailles. Elles s'empilent, laissent voir le contenu d'un coup d'œil et gardent fruits, légumes et petits produits bien rangés.",
+   specs:["Lot de 7 boîtes de différentes tailles","Plastique transparent","Avec couvercles, empilables","Pour fruits, légumes, fromages, snacks…"]},
+  {n:11,cat:"cuisine",name:"Lot de 5 boîtes en verre",price:29.99,d:"Couvercles hermétiques · 1040 ml",
+   desc:"Des boîtes de conservation en verre avec couvercles à 4 clips hermétiques. Pratiques pour préparer vos repas à l'avance, emporter votre déjeuner ou conserver les restes au frais.",
+   specs:["Lot de 5 boîtes","Contenance : 1040 ml","Verre transparent","Couvercles hermétiques à 4 clips"]},
+  {n:15,cat:"cuisine",name:"Support à fruits 3 niveaux",price:24.99,d:"Corbeilles sur pied en bois",
+   desc:"Trois coupes vert foncé superposées sur une structure en bois, pour présenter fruits et légumes sans les écraser. Décoratif sur un plan de travail ou une table, il libère de la place.",
+   specs:["3 coupes vert foncé","Hauteur totale : 35 cm","Coupes de 25, 26,5 et 28 cm de long","Pied en bois"]},
+  {n:17,cat:"cuisine",name:"4 étagères magnétiques frigo",price:24.99,d:"Lot de 4, 2 tailles",
+   desc:"Des étagères aimantées qui se fixent sur le côté du réfrigérateur, sans perçage. Elles accueillent épices, film alimentaire, papier aluminium ou torchons et font gagner de la place dans la cuisine.",
+   specs:["Lot de 4 étagères noires","2 × 27 cm et 2 × 29,5 cm de long","Profondeur 8,5 à 9,5 cm","Fixation magnétique, sans perçage"]},
+  {n:27,cat:"cuisine",name:"Tête de robinet orientable",price:24.99,d:"4 modes de jet",
+   desc:"Une tête de robinet qui s'adapte sur votre robinet de cuisine et pivote dans tous les sens. Elle propose plusieurs jets, dont un jet cascade large et un mode anti-éclaboussures, pour laver fruits et vaisselle plus facilement.",
+   specs:["4 modes : pluie, bulles anti-éclaboussures, cascade, double jet","Rotation multidirectionnelle","Finition chromée","Se fixe sur le bec du robinet"]},
+  {n:28,cat:"cuisine",name:"Kit ustensiles 14 pièces",price:19.99,d:"Silicone et bois, avec pot",
+   desc:"Un ensemble complet d'ustensiles de cuisine en silicone noir avec manches en bois, livré avec son pot de rangement. Le silicone protège vos poêles et casseroles antiadhésives.",
+   specs:["14 pièces avec pot de rangement","Spatules, louche, écumoire, cuillère à pâtes, fouet, pince, pinceau…","Têtes en silicone noir","Manches en bois"]},
+  {n:1,cat:"rangement",name:"Lot de 3 bacs",price:29.99,d:"Bacs avec couvercle · 36,5 × 26 × 24 cm",
+   desc:"Des bacs de rangement blancs avec couvercle et poignées découpées. Idéals pour ranger linge, produits d'entretien ou papier toilette dans une salle de bain, une buanderie ou un placard.",
+   specs:["Lot de 3 bacs","Dimensions : 36,5 × 26 × 24 cm","Avec couvercle","Poignées intégrées"]},
+  {n:2,cat:"rangement",name:"3 petits supports",price:29.99,d:"Vendu par lot de 3 · 30 × 20 × 16 cm",
+   desc:"Des petites étagères d'appoint pour doubler l'espace dans vos placards ou sur le plan de travail. On range les assiettes dessus et les casseroles dessous.",
+   specs:["Vendu par lot de 3","Dimensions : 30 × 20 × 16 cm","Plateau aspect bois, pieds métal blanc","Pour placards, plan de travail, salle de bain"]},
+  {n:3,cat:"rangement",name:"5 petits paniers",price:24.99,d:"Paniers à poignées · lot de 5",
+   desc:"Des paniers blancs avec poignée centrale et anses latérales, faciles à transporter d'une pièce à l'autre. Parfaits pour les produits ménagers, les affaires de bébé, les jouets ou la salle de bain.",
+   specs:["Lot de 5 paniers","Dimensions : 30 × 11,5 × 20 cm environ","Poignée centrale et anses latérales","Plastique blanc"]},
+  {n:4,cat:"rangement",name:"Petit meuble à chaussures",price:29.99,d:"3 niveaux · 60 × 24 × 33 cm",
+   desc:"Un meuble à chaussures compact à 3 étagères aux bords arrondis, aspect bois. Il se glisse facilement dans une entrée ou un couloir et range une dizaine de paires.",
+   specs:["3 niveaux","Dimensions : 60 × 24 × 33 cm","Aspect bois, bords arrondis","Format compact pour l'entrée"]},
+  {n:8,cat:"rangement",name:"Porte-vêtements",price:29.99,d:"Sur roulettes · 110 × 150 cm",
+   desc:"Un portant à vêtements en métal noir avec double barre de suspension, crochets latéraux et deux étagères basses pour les chaussures ou les boîtes. Monté sur roulettes, il se déplace facilement.",
+   specs:["Dimensions : 110 cm de large, 150 cm de haut","Structure en métal noir","2 étagères basses et crochets latéraux","Sur roulettes"]},
+  {n:26,cat:"rangement",name:"Étagère de stockage",price:99.99,d:"Métal · 2 m × 60 cm",
+   desc:"Une grande étagère en métal bleu à 4 niveaux, conçue pour le stockage lourd : garage, réserve, atelier ou local professionnel. Elle accueille cartons et charges volumineuses.",
+   specs:["4 niveaux","Dimensions : 2 m de long × 60 cm de profondeur × 2 m de haut","Structure en métal bleu","Pour garage, réserve, atelier"]},
+  {n:29,cat:"rangement",name:"Meuble bibliothèque",price:49.99,d:"Cubes décalés · 141,5 cm",
+   desc:"Une bibliothèque design faite de cubes empilés et décalés, en métal fin. Elle range livres, enceinte ou objets déco tout en apportant une touche graphique au salon ou à la chambre.",
+   specs:["Hauteur : 141,5 cm","Base : 50 × 28 cm","Cubes de tailles dégressives","Structure en métal"]},
+  {n:9,cat:"maison",name:"Étendoir à linge",price:29.99,d:"Plusieurs niveaux · 170 cm",
+   desc:"Un étendoir vertical à plusieurs niveaux avec barres de suspension pour cintres, ailes rabattables et étagère basse pour les chaussures. Monté sur roulettes, il passe facilement de l'intérieur au balcon.",
+   specs:["Hauteur : 170 cm, largeur dépliée : 119 cm","Plusieurs niveaux de séchage","Barre pour cintres et étagère basse","Sur roulettes"]},
+  {n:24,cat:"maison",name:"Porte-serviettes",price:19.99,d:"3 barres · 44 × 86 cm",
+   desc:"Un porte-serviettes sur pied en métal noir avec 3 barres à hauteurs différentes. Il se pose sans perçage dans la salle de bain et permet de faire sécher plusieurs serviettes en même temps.",
+   specs:["3 barres à 66, 76 et 86 cm","Largeur 44 cm, profondeur 21 cm","Métal noir","Sur pied, sans perçage"]},
+  {n:16,cat:"maison",name:"Support écran ordinateur",price:29.99,d:"Rehausseur avec rangement",
+   desc:"Un rehausseur blanc qui place votre écran à la bonne hauteur et libère le bureau. L'espace en dessous accueille téléphone, tablette, carnets ou clavier.",
+   specs:["Dimensions : 50 × 20 cm, hauteur 13,5 cm","2 niveaux","Finition blanche","Rangement sous l'écran"]},
+  {n:23,cat:"maison",name:"Support jeux vidéo",price:35.00,d:"Tour de rangement manettes et jeux",
+   desc:"Une tour de rangement qui centralise votre coin gaming : une colonne pour ranger vos boîtiers de jeux et des supports latéraux pour 4 manettes. Un bureau ou un meuble TV toujours bien rangé.",
+   specs:["Rangement vertical pour boîtiers de jeux","4 supports de manettes","Finition blanche et noire","Socle stable"]},
+  {n:25,cat:"maison",name:"Coffret 46 pièces",price:19.99,d:"Douilles et cliquet en mallette",
+   desc:"Un coffret à outils compact pour le bricolage, la maison ou la voiture. Il contient un cliquet, des douilles, des embouts de vissage et des rallonges, rangés dans une mallette rouge.",
+   specs:["46 pièces","Cliquet, douilles, embouts, rallonges, clés Allen","Tournevis porte-embouts","Mallette de rangement rouge"]},
+  {n:12,cat:"enfants",name:"Mallette de dessin complète",price:29.99,d:"2 modèles au choix",
+   desc:"Une grande mallette pour les petits artistes, avec crayons de couleur, feutres, pastels, peinture et accessoires, tout rangé dans une valise qui se transporte facilement. Une belle idée cadeau.",
+   specs:["Crayons, feutres, pastels, aquarelle et accessoires","Mallette rigide avec poignée","2 modèles : astronaute (bleu) ou licorne (rose)","Modèle à préciser lors de l'appel"]},
+  {n:13,cat:"enfants",name:"Harnais de marche bébé",price:24.99,d:"Aide aux premiers pas",
+   desc:"Un harnais qui accompagne bébé dans ses premiers pas. L'adulte le tient par la poignée rembourrée sans avoir à se pencher, et l'enfant marche en sécurité.",
+   specs:["Gilet ajustable avec entrejambe","Poignée rembourrée pour l'adulte","Sangles réglables","Coloris bleu"]},
+  {n:14,cat:"enfants",name:"Protège-tête bébé",price:19.99,d:"Coussin dorsal anti-chute",
+   desc:"Un petit coussin à porter comme un sac à dos, qui amortit les chutes en arrière quand bébé apprend à s'asseoir ou à marcher. Sa forme de renne amuse les enfants.",
+   specs:["Coussin rembourré pour la tête","Se porte comme un sac à dos","Sangles réglables","Motif renne, rouge et vert"]},
+  {n:18,cat:"animaux",name:"Arbre à chat",price:69.99,d:"Plusieurs niveaux · 115 cm",
+   desc:"Un arbre à chat complet avec niche, plateformes, hamac, poteaux griffoirs et jouets suspendus. De quoi grimper, dormir et faire ses griffes au même endroit.",
+   specs:["Hauteur : 115 cm","Base : 50 × 35 cm","Niche, hamac et plateforme sommitale","Poteaux griffoirs et jouets suspendus"]},
+  {n:19,cat:"animaux",name:"Gamelle pour chat",price:29.99,d:"3 bols inox sur support bois",
+   desc:"Un support surélevé en bois avec 3 bols en inox pour l'eau et les croquettes. La hauteur rend les repas plus confortables pour votre chat et évite d'éparpiller la nourriture.",
+   specs:["3 bols en inox amovibles","Dimensions : 42,7 × 15 cm","Support surélevé en bois","Bols faciles à laver"]},
+  {n:20,cat:"animaux",name:"Petite cabane pour chat",price:29.99,d:"Niche douillette en peluche",
+   desc:"Une petite maison toute douce en forme de chalet avec une entrée ronde à oreilles d'ourson. Votre chat y trouve un refuge chaud et rassurant pour faire la sieste.",
+   specs:["Niche fermée avec toit","Tissu doux type peluche","Entrée ronde décorée","Pour chat ou petit chien"]},
+  {n:21,cat:"animaux",name:"Hamac pour chat",price:35.00,d:"Griffoir intégré · 50 × 35 × 32 cm",
+   desc:"Un fauteuil-hamac en bois avec assise en griffoir. Votre chat s'y prélasse et y fait ses griffes, plutôt que sur votre canapé.",
+   specs:["Dimensions : 50 × 35 × 32 cm","Structure en bois","Assise et dossier griffoirs","Design fauteuil"]},
+  {n:22,cat:"animaux",name:"Boîte à croquettes",price:4.99,d:"Hermétique avec verseur",
+   desc:"Une boîte transparente avec couvercle hermétique, poignée et verre doseur. Elle garde les croquettes fraîches et à l'abri, et facilite le service.",
+   specs:["Hauteur : 29 cm, largeur : 15 cm","Couvercle hermétique","Verre doseur inclus","Pour croquettes de chat ou de chien"]}
+].map(p=>{const k=String(p.n).padStart(2,"0");return {...p,id:"a"+k,imgs:[1,2,3].map(j=>`img/a${k}-${j}.jpg`)}});
+
+
+// stockage local (maquette uniquement)
+const store = {
+  get(k,d){try{const v=localStorage.getItem("tz2_"+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("tz2_"+k,JSON.stringify(v))}catch(e){}}
+};
+let outOfStock = new Set(store.get("oos",["a18","a26"])); // 2 ruptures d'exemple
+let cart = store.get("cart",{});
+let orders = store.get("orders",[]);
+let cat = "all", query = "", drawerView = "cart", sheetId = null, sheetImg = 0;
+
+const $ = s => document.querySelector(s);
+const eur = n => n.toLocaleString("fr-FR",{style:"currency",currency:"EUR"});
+const byId = id => PRODUCTS.find(p=>p.id===id);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove("on"),2200)}
+function save(){store.set("cart",cart);store.set("oos",[...outOfStock]);store.set("orders",orders)}
+function count(){return Object.values(cart).reduce((a,b)=>a+b,0)}
+function total(){return Object.entries(cart).reduce((s,[id,q])=>s+(byId(id)?.price||0)*q,0)}
+// nettoie un panier qui contiendrait des articles inconnus
+Object.keys(cart).forEach(id=>{if(!byId(id))delete cart[id]});
+
+function actionHTML(p,big){
+  const out=outOfStock.has(p.id), qty=cart[p.id]||0;
+  if(out) return `<button class="${big?"cta":"add"}" disabled>Indisponible</button>`;
+  if(qty) return `<div class="step" role="group" aria-label="Quantité"><button data-dec="${p.id}" aria-label="Retirer un">−</button><span class="tabnum">${qty}</span><button data-inc="${p.id}" aria-label="Ajouter un">+</button></div>`;
+  return `<button class="${big?"cta":"add"}" data-inc="${p.id}" aria-label="Ajouter ${esc(p.name)} au panier"><svg viewBox="0 0 24 24" width="${big?18:15}" height="${big?18:15}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg>Ajouter au panier</button>`;
+}
+
+/* ---------- Boutique ---------- */
+function renderCatSelect(){
+  $("#catSel").innerHTML = CATS.map(([k,v])=>{const n=k==="all"?PRODUCTS.length:PRODUCTS.filter(p=>p.cat===k).length;return `<option value="${k}"${k===cat?" selected":""}>${k==="all"?"Toutes":v} (${n})</option>`}).join("");
+}
+function priceHTML(v){const [e,c]=v.toFixed(2).split(".");return `<span class="pr"><b>${e}</b><span>,${c} €</span></span>`}
+function tagsFor(p){const t=[];const n=name=>name.match(/lot de (\d+)/i)||name.match(/^(\d+)\s/);const m=n(p.name);const pc=p.name.match(/(\d+)\s*pièces/i);
+  if(m)t.push(`<span class="tag">Lot de ${m[1]}</span>`);else if(pc)t.push(`<span class="tag">${pc[1]} pièces</span>`);
+  if(p.price<15)t.push('<span class="tag deal">Petit prix</span>');return t.join("")}
+const HERO_SLIDES=[["img/hero/h1.jpg","a01"],["img/hero/h2.jpg","a02"],["img/hero/h3.jpg","a04"],["img/hero/h4.jpg","a20"],["img/hero/h5.jpg","a15"],["img/hero/h6.jpg","a07"]];
+let heroIdx=0,heroTimer=null,heroList=[];
+function renderHero(){
+  heroList=HERO_SLIDES.filter(([,id])=>byId(id)&&!outOfStock.has(id));
+  heroIdx=Math.min(heroIdx,heroList.length-1);
+  $("#slides").innerHTML=heroList.map(([src],i)=>`<div class="slide${i===heroIdx?" on":""}"><img src="${src}" alt="" ${i?'loading="lazy"':""} width="1296" height="777"></div>`).join("");
+  $("#dots").innerHTML=heroList.map((_,i)=>`<button data-slide="${i}" aria-label="Image ${i+1}" aria-current="${i===heroIdx}"></button>`).join("");
+  showSlide(heroIdx);
+  const wa=WA_NUMBER;$("#waText").textContent="0"+wa.slice(3).replace(/(\d{3})(\d{2})(\d{2})(\d{2})/,"$1 $2 $3 $4");
+  const waHref=`https://wa.me/${wa}?text=${encodeURIComponent("Bonjour Tout'zafer, j'ai une question sur un article.")}`;
+  $("#waLink").href=waHref;$("#legalTel").textContent=$("#waText").textContent;
+  startHero();
+}
+function showSlide(i){
+  if(!heroList.length)return;heroIdx=(i+heroList.length)%heroList.length;
+  document.querySelectorAll("#slides .slide").forEach((el,k)=>el.classList.toggle("on",k===heroIdx));
+  document.querySelectorAll("#dots button").forEach((el,k)=>el.setAttribute("aria-current",k===heroIdx));
+  const p=byId(heroList[heroIdx][1]);
+  $("#heroSticker").dataset.open=p.id;$("#heroSticker").setAttribute("aria-label",`Voir ${p.name}`);
+  $("#heroSticker").innerHTML=`<span><small>${esc(p.name)}</small>${priceHTML(p.price)}</span><span class="go">Voir</span>`;
+}
+function startHero(){clearInterval(heroTimer);heroTimer=setInterval(()=>{if(!document.hidden&&!$("#shop").hidden)showSlide(heroIdx+1)},5500)}
+const norm = t => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+function renderGrid(){
+  const words = norm(query).split(/\s+/).filter(Boolean);
+  let list = PRODUCTS.filter(p=>{if(cat!=="all"&&p.cat!==cat)return false;const hay=norm([p.name,p.d,p.desc,CATNAME[p.cat],...p.specs].join(" "));return words.every(w=>hay.includes(w))});
+  list.sort((a,b)=>a.name.localeCompare(b.name,"fr"));
+  list = [...list.filter(p=>!outOfStock.has(p.id)),...list.filter(p=>outOfStock.has(p.id))];
+  const grouped = cat==="all";
+  if(grouped){const order=CATS.map(c=>c[0]);list.sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));} // tri stable : ordre A→Z et ruptures en fin conservés dans chaque catégorie
+  const n=list.length;
+  $("#resultLine").textContent = `${n} article${n>1?"s":""}${cat!=="all"?" · "+CATNAME[cat]:""}${words.length?` pour « ${query.trim()} »`:""}`;
+  if(!n){$("#grid").innerHTML=`<p class="empty">Aucun article ne correspond${words.length?` à « ${esc(query.trim())} »`:""}${cat!=="all"?" dans "+CATNAME[cat]:""}. Essayez un autre mot-clé ou toutes les catégories.</p>`;return}
+  let prevCat=null;
+  $("#grid").innerHTML = list.map(p=>{
+    const out = outOfStock.has(p.id);
+    let head="";
+    if(grouped&&p.cat!==prevCat){prevCat=p.cat;const k=list.filter(x=>x.cat===p.cat).length;head=`<h2 class="ghead">${CATNAME[p.cat]}<span class="tabnum">${k}</span></h2>`}
+    const q=cart[p.id]||0;
+    const quick=out?"":q?`<div class="qpill" role="group" aria-label="Quantité"><button data-dec="${p.id}" aria-label="Retirer un">−</button><span class="tabnum">${q}</span><button data-inc="${p.id}" aria-label="Ajouter un">+</button></div>`
+      :`<button class="qadd" data-inc="${p.id}" aria-label="Ajouter ${esc(p.name)} au panier"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>`;
+    return head+`<article class="card${out?" out":""}">
+      <div class="media"><button class="thumb" data-open="${p.id}" aria-label="Voir ${esc(p.name)}">${out?'<span class="badge">En rupture</span>':`<span class="tags">${tagsFor(p)}</span>`}<img src="${p.imgs[0]}" alt="" loading="lazy" width="720" height="720"><img class="alt" src="${p.imgs[1]}" alt="" loading="lazy" width="720" height="720"></button>${quick}</div>
+      <div class="meta">${grouped?"":`<span class="cat">${CATNAME[p.cat]}</span>`}<button class="name" data-open="${p.id}">${esc(p.name)}</button><span class="price">${priceHTML(p.price)}</span></div>
+      </article>`;
+  }).join("");
+}
+function renderCount(){$("#cartCount").textContent=count();renderCartBar()}
+function renderCartBar(){const n=count(),bar=$("#cartBar"),hide=!n||$("#shop").hidden||$("#drawer").classList.contains("on");
+  if(!hide&&bar.hidden){bar.classList.remove("show");void bar.offsetWidth;bar.classList.add("show")}
+  bar.hidden=hide;$("#cbN").textContent=`${n} article${n>1?"s":""}`;$("#cbT").textContent=eur(total())}
+function bump(){[$("#cartCount"),$("#cbT")].forEach(el=>{el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")})}
+
+function inc(id){if(outOfStock.has(id))return;cart[id]=(cart[id]||0)+1;if(cart[id]===1)toast("Ajouté au panier");afterCartChange();bump()}
+function dec(id){if(!cart[id])return;cart[id]--;if(!cart[id])delete cart[id];afterCartChange()}
+function afterCartChange(){save();renderGrid();renderCount();if($("#drawer").classList.contains("on"))renderDrawer();if(sheetId)renderSheet()}
+
+/* ---------- Fiche produit ---------- */
+function openSheet(id){sheetId=id;sheetImg=0;renderSheet();$("#sheet").classList.add("on");$("#scrim").classList.add("on");$("#sheet").setAttribute("aria-hidden","false");$("#sheet .x")?.focus()}
+function closeSheet(){sheetId=null;$("#sheet").classList.remove("on");$("#sheet").setAttribute("aria-hidden","true");if(!$("#drawer").classList.contains("on"))$("#scrim").classList.remove("on")}
+function renderSheet(){
+  const p=byId(sheetId);if(!p)return;const out=outOfStock.has(p.id);
+  $("#sheet").innerHTML=`<button class="sheetx" id="closeSheet" aria-label="Fermer la fiche"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button><div class="gal"><div class="stage">
+      <div class="track" id="track">${p.imgs.map((s,i)=>`<img src="${s}" alt="${esc(p.name)}, photo ${i+1} sur ${p.imgs.length}">`).join("")}</div>
+      <button class="nav prev" data-go="-1" aria-label="Photo précédente">‹</button><button class="nav next" data-go="1" aria-label="Photo suivante">›</button>
+      <span class="counter tabnum" id="counter"></span></div>
+    <div class="thumbs">${p.imgs.map((s,i)=>`<button data-img="${i}" aria-label="Voir la photo ${i+1}"><img src="${s}" alt=""></button>`).join("")}</div></div>
+    <div class="info">
+      <span class="cat">${CATNAME[p.cat]}</span><h2 id="sTitle">${esc(p.name)}</h2>
+      <span class="big">${priceHTML(p.price)}</span>
+      ${out?'<span class="badge" style="position:static;align-self:flex-start">En rupture</span>':""}
+      <p class="desc">${esc(p.desc)}</p>
+      <ul>${p.specs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+      ${actionHTML(p,true)}</div>`;
+  $("#closeSheet").onclick=closeSheet;
+  const tr=$("#track");
+  tr.scrollLeft=sheetImg*tr.clientWidth;
+  syncGal();
+  let raf;tr.addEventListener("scroll",()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{const i=Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth));if(i!==sheetImg){sheetImg=i;syncGal()}})});
+}
+function syncGal(){
+  const p=byId(sheetId);if(!p)return;
+  $("#counter").textContent=`${sheetImg+1} / ${p.imgs.length}`;
+  document.querySelectorAll("#sheet [data-img]").forEach(b=>b.setAttribute("aria-current",+b.dataset.img===sheetImg));
+  $("#sheet .prev").disabled=sheetImg===0;$("#sheet .next").disabled=sheetImg===p.imgs.length-1;
+}
+function goImg(i){const p=byId(sheetId);if(!p)return;sheetImg=Math.max(0,Math.min(p.imgs.length-1,i));const tr=$("#track");
+  tr.scrollTo({left:sheetImg*tr.clientWidth,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});syncGal()}
+
+/* ---------- Panier ---------- */
+let removedNotice = [];
+function openCart(){closeSheet();renderDrawer();$("#cartBar").hidden=true;$("#drawer").classList.add("on");$("#scrim").classList.add("on");$("#drawer").setAttribute("aria-hidden","false")}
+function closeCart(){$("#drawer").classList.remove("on");setTimeout(renderCartBar,0);$("#scrim").classList.remove("on");$("#drawer").setAttribute("aria-hidden","true");if(drawerView==="done")drawerView="cart"}
+
+function renderDrawer(){
+  const b = $("#dBody");
+  if(drawerView==="done"){ $("#dTitle").textContent="Demande envoyée"; b.innerHTML=lastDoneHTML; bindDone(); return }
+  $("#dTitle").textContent="Votre panier";
+  const ids = Object.keys(cart);
+  const notice = removedNotice.length?`<div class="alert">${removedNotice.map(esc).join(", ")} ${removedNotice.length>1?"viennent de passer":"vient de passer"} en rupture et ${removedNotice.length>1?"ont été retirés":"a été retiré"} de votre panier.</div>`:"";
+  if(!ids.length){b.innerHTML=notice+`<div class="done"><p>Votre panier est vide.</p></div><button class="ghost" style="width:100%" id="backShop">Parcourir le catalogue</button>`;$("#backShop").onclick=closeCart;return}
+  const lines = ids.map(id=>{const p=byId(id),q=cart[id];return `<div class="line"><img class="mini" src="${p.imgs[0]}" alt="">
+    <div style="min-width:0"><div class="t">${esc(p.name)}</div><div class="u tabnum">${eur(p.price)} l'unité</div></div>
+    <div class="r"><span class="tabnum">${eur(p.price*q)}</span><div class="step"><button data-dec="${id}" aria-label="Retirer un">−</button><span class="tabnum">${q}</span><button data-inc="${id}" aria-label="Ajouter un">+</button></div></div></div>`}).join("");
+  const d = store.get("draft",{});
+  b.innerHTML = notice + lines + `
+    <div class="total"><span>Total indicatif</span><span class="tabnum">${eur(total())}</span></div>
+    <div class="sumrow"><span>Livraison au point de retrait</span><b>Offerte</b></div>
+    <p class="note">Aucun paiement en ligne. Vous réglez au retrait, après confirmation par téléphone.</p>
+    <form class="f" id="f" novalidate>
+      <div class="row2">
+        <label class="fl">Prénom<input id="fPrenom" autocomplete="given-name" value="${esc(d.prenom||"")}" required></label>
+        <label class="fl">Nom<input id="fNom" autocomplete="family-name" value="${esc(d.nom||"")}" required></label>
+      </div>
+      <label class="fl">Téléphone<input id="fTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="0692 12 34 56" value="${esc(d.tel||"")}" required><span class="err" id="eTel" hidden>Indiquez un numéro à 10 chiffres (ex. 0692 12 34 56) ou au format +262.</span></label>
+      <label class="fl">Point de retrait<select id="fPick"><option value="">Choisir un point de retrait</option>${PICKUPS.map(p=>`<option${d.pick===p?" selected":""}>${esc(p)}</option>`).join("")}</select></label>
+      <div id="shipNote"></div>
+      <label class="consent"><input type="checkbox" id="fOk"> <span>J'accepte que Tout’zafer utilise mes coordonnées uniquement pour traiter cette demande et me rappeler. Elles ne sont ni revendues ni utilisées pour de la publicité.</span></label>
+      <button class="cta" id="send" type="submit">Envoyer ma demande</button>
+      <p class="mutedline">Demande sans engagement. Tout’zafer vous appelle pour confirmer la disponibilité et le créneau.</p>
+    </form>`;
+  bindForm();
+}
+function mode(){return "retrait"}
+function bindForm(){
+  const T='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>';
+  const ok=()=>{
+    const free=shipIsFree(),miss=FREE_SHIP_MIN-total();
+    $("#shipNote").innerHTML=free?`<div class="shipnote">${T}Livraison offerte au point de retrait</div>`
+      :`<div class="shipnote warn">${T}Plus que ${eur(miss)} pour la livraison offerte. Sinon, les frais vous seront indiqués lors de l'appel.</div>`;
+    $("#send").disabled=!($("#fPrenom").value.trim()&&$("#fNom").value.trim()&&$("#fTel").value.trim()&&$("#fPick").value&&$("#fOk").checked)};
+  const keep=()=>store.set("draft",{prenom:$("#fPrenom").value,nom:$("#fNom").value,tel:$("#fTel").value,pick:$("#fPick").value});
+  ["fPrenom","fNom","fTel","fPick","fOk"].forEach(id=>{const el=$("#"+id);el.addEventListener("input",()=>{ok();keep()});el.addEventListener("change",()=>{ok();keep()})});
+  ok();
+  $("#f").addEventListener("submit",e=>{e.preventDefault();submitOrder()});
+}
+function normTel(t){const d=t.replace(/[^\d+]/g,"");if(/^0\d{9}$/.test(d))return d;if(/^\+262\d{9}$/.test(d))return "0"+d.slice(4);if(/^262\d{9}$/.test(d))return "0"+d.slice(3);return null}
+
+let lastDoneHTML="";
+function submitOrder(){
+  const tel = normTel($("#fTel").value);
+  $("#eTel").hidden = !!tel; if(!tel){$("#fTel").focus();return}
+  const gone = Object.keys(cart).filter(id=>outOfStock.has(id));
+  if(gone.length){removedNotice=gone.map(id=>byId(id).name);gone.forEach(id=>delete cart[id]);save();renderGrid();renderCount();renderDrawer();removedNotice=[];return}
+  const o = {id:"D"+String(orders.length+1).padStart(4,"0"),date:new Date().toISOString(),prenom:$("#fPrenom").value.trim(),nom:$("#fNom").value.trim(),tel,mode:"retrait",pick:$("#fPick").value,shipFree:shipIsFree(),
+    lines:Object.entries(cart).map(([id,q])=>({name:byId(id).name,q,price:byId(id).price})),total:total(),status:"À rappeler"};
+  orders.unshift(o);
+  const recap = `Demande ${o.id}\n${o.prenom} ${o.nom} · ${o.tel}\nRetrait : ${o.pick} (livraison ${o.shipFree?"offerte":"frais à confirmer"})\n\n${o.lines.map(l=>`• ${l.q} × ${l.name} (${eur(l.price*l.q)})`).join("\n")}\n\nTotal indicatif : ${eur(o.total)}`;
+  const wa = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Bonjour Tout'zafer, voici ma demande :\n\n"+recap)}`;
+  lastDoneHTML = `<div class="done"><div class="ck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></div>
+    <h3>Merci ${esc(o.prenom)}</h3><p>Votre demande est enregistrée. Tout’zafer vous appelle au ${esc(o.tel)} pour confirmer et fixer le rendez-vous de retrait.</p></div>
+    <div class="recap tabnum" id="recap">${esc(recap)}</div>
+    <div class="stack"><a class="cta" href="${wa}" target="_blank" rel="noopener">Envoyer aussi sur WhatsApp</a>
+    <button class="ghost" id="copy">Copier le récapitulatif</button><button class="ghost" id="again">Continuer mes achats</button></div>`;
+  cart={};store.set("draft",{});save();renderGrid();renderCount();renderOrders();
+  drawerView="done";renderDrawer();
+}
+function bindDone(){
+  $("#again").onclick=()=>{drawerView="cart";closeCart()};
+  $("#copy").onclick=()=>{const t=$("#recap").textContent;try{navigator.clipboard.writeText(t).then(()=>toast("Récapitulatif copié"),selectRecap)}catch(e){selectRecap()}};
+}
+function selectRecap(){const r=document.createRange();r.selectNodeContents($("#recap"));const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Texte sélectionné, copiez-le")}
+
+/* ---------- Admin ---------- */
+function renderStock(){
+  $("#stockList").innerHTML = [...PRODUCTS].sort((a,b)=>a.name.localeCompare(b.name,"fr")).map(p=>{const inS=!outOfStock.has(p.id);return `<div class="item"><img class="mini" src="${p.imgs[0]}" alt="" loading="lazy">
+    <div style="min-width:0"><div class="t">${esc(p.name)}</div><div class="u tabnum">${CATNAME[p.cat]} · ${eur(p.price)}</div></div>
+    <label class="sw"><span class="lbl ${inS?"in":"outl"}">${inS?"En stock":"En rupture"}</span><input type="checkbox" id="sw_${p.id}" data-sw="${p.id}" ${inS?"checked":""} aria-label="${esc(p.name)} en stock"></label></div>`}).join("");
+}
+function renderOrders(){
+  $("#ordCount").textContent = orders.length?`(${orders.length})`:"";
+  $("#orderList").innerHTML = orders.length ? orders.map(o=>`<div class="order"><div class="h"><span class="who">${esc(o.prenom)} ${esc(o.nom)} · <span class="tabnum">${esc(o.tel)}</span></span><span class="pill">${o.status}</span></div>
+    <span class="when">${o.id} · ${new Date(o.date).toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"})} · Retrait : ${esc(o.pick)}</span>
+    <ul>${o.lines.map(l=>`<li>${l.q} × ${esc(l.name)}</li>`).join("")}</ul><span class="tabnum" style="font-weight:600">${eur(o.total)}</span></div>`).join("")
+    : `<p class="empty">Aucune demande pour l'instant. Passez une commande test depuis la boutique pour la voir apparaître ici.</p>`;
+}
+function showView(v){closeSheet();closeCart();$("#shop").hidden=v!=="shop";$("#admin").hidden=v!=="admin";$("#legalView").hidden=v!=="legal";$("#openCart").hidden=v==="admin";
+  $("#goAdmin").textContent=v==="admin"?"Retour à la boutique":"Espace vendeur";if(v==="admin"){renderStock();renderOrders()}else if(v==="shop")renderGrid();scrollTo(0,0);setTimeout(renderCartBar,0)}
+function route(){const h=location.hash;showView(h==="#vendeur"?"admin":h==="#mentions-legales"?"legal":"shop")}
+
+/* ---------- Événements ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-inc],[data-dec],[data-open],[data-img],[data-go],[data-slide]");if(!t)return;
+  if(t.dataset.inc)inc(t.dataset.inc);else if(t.dataset.dec)dec(t.dataset.dec);
+  else if(t.dataset.open)openSheet(t.dataset.open);
+  else if(t.dataset.img!==undefined)goImg(+t.dataset.img);
+  else if(t.dataset.go)goImg(sheetImg+ +t.dataset.go);
+  else if(t.dataset.slide!==undefined){showSlide(+t.dataset.slide);startHero()}
+});
+document.addEventListener("change",e=>{
+  const id=e.target.dataset?.sw;if(!id)return;
+  e.target.checked?outOfStock.delete(id):outOfStock.add(id);save();renderStock();renderHero();
+  toast(`${byId(id).name} : ${e.target.checked?"en stock":"en rupture"}`);
+});
+$("#tabStock").onclick=()=>{$("#tabStock").setAttribute("aria-selected","true");$("#tabOrders").setAttribute("aria-selected","false");$("#stockList").hidden=false;$("#orderList").hidden=true};
+$("#tabOrders").onclick=()=>{$("#tabOrders").setAttribute("aria-selected","true");$("#tabStock").setAttribute("aria-selected","false");$("#stockList").hidden=true;$("#orderList").hidden=false};
+$("#q").addEventListener("input",e=>{query=e.target.value;renderGrid()});
+$("#catSel").addEventListener("change",e=>{cat=e.target.value;renderGrid()});
+$("#openCart").onclick=openCart;
+$("#cartBar").onclick=openCart;
+$("#closeCart").onclick=closeCart;
+$("#scrim").onclick=()=>{closeSheet();closeCart()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeSheet();closeCart()}
+  if(sheetId&&(e.key==="ArrowRight"||e.key==="ArrowLeft"))goImg(sheetImg+(e.key==="ArrowRight"?1:-1))});
+$("#goHome").onclick=()=>{location.hash="";route()};
+$("#goAdmin").onclick=()=>{location.hash=location.hash==="#vendeur"?"":"vendeur";route()};
+$("#legal").onclick=()=>{location.hash="mentions-legales";route()};
+document.querySelectorAll("[data-home]").forEach(b=>b.onclick=()=>{location.hash="";route()});
+$("#cgv").onclick=()=>toast("Conditions de réservation à rédiger");
+addEventListener("hashchange",route);
+
+renderHero();renderCatSelect();renderCount();route();
+</script>
+
+</body>
+</html>
