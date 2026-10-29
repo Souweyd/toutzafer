@@ -48,7 +48,8 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backgroun
 .top .wrap{display:flex;align-items:center;gap:16px;height:52px}
 .logo{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:-.035em;background:none;border:0;padding:0;color:var(--brand-fg)}
 .top .sp{flex:1}
-.top .link{background:none;border:0;color:var(--brand-fg);opacity:.8;font-size:13px;padding:6px 4px}
+.top .link{background:none;border:0;color:var(--brand-fg);opacity:.8;font-size:13px;padding:6px 4px;white-space:nowrap}
+@media (max-width:400px){.top .link{font-size:12px}}
 .top .link:hover{opacity:1}
 .cartbtn{display:flex;align-items:center;gap:8px;background:var(--brand-fg);color:var(--brand);border:0;border-radius:980px;padding:7px 14px;font-size:13px;font-weight:600}
 header.top :focus-visible{outline-color:var(--brand-fg)}
@@ -465,7 +466,7 @@ label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:5
   <div class="wrap">
     <button class="logo" id="goHome" aria-label="Tout'zafer, accueil">Tout’zafer.</button>
     <div class="sp"></div>
-    <button class="link" id="goAdmin" hidden>Retour à la boutique</button>
+    <button class="link" id="goAdmin">Espace vendeur</button>
     <button class="cartbtn" id="openCart" aria-label="Ouvrir le panier">Panier <span class="n tabnum" id="cartCount">0</span></button>
   </div>
 </header>
@@ -1103,7 +1104,7 @@ function renderOrders(){
     ${hiddenN?`<button class="oldtoggle" data-old="${k}">Voir les ${hiddenN} plus anciennes</button>`:(k==="livree"||k==="annulee")&&showOld.has(k)?`<button class="oldtoggle" data-old="${k}">Masquer les plus anciennes</button>`:""}</section>`}).join("");
 }
 function showView(v){curView=v;closeSheetRaw();closeCart();$("#shop").hidden=v!=="shop";$("#admin").hidden=v!=="admin";$("#legalView").hidden=v!=="legal";$("#openCart").hidden=v==="admin";
-  $("#goAdmin").hidden=v!=="admin";if(v==="admin"){renderStock();renderOrders()}else if(v==="shop")renderGrid();scrollTo(0,0);setTimeout(renderCartBar,0)}
+  $("#goAdmin").textContent=v==="admin"?"Retour à la boutique":"Espace vendeur";if(v==="admin"){renderStock();renderOrders()}else if(v==="shop")renderGrid();scrollTo(0,0);setTimeout(renderCartBar,0)}
 function route(){const h=location.hash,m=h.match(/^#produit-(a\d+)$/),v=h==="#vendeur"?"admin":h==="#mentions-legales"?"legal":"shop";
   if(curView!==v)showView(v);
   if(v==="shop"){if(m&&byId(m[1])){if(sheetId!==m[1])openSheetRaw(m[1])}else if(sheetId){closeSheetRaw()}}}
