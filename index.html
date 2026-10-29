@@ -716,8 +716,12 @@ function dec(id){if(!cart[id])return;cart[id]--;if(!cart[id])delete cart[id];aft
 function afterCartChange(){save();refreshQuick();renderCount();if($("#drawer").classList.contains("on"))renderDrawer();if(sheetId)refreshSheetAct()}
 
 /* ---------- Fiche produit ---------- */
-function openSheet(id){sheetId=id;sheetImg=0;renderSheet();$("#sheet").classList.add("on");$("#scrim").classList.add("on");$("#sheet").setAttribute("aria-hidden","false");$("#sheet .x")?.focus()}
-function closeSheet(){sheetId=null;const sh=$("#sheet");sh.style.transform="";sh.style.transition="";$("#scrim").style.opacity="";sh.classList.remove("on");$("#sheet").setAttribute("aria-hidden","true");if(!$("#drawer").classList.contains("on"))$("#scrim").classList.remove("on")}
+let sheetPushed=false,curView=null;
+function openSheet(id){if(location.hash!=="#produit-"+id){sheetPushed=true;location.hash="produit-"+id}else openSheetRaw(id)}
+function clearHash(){try{history.replaceState(null,"",location.href.split("#")[0])}catch(e){location.hash=""}}
+function closeSheet(){const was=!!sheetId;closeSheetRaw();if(was&&/^#produit-/.test(location.hash)){if(sheetPushed){sheetPushed=false;history.back()}else clearHash()}}
+function openSheetRaw(id){sheetId=id;sheetImg=0;renderSheet();$("#sheet").classList.add("on");$("#scrim").classList.add("on");$("#sheet").setAttribute("aria-hidden","false");$("#sheet .x")?.focus()}
+function closeSheetRaw(){sheetId=null;const sh=$("#sheet");sh.style.transform="";sh.style.transition="";$("#scrim").style.opacity="";sh.classList.remove("on");$("#sheet").setAttribute("aria-hidden","true");if(!$("#drawer").classList.contains("on"))$("#scrim").classList.remove("on")}
 function renderSheet(){
   const p=byId(sheetId);if(!p)return;const out=outOfStock.has(p.id);
   $("#sheet").innerHTML=`<span class="grab" aria-hidden="true"></span><button class="sheetx" id="closeSheet" aria-label="Fermer la fiche"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button><div class="gal"><div class="stage">
@@ -869,9 +873,11 @@ function renderOrders(){
     return `<section class="col c-${k}" aria-label="${label}"><div class="colh"><span class="dot"></span><b>${label}</b><span class="n tabnum">${list.length}</span><span class="sum tabnum">${eur(sum)}</span></div>
     ${list.length?list.map(orderCard).join(""):`<p class="colempty">${k==="appeler"?"Aucune demande à appeler":k==="livraison"?"Aucune livraison en cours":"Aucune demande livrée"}</p>`}</section>`}).join("");
 }
-function showView(v){closeSheet();closeCart();$("#shop").hidden=v!=="shop";$("#admin").hidden=v!=="admin";$("#legalView").hidden=v!=="legal";$("#openCart").hidden=v==="admin";
+function showView(v){curView=v;closeSheetRaw();closeCart();$("#shop").hidden=v!=="shop";$("#admin").hidden=v!=="admin";$("#legalView").hidden=v!=="legal";$("#openCart").hidden=v==="admin";
   $("#goAdmin").textContent=v==="admin"?"Retour à la boutique":"Espace vendeur";if(v==="admin"){renderStock();renderOrders()}else if(v==="shop")renderGrid();scrollTo(0,0);setTimeout(renderCartBar,0)}
-function route(){const h=location.hash;showView(h==="#vendeur"?"admin":h==="#mentions-legales"?"legal":"shop")}
+function route(){const h=location.hash,m=h.match(/^#produit-(a\d+)$/),v=h==="#vendeur"?"admin":h==="#mentions-legales"?"legal":"shop";
+  if(curView!==v)showView(v);
+  if(v==="shop"){if(m&&byId(m[1])){if(sheetId!==m[1])openSheetRaw(m[1])}else if(sheetId){closeSheetRaw()}}}
 
 /* ---------- Événements ---------- */
 document.addEventListener("click",e=>{
@@ -923,7 +929,8 @@ document.querySelectorAll("[data-home]").forEach(b=>b.onclick=()=>{location.hash
 $("#cgv").onclick=()=>toast("Conditions de réservation à rédiger");
 addEventListener("hashchange",route);
 
-renderHero();renderCatSelect();renderCount();route();
+try{history.scrollRestoration="manual"}catch(e){}
+renderHero();renderCatSelect();renderCount();route();scrollTo(0,0);
 </script>
 
 </body>
