@@ -17,7 +17,7 @@
   --bg:#ffffff; --bg-alt:#f5f5f7; --fg:#1d1d1f; --muted:#6e6e73; --line:#d2d2d7;
   --brand:#0020fe; --brand-fg:#ffffff; --brand-soft:#e8ebff; --brand-text:#0020fe;
   --warn:#b25000; --warn-soft:#fff1e3; --ok:#1f8a3e; --pop:#ffe600; --pop-fg:#141414; --wa:#128c4a; --fb:#1b5fd9; --hl:rgba(255,226,0,.5);
-  --s1:#c25400; --s1-bg:#fff0e0; --s2:#1238e6; --s2-bg:#e6ebff; --s3:#18803a; --s3-bg:#e2f5e7; --cash:#7a5a00; --cash-bg:#fff4bf; --card:#6a3bd1; --card-bg:#efe8ff;
+  --s1:#c25400; --s1-bg:#fff0e0; --s2:#1238e6; --s2-bg:#e6ebff; --s3:#18803a; --s3-bg:#e2f5e7; --cash:#7a5a00; --cash-bg:#fff4bf; --card:#6a3bd1; --card-bg:#efe8ff; --s4:#c4262e; --s4-bg:#fde7e7;
   --tile:#f5f5f7; --hero-bg:#0a1240; --overlay:rgba(0,0,0,.36); --glass:rgba(255,255,255,.8); --knob:#ffffff;
   --font:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
   --font-display:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
@@ -335,7 +335,8 @@ label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:5
 .order .when{font-size:12px;color:var(--muted)}
 .order ul{margin:4px 0 0;padding-left:18px;font-size:14px}
 /* Suivi des demandes */
-.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:start}
+@media (max-width:1100px) and (min-width:861px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:860px){.board{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:8px;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));scroll-padding:0 16px}
   .col{flex:0 0 min(86%,340px);scroll-snap-align:start}}
 .col{background:var(--bg-alt);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
@@ -348,6 +349,16 @@ label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:5
 .c-appeler .dot{background:var(--s1)} .c-appeler .n{background:var(--s1-bg);color:var(--s1)}
 .c-livraison .dot{background:var(--s2)} .c-livraison .n{background:var(--s2-bg);color:var(--s2)}
 .c-livree .dot{background:var(--s3)} .c-livree .n{background:var(--s3-bg);color:var(--s3)}
+.c-annulee .dot{background:var(--s4)} .c-annulee .n{background:var(--s4-bg);color:var(--s4)}
+.ocard.st-annulee{border-left-color:var(--s4)}
+.ocard.st-annulee ul,.ocard.st-annulee .tot{opacity:.55}
+.ocard.st-annulee .tot{text-decoration:line-through}
+.st-p-annulee{background:var(--s4-bg);color:var(--s4)}
+.st-why{background:var(--bg-alt);color:var(--fg)}
+.cx{border:0;background:none;color:var(--s4);font-size:12px;font-weight:700;padding:6px 2px;text-decoration:underline;text-underline-offset:2px}
+.cxbox{display:flex;flex-direction:column;gap:8px;background:var(--s4-bg);border-radius:10px;padding:10px}
+.cxbox .ofield{color:var(--s4)}
+.mv.to-annulee{background:var(--s4)}
 .ocard{background:var(--bg);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid var(--line);min-width:0}
 .ocard.st-appeler{border-left-color:var(--s1)} .ocard.st-livraison{border-left-color:var(--s2)} .ocard.st-livree{border-left-color:var(--s3)}
 .ocard .oh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
@@ -864,7 +875,9 @@ function renderStock(){
     <label class="sw"><span class="lbl ${inS?"in":"outl"}">${inS?"En stock":"En rupture"}</span><input type="checkbox" id="sw_${p.id}" data-sw="${p.id}" ${inS?"checked":""} aria-label="${esc(p.name)} en stock"></label></div>`}).join("");
 }
 const LIVREURS=["Jean-Marc","Sandrine","Dylan"]; // exemples
-const STEPS=[["appeler","À appeler"],["livraison","En livraison"],["livree","Livrée"]];
+const STEPS=[["appeler","À appeler"],["livraison","En livraison"],["livree","Livrée"],["annulee","Annulée"]];
+const CANCEL_REASONS=["Ne souhaite plus l'article","Injoignable","Absent au rendez-vous","Article indisponible","Autre"];
+const cancelOpen=new Set();
 const STEPNAME=Object.fromEntries(STEPS);
 function normStatus(o){if(!STEPNAME[o.status])o.status="appeler";return o}
 function seedDemo(){
@@ -874,7 +887,8 @@ function seedDemo(){
     {id:"D0004",demo:true,date:h(1),prenom:"Marie",nom:"Hoarau",tel:"0692123456",pick:PICKUPS[0],lines:[{name:"4 étagères magnétiques frigo",q:2,price:24.99},{name:"Lot de 5 boîtes en verre",q:1,price:29.99}],total:79.97,status:"appeler"},
     {id:"D0003",demo:true,date:h(3),prenom:"Kévin",nom:"Payet",tel:"0693456789",pick:PICKUPS[2],lines:[{name:"Gamelle pour chat",q:1,price:29.99},{name:"Boîte à croquettes",q:2,price:4.99}],total:39.97,status:"appeler"},
     {id:"D0002",demo:true,date:h(26),prenom:"Nadia",nom:"Grondin",tel:"0692987654",pick:PICKUPS[3],lines:[{name:"Porte-vêtements",q:1,price:29.99}],total:29.99,status:"livraison",livreur:"Sandrine"},
-    {id:"D0001",demo:true,date:h(50),prenom:"Teddy",nom:"Rivière",tel:"0693112233",pick:PICKUPS[1],lines:[{name:"Meuble bibliothèque",q:1,price:49.99},{name:"Kit ustensiles 14 pièces",q:1,price:19.99}],total:69.98,status:"livree",livreur:"Jean-Marc",paiement:"especes"}
+    {id:"D0001",demo:true,date:h(50),prenom:"Teddy",nom:"Rivière",tel:"0693112233",pick:PICKUPS[1],lines:[{name:"Meuble bibliothèque",q:1,price:49.99},{name:"Kit ustensiles 14 pièces",q:1,price:19.99}],total:69.98,status:"livree",livreur:"Jean-Marc",paiement:"especes"},
+    {id:"D0000",demo:true,date:h(30),prenom:"Johan",nom:"Hoareau",tel:"0692445566",pick:PICKUPS[4],lines:[{name:"Étendoir à linge",q:1,price:29.99}],total:29.99,status:"annulee",cancelFrom:"appeler",cancelReason:"Injoignable"}
   ];
   store.set("seeded",true);save();
 }
@@ -884,13 +898,18 @@ function orderCard(o){
   const pills=[`<span class="st st-p-${st}">${STEPNAME[st]}</span>`];
   if(o.livreur&&st!=="appeler")pills.push(`<span class="st st-liv">Livreur : ${esc(o.livreur)}</span>`);
   if(st==="livree")pills.push(o.paiement==="especes"?'<span class="st st-cash">Payé · Espèces</span>':o.paiement==="cb"?'<span class="st st-card">Payé · CB</span>':'<span class="st st-unpaid">Paiement à saisir</span>');
+  if(st==="annulee"){pills.push(`<span class="st st-why">${o.cancelFrom==="livraison"?"À la livraison":"À l'appel"}</span>`);if(o.cancelReason)pills.push(`<span class="st st-why">${esc(o.cancelReason)}</span>`)}
   if(o.demo)pills.push('<span class="st st-demo">Exemple</span>');
   let act="";
-  if(st==="appeler") act=`<div class="oacts"><button class="mv to-livraison" data-move="${o.id}" data-to="livraison">Confirmée, passer en livraison →</button></div>`;
+  const cxUI=cancelOpen.has(o.id)?`<div class="cxbox"><label class="ofield">Motif d'annulation<select id="cxr_${o.id}">${CANCEL_REASONS.map(r=>`<option>${esc(r)}</option>`).join("")}</select></label>
+    <div class="oacts"><button class="bk" data-cxno="${o.id}">Garder la demande</button><button class="mv to-annulee" data-cxok="${o.id}">Confirmer l'annulation</button></div></div>`
+    :`<button class="cx" data-cx="${o.id}">Annuler la demande</button>`;
+  if(st==="appeler") act=`<div class="oacts"><button class="mv to-livraison" data-move="${o.id}" data-to="livraison">Confirmée, passer en livraison →</button></div>${cxUI}`;
   if(st==="livraison") act=`<label class="ofield">Livreur<select data-livreur="${o.id}"><option value="">Choisir un livreur</option>${LIVREURS.map(n=>`<option${o.livreur===n?" selected":""}>${n}</option>`).join("")}</select></label>
-    <div class="oacts"><button class="bk" data-move="${o.id}" data-to="appeler">← À appeler</button><button class="mv to-livree" data-move="${o.id}" data-to="livree"${o.livreur?"":" disabled"}>Marquer livrée ✓</button></div>`;
+    <div class="oacts"><button class="bk" data-move="${o.id}" data-to="appeler">← À appeler</button><button class="mv to-livree" data-move="${o.id}" data-to="livree"${o.livreur?"":" disabled"}>Marquer livrée ✓</button></div>${cxUI}`;
   if(st==="livree") act=`<div class="ofield">Mode de paiement<div class="paysel"><button class="pc" data-pay="${o.id}" data-mode="especes" aria-pressed="${o.paiement==="especes"}">Espèces</button><button class="pb" data-pay="${o.id}" data-mode="cb" aria-pressed="${o.paiement==="cb"}">CB</button></div></div>
     <div class="oacts"><button class="bk" data-move="${o.id}" data-to="livraison">← En livraison</button></div>`;
+  if(st==="annulee") act=`<div class="oacts"><button class="bk" data-move="${o.id}" data-to="${o.cancelFrom||"appeler"}">↺ Rétablir la demande</button></div>`;
   return `<div class="ocard st-${st}"><div class="oh"><span class="who">${esc(o.prenom)} ${esc(o.nom)}</span><span class="meta2 tabnum">${o.id}</span></div>
     <div class="pills">${pills.join("")}</div>
     <span class="tel tabnum">${fmtTel(o.tel)}</span>
@@ -904,7 +923,7 @@ function renderOrders(){
   $("#ordCount").textContent = todo||"";$("#ordCount").hidden=!todo;$("#ordCount").title=`${todo} demande(s) à appeler`;
   $("#orderList").innerHTML = STEPS.map(([k,label])=>{const list=orders.filter(o=>o.status===k);const sum=list.reduce((a,o)=>a+o.total,0);
     return `<section class="col c-${k}" aria-label="${label}"><div class="colh"><span class="dot"></span><b>${label}</b><span class="n tabnum">${list.length}</span><span class="sum tabnum">${eur(sum)}</span></div>
-    ${list.length?list.map(orderCard).join(""):`<p class="colempty">${k==="appeler"?"Aucune demande à appeler":k==="livraison"?"Aucune livraison en cours":"Aucune demande livrée"}</p>`}</section>`}).join("");
+    ${list.length?list.map(orderCard).join(""):`<p class="colempty">${k==="appeler"?"Aucune demande à appeler":k==="livraison"?"Aucune livraison en cours":k==="livree"?"Aucune demande livrée":"Aucune annulation"}</p>`}</section>`}).join("");
 }
 function showView(v){curView=v;closeSheetRaw();closeCart();$("#shop").hidden=v!=="shop";$("#admin").hidden=v!=="admin";$("#legalView").hidden=v!=="legal";$("#openCart").hidden=v==="admin";
   $("#goAdmin").textContent=v==="admin"?"Retour à la boutique":"Espace vendeur";if(v==="admin"){renderStock();renderOrders()}else if(v==="shop")renderGrid();scrollTo(0,0);setTimeout(renderCartBar,0)}
@@ -927,9 +946,14 @@ document.addEventListener("change",e=>{
   toast(`${byId(id).name} : ${e.target.checked?"en stock":"en rupture"}`);
 });
 document.addEventListener("click",e=>{
+  const cx=e.target.closest("[data-cx]"),cxno=e.target.closest("[data-cxno]"),cxok=e.target.closest("[data-cxok]");
+  if(cx){cancelOpen.add(cx.dataset.cx);renderOrders();return}
+  if(cxno){cancelOpen.delete(cxno.dataset.cxno);renderOrders();return}
+  if(cxok){const o=orders.find(x=>x.id===cxok.dataset.cxok);if(!o)return;o.cancelFrom=o.status;o.cancelReason=$("#cxr_"+o.id).value;o.status="annulee";cancelOpen.delete(o.id);save();renderOrders();toast(`${o.prenom} ${o.nom} : demande annulée`);return}
   const m=e.target.closest("[data-move]"),pb=e.target.closest("[data-pay]");
   if(m){const o=orders.find(x=>x.id===m.dataset.move);if(!o)return;const to=m.dataset.to;
     if(to==="livree"&&!o.livreur){toast("Choisissez d'abord un livreur");return}
+    if(o.status==="annulee"){delete o.cancelFrom;delete o.cancelReason}
     o.status=to;if(to!=="livree")delete o.paiement;save();renderOrders();toast(`${o.prenom} ${o.nom} : ${STEPNAME[to]}`)}
   if(pb){const o=orders.find(x=>x.id===pb.dataset.pay);if(!o)return;o.paiement=pb.dataset.mode;save();renderOrders();toast(`Paiement enregistré : ${o.paiement==="cb"?"CB":"Espèces"}`)}
 });
