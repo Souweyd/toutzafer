@@ -386,6 +386,42 @@ label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:5
 .colempty{font-size:13px;color:var(--muted);text-align:center;padding:18px 8px;border:1.5px dashed var(--line);border-radius:12px}
 .tabbadge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;border-radius:980px;background:var(--s1);color:#fff;font-size:12px;font-weight:700}
 .tabs button{white-space:nowrap}
+.tabs{overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+@media (max-width:480px){.tabs button{padding:7px 11px;font-size:13px}}
+/* Synthèse */
+.synth{display:flex;flex-direction:column;gap:16px}
+.sy-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sy-top select{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:10px 14px;font:inherit;font-weight:600}
+.sy-note{font-size:12px;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi:last-child{grid-column:1/-1}}
+.kpi{background:var(--bg-alt);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.kpi span{font-size:12px;color:var(--muted);font-weight:600}
+.kpi b{font-family:var(--font-display);font-size:clamp(20px,2.4vw,26px);font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi small{font-size:12px;color:var(--muted)}
+.kpi.main{background:var(--brand);color:#fff}.kpi.main span,.kpi.main small{color:rgba(255,255,255,.8)}
+.sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:860px){.sgrid{grid-template-columns:minmax(0,1fr)}}
+.spanel{border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.spanel h3{margin:0;font-family:var(--font-display);font-size:17px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.spanel h3 small{font-family:var(--font);font-size:12px;color:var(--muted);font-weight:500}
+.brow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13px}
+.brow .lb{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .lb small{display:block;font-weight:500;color:var(--muted);font-size:11px}
+.brow .vl{font-weight:700;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar{height:10px;border-radius:980px;background:var(--bg-alt);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:980px;background:var(--brand)}
+.bar i.cash{background:#e0b400}.bar i.cb{background:var(--card)}.bar i.none{background:var(--line)}
+.more{align-self:flex-start;border:0;background:none;color:var(--brand-text);font-weight:600;font-size:13px;padding:0}
+.stable{overflow-x:auto}
+.stable table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;min-width:560px}
+.stable th{text-align:right;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;border-bottom:1px solid var(--line)}
+.stable td{text-align:right;padding:10px;border-bottom:1px solid var(--line)}
+.stable th:first-child,.stable td:first-child{text-align:left}
+.stable tr:last-child td{border-bottom:0;font-weight:800}
+.stable td.m{font-weight:700}
+.sempty{color:var(--muted);font-size:13px}
+.oldtoggle{border:1px dashed var(--line);background:none;border-radius:12px;padding:10px;font-size:13px;font-weight:600;color:var(--muted)}
 .pill{font-size:11px;font-weight:600;border-radius:980px;padding:3px 9px;background:var(--brand-soft);color:var(--brand-text)}
 .toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--fg);color:var(--bg);border-radius:980px;padding:10px 18px;font-size:14px;opacity:0;transition:.25s;z-index:60;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
@@ -455,9 +491,11 @@ label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:5
     <div class="tabs" role="tablist">
       <button role="tab" id="tabStock" aria-selected="true">Disponibilité</button>
       <button role="tab" id="tabOrders" aria-selected="false">Suivi des demandes <span id="ordCount" class="tabnum tabbadge" hidden></span></button>
+      <button role="tab" id="tabSynth" aria-selected="false">Synthèse</button>
     </div>
     <div class="list" id="stockList"></div>
     <div class="board" id="orderList" hidden></div>
+    <div class="synth" id="synth" hidden></div>
   </div>
 </main>
 
@@ -917,13 +955,79 @@ function orderCard(o){
     <ul>${o.lines.map(l=>`<li>${l.q} × ${esc(l.name)}</li>`).join("")}</ul>
     <span class="tot tabnum">${eur(o.total)}</span>${act}</div>`;
 }
+function seedHistory(){
+  if(store.get("seededHist",false))return;
+  let a=974;const rnd=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+  const pick=arr=>arr[Math.floor(rnd()*arr.length)];
+  const FN=["Marie","Kévin","Nadia","Teddy","Sophie","Jérôme","Laetitia","Mickaël","Audrey","Willy","Sandra","Cédric"],LN=["Hoarau","Payet","Grondin","Rivière","Fontaine","Boyer","Técher","Robert","Lauret","Maillot","Turpin","Ethève"];
+  const start=new Date("2026-07-01T09:00:00+04:00").getTime(),end=new Date("2026-10-26T18:00:00+04:00").getTime();
+  const hist=[];
+  for(let i=1;i<=46;i++){
+    const d=start+rnd()*(end-start);const n=1+Math.floor(rnd()*3);const lines=[];
+    for(let k=0;k<n;k++){const p=pick(PRODUCTS.filter(x=>x.price<60||rnd()<.25));if(lines.find(l=>l.name===p.name))continue;lines.push({name:p.name,q:rnd()<.8?1:2,price:p.price})}
+    const total=Math.round(lines.reduce((s,l)=>s+l.q*l.price,0)*100)/100;
+    const o={id:"H"+String(i).padStart(3,"0"),demo:true,date:new Date(d).toISOString(),prenom:pick(FN),nom:pick(LN),tel:"069"+(2+Math.floor(rnd()*2))+String(Math.floor(rnd()*1e6)).padStart(6,"0"),pick:pick(PICKUPS),lines,total,shipFree:true};
+    if(rnd()<.84){o.status="livree";o.livreur=pick(LIVREURS);o.paiement=rnd()<.58?"especes":"cb";o.deliveredAt=new Date(d+(1+rnd()*2)*864e5).toISOString()}
+    else{o.status="annulee";o.cancelFrom=rnd()<.6?"appeler":"livraison";if(o.cancelFrom==="livraison")o.livreur=pick(LIVREURS);o.cancelReason=pick(CANCEL_REASONS)}
+    hist.push(o);
+  }
+  orders=orders.concat(hist);store.set("seededHist",true);save();
+}
+const saleDate=o=>new Date(o.deliveredAt||o.date);
+const showOld=new Set();
+let synthPeriod="all",symore=false;
+const monthKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+const monthLabel=k=>{const [y,m]=k.split("-");const t=new Date(+y,+m-1,1).toLocaleDateString("fr-FR",{month:"long",year:"numeric"});return t[0].toUpperCase()+t.slice(1)};
+function bars(rows,cls=""){const max=Math.max(1,...rows.map(r=>r.v));return rows.map(r=>`<div class="brow"><span class="lb">${r.label}${r.sub?`<small>${r.sub}</small>`:""}</span><div class="bar"><i class="${r.cls||cls}" style="width:${(r.v/max*100).toFixed(1)}%"></i></div><span class="vl">${eur(r.v)}</span></div>`).join("")}
+function renderSynth(){
+  const inP=d=>synthPeriod==="all"||monthKey(d)===synthPeriod;
+  const sold=orders.filter(o=>o.status==="livree"&&inP(saleDate(o)));
+  const canc=orders.filter(o=>o.status==="annulee"&&inP(new Date(o.date)));
+  const ca=sold.reduce((a,o)=>a+o.total,0),nb=sold.length,items=sold.reduce((a,o)=>a+o.lines.reduce((x,l)=>x+l.q,0),0);
+  const months=[...new Set(orders.filter(o=>o.status==="livree"||o.status==="annulee").map(o=>monthKey(o.status==="livree"?saleDate(o):new Date(o.date))))].sort().reverse();
+  const enCours=orders.filter(o=>o.status==="appeler"||o.status==="livraison");
+  const pct=(a,b)=>b?Math.round(a/b*100)+" %":"–";
+  // paiement
+  const pay=[["especes","Espèces","cash"],["cb","CB","cb"],[undefined,"Non saisi","none"]].map(([k,l,c])=>{const L=sold.filter(o=>o.paiement===k);const v=L.reduce((a,o)=>a+o.total,0);return{label:l,sub:`${L.length} vente${L.length>1?"s":""} · ${pct(v,ca)}`,v,cls:c}}).filter(r=>r.v>0||r.label!=="Non saisi");
+  // livreur
+  const liv=LIVREURS.map(n=>{const L=sold.filter(o=>o.livreur===n);const cx=canc.filter(o=>o.livreur===n&&o.cancelFrom==="livraison").length;return{label:n,sub:`${L.length} livraison${L.length>1?"s":""}${cx?` · ${cx} annulée${cx>1?"s":""} sur place`:""}`,v:L.reduce((a,o)=>a+o.total,0)}}).sort((a,b)=>b.v-a.v);
+  // article
+  const art={};sold.forEach(o=>o.lines.forEach(l=>{art[l.name]=art[l.name]||{q:0,v:0};art[l.name].q+=l.q;art[l.name].v+=l.q*l.price}));
+  let arts=Object.entries(art).map(([n,x])=>({label:esc(n),sub:`${x.q} vendu${x.q>1?"s":""}`,v:x.v})).sort((a,b)=>b.v-a.v);
+  const artN=arts.length;if(!symore)arts=arts.slice(0,8);
+  // mois
+  const mrows=months.map(m=>{const S=orders.filter(o=>o.status==="livree"&&monthKey(saleDate(o))===m),C=orders.filter(o=>o.status==="annulee"&&monthKey(new Date(o.date))===m);const sum=f=>S.filter(f).reduce((a,o)=>a+o.total,0);
+    return{m,n:S.length,ca:sum(()=>true),es:sum(o=>o.paiement==="especes"),cb:sum(o=>o.paiement==="cb"),ns:sum(o=>!o.paiement),c:C.length}});
+  const T=mrows.reduce((a,r)=>({n:a.n+r.n,ca:a.ca+r.ca,es:a.es+r.es,cb:a.cb+r.cb,ns:a.ns+r.ns,c:a.c+r.c}),{n:0,ca:0,es:0,cb:0,ns:0,c:0});
+  const hasDemo=orders.some(o=>o.demo);
+  $("#synth").innerHTML=`<div class="sy-top"><label class="sr" for="syPeriod">Période</label><select id="syPeriod"><option value="all">Toute la période</option>${months.map(m=>`<option value="${m}"${m===synthPeriod?" selected":""}>${monthLabel(m)}</option>`).join("")}</select>
+      ${hasDemo?'<span class="sy-note">Inclut des ventes d’exemple pour la démonstration</span>':""}</div>
+    <div class="kpis">
+      <div class="kpi main"><span>Chiffre d’affaires livré</span><b>${eur(ca)}</b><small>${nb} vente${nb>1?"s":""}</small></div>
+      <div class="kpi"><span>Panier moyen</span><b>${nb?eur(ca/nb):"–"}</b><small>${items} article${items>1?"s":""} vendus</small></div>
+      <div class="kpi"><span>Espèces / CB</span><b>${pct(sold.filter(o=>o.paiement==="especes").reduce((a,o)=>a+o.total,0),ca)}</b><small>du CA en espèces</small></div>
+      <div class="kpi"><span>Annulations</span><b>${pct(canc.length,canc.length+nb)}</b><small>${canc.length} demande${canc.length>1?"s":""} · ${eur(canc.reduce((a,o)=>a+o.total,0))}</small></div>
+      <div class="kpi"><span>En cours</span><b>${eur(enCours.reduce((a,o)=>a+o.total,0))}</b><small>${enCours.length} à appeler ou en livraison</small></div>
+    </div>
+    <div class="sgrid">
+      <section class="spanel"><h3>Par moyen de paiement</h3>${nb?bars(pay):'<p class="sempty">Aucune vente sur la période.</p>'}</section>
+      <section class="spanel"><h3>Par livreur</h3>${nb?bars(liv):'<p class="sempty">Aucune vente sur la période.</p>'}</section>
+      <section class="spanel"><h3>Par article <small>${artN} article${artN>1?"s":""} vendus</small></h3>${artN?bars(arts):'<p class="sempty">Aucune vente sur la période.</p>'}${artN>8?`<button class="more" data-symore>${symore?"Voir moins":`Voir les ${artN} articles`}</button>`:""}</section>
+      <section class="spanel" style="grid-column:1/-1"><h3>Par mois</h3>${mrows.length?`<div class="stable"><table><thead><tr><th>Mois</th><th>Ventes</th><th>CA</th><th>Espèces</th><th>CB</th><th>Non saisi</th><th>Annulées</th></tr></thead><tbody>
+        ${mrows.map(r=>`<tr><td class="m">${monthLabel(r.m)}</td><td>${r.n}</td><td>${eur(r.ca)}</td><td>${eur(r.es)}</td><td>${eur(r.cb)}</td><td>${eur(r.ns)}</td><td>${r.c}</td></tr>`).join("")}
+        <tr><td>Total</td><td>${T.n}</td><td>${eur(T.ca)}</td><td>${eur(T.es)}</td><td>${eur(T.cb)}</td><td>${eur(T.ns)}</td><td>${T.c}</td></tr></tbody></table></div>`:'<p class="sempty">Aucune vente pour l’instant.</p>'}</section>
+    </div>`;
+}
 function renderOrders(){
-  seedDemo(); orders.forEach(normStatus);
+  seedDemo(); seedHistory(); orders.forEach(normStatus);
   const todo=orders.filter(o=>o.status==="appeler").length;
   $("#ordCount").textContent = todo||"";$("#ordCount").hidden=!todo;$("#ordCount").title=`${todo} demande(s) à appeler`;
-  $("#orderList").innerHTML = STEPS.map(([k,label])=>{const list=orders.filter(o=>o.status===k);const sum=list.reduce((a,o)=>a+o.total,0);
-    return `<section class="col c-${k}" aria-label="${label}"><div class="colh"><span class="dot"></span><b>${label}</b><span class="n tabnum">${list.length}</span><span class="sum tabnum">${eur(sum)}</span></div>
-    ${list.length?list.map(orderCard).join(""):`<p class="colempty">${k==="appeler"?"Aucune demande à appeler":k==="livraison"?"Aucune livraison en cours":k==="livree"?"Aucune demande livrée":"Aucune annulation"}</p>`}</section>`}).join("");
+  const recent=o=>Date.now()-saleDate(o).getTime()<7*864e5;
+  $("#orderList").innerHTML = STEPS.map(([k,label])=>{const all=orders.filter(o=>o.status===k).sort((a,b)=>saleDate(b)-saleDate(a));const sum=all.reduce((a,o)=>a+o.total,0);
+    const folded=(k==="livree"||k==="annulee")&&!showOld.has(k);const list=folded?all.filter(recent):all;const hiddenN=all.length-list.length;
+    return `<section class="col c-${k}" aria-label="${label}"><div class="colh"><span class="dot"></span><b>${label}</b><span class="n tabnum">${all.length}</span><span class="sum tabnum">${eur(sum)}</span></div>
+    ${list.length?list.map(orderCard).join(""):`<p class="colempty">${k==="appeler"?"Aucune demande à appeler":k==="livraison"?"Aucune livraison en cours":k==="livree"?"Aucune livraison ces 7 derniers jours":"Aucune annulation ces 7 derniers jours"}</p>`}
+    ${hiddenN?`<button class="oldtoggle" data-old="${k}">Voir les ${hiddenN} plus anciennes</button>`:(k==="livree"||k==="annulee")&&showOld.has(k)?`<button class="oldtoggle" data-old="${k}">Masquer les plus anciennes</button>`:""}</section>`}).join("");
 }
 function showView(v){curView=v;closeSheetRaw();closeCart();$("#shop").hidden=v!=="shop";$("#admin").hidden=v!=="admin";$("#legalView").hidden=v!=="legal";$("#openCart").hidden=v==="admin";
   $("#goAdmin").textContent=v==="admin"?"Retour à la boutique":"Espace vendeur";if(v==="admin"){renderStock();renderOrders()}else if(v==="shop")renderGrid();scrollTo(0,0);setTimeout(renderCartBar,0)}
@@ -946,6 +1050,8 @@ document.addEventListener("change",e=>{
   toast(`${byId(id).name} : ${e.target.checked?"en stock":"en rupture"}`);
 });
 document.addEventListener("click",e=>{
+  const od=e.target.closest("[data-old]");if(od){const k=od.dataset.old;showOld.has(k)?showOld.delete(k):showOld.add(k);renderOrders();return}
+  const sm=e.target.closest("[data-symore]");if(sm){symore=!symore;renderSynth();return}
   const cx=e.target.closest("[data-cx]"),cxno=e.target.closest("[data-cxno]"),cxok=e.target.closest("[data-cxok]");
   if(cx){cancelOpen.add(cx.dataset.cx);renderOrders();return}
   if(cxno){cancelOpen.delete(cxno.dataset.cxno);renderOrders();return}
@@ -954,7 +1060,7 @@ document.addEventListener("click",e=>{
   if(m){const o=orders.find(x=>x.id===m.dataset.move);if(!o)return;const to=m.dataset.to;
     if(to==="livree"&&!o.livreur){toast("Choisissez d'abord un livreur");return}
     if(o.status==="annulee"){delete o.cancelFrom;delete o.cancelReason}
-    o.status=to;if(to!=="livree")delete o.paiement;save();renderOrders();toast(`${o.prenom} ${o.nom} : ${STEPNAME[to]}`)}
+    o.status=to;if(to!=="livree"){delete o.paiement;delete o.deliveredAt}else o.deliveredAt=new Date().toISOString();save();renderOrders();toast(`${o.prenom} ${o.nom} : ${STEPNAME[to]}`)}
   if(pb){const o=orders.find(x=>x.id===pb.dataset.pay);if(!o)return;o.paiement=pb.dataset.mode;save();renderOrders();toast(`Paiement enregistré : ${o.paiement==="cb"?"CB":"Espèces"}`)}
 });
 document.addEventListener("change",e=>{const id=e.target.dataset?.livreur;if(!id)return;const o=orders.find(x=>x.id===id);if(!o)return;o.livreur=e.target.value||undefined;save();renderOrders();if(o.livreur)toast(`Livreur : ${o.livreur}`)});
@@ -969,8 +1075,9 @@ document.addEventListener("change",e=>{const id=e.target.dataset?.livreur;if(!id
     if(dy>110||v>.6){closeSheet()}else{sh.style.transform=""}};
   sh.addEventListener("touchend",end);sh.addEventListener("touchcancel",end);
 })();
-$("#tabStock").onclick=()=>{$("#tabStock").setAttribute("aria-selected","true");$("#tabOrders").setAttribute("aria-selected","false");$("#stockList").hidden=false;$("#orderList").hidden=true};
-$("#tabOrders").onclick=()=>{$("#tabOrders").setAttribute("aria-selected","true");$("#tabStock").setAttribute("aria-selected","false");$("#stockList").hidden=true;$("#orderList").hidden=false};
+function setTab(t){[["tabStock","stockList"],["tabOrders","orderList"],["tabSynth","synth"]].forEach(([b,c])=>{const on=b===t;$("#"+b).setAttribute("aria-selected",on);$("#"+c).hidden=!on});if(t==="tabOrders")renderOrders();if(t==="tabSynth"){renderOrders();renderSynth()}}
+$("#tabStock").onclick=()=>setTab("tabStock");$("#tabOrders").onclick=()=>setTab("tabOrders");$("#tabSynth").onclick=()=>setTab("tabSynth");
+document.addEventListener("change",e=>{if(e.target.id==="syPeriod"){synthPeriod=e.target.value;renderSynth()}});
 $("#q").addEventListener("input",e=>{query=e.target.value;renderGrid()});
 $("#catSel").addEventListener("change",e=>{cat=e.target.value;renderGrid()});
 $("#openCart").onclick=openCart;
