@@ -721,54 +721,61 @@ function leafMap(host,pts,sel,near,view){
 const CATS = [["all","Tout"],["cuisine","Cuisine"],["rangement","Rangement"],["maison","Maison"],["enfants","Bébé & enfants"],["animaux","Animaux"]];
 const CATNAME = Object.fromEntries(CATS);
 
+// Photos du catalogue du 22/09/2026 (prioritaires) ; les autres articles gardent celles du premier catalogue
+const PHOTOS={"a04":["a04-n1","a04-n2","a04-n3"],"a06":["a06-n1","a06-n2","a06-n3"],"a07":["a07-n1","a07-n2","a07-n3"],"a01":["a01-n1","a01-n2","a01-n3","a01-n4"],"a03":["a03-n1","a03-n2","a03-n3"],"a02":["a02-n1","a02-n2","a02-n3"],"a05":["a05-n1","a05-n2","a05-n3"],"a08":["a08-n1","a08-n2","a08-n3","a08-n4"],"a09":["a09-n1","a09-n2","a09-n3"],"a11":["a11-n1","a11-n2","a11-n3"],"a10":["a10-n1","a10-n2","a10-n3"],"a30":["a30-n1","a30-n2","a30-n3","a30-n4"],"a13":["a13-n1","a13-n2","a13-n3"],"a14":["a14-n1","a14-n2","a14-n3"],"a12":["a12-n1","a12-n2","a12-n3"],"a17":["a17-n1","a17-n2","a17-n3"],"a18":["a18-n1","a18-n2","a18-n3","a18-n4"],"a21":["a21-n1","a21-n2","a21-n3","a21-n4"],"a19":["a19-n1","a19-n2","a19-n3"],"a15":["a15-n1","a15-n2","a15-n3"],"a16":["a16-n1","a16-n2","a16-n3"],"a28":["a28-n1","a28-n2"],"a29":["a29-n1","a29-n2"]};
+// Articles absents du dernier catalogue : laissés en ligne mais passés en rupture
+const DISCONTINUED=["a20","a22","a23","a24","a25","a26","a27"];
 // Catalogue issu du PDF fourni (29 articles), descriptions rédigées à partir des photos
 const PRODUCTS = [
-  {n:5,cat:"cuisine",name:"Support micro-ondes",price:29.99,d:"Avec porte-ustensiles · 64 × 36 × 46 cm",
+  {n:5,cat:"cuisine",name:"Support pour micro-ondes",price:29.99,d:"Avec porte-ustensiles · 64 × 36 × 46 cm",
    desc:"Surélevez votre micro-ondes et gagnez un vrai plan de rangement en dessous pour vos épices, bocaux et huiles. Le porte-ustensiles fixé sur le côté garde couverts et spatules à portée de main.",
    specs:["Dimensions : 64 × 36 × 46 cm (L × P × H)","Structure en métal noir","Porte-ustensiles amovible sur le côté","Accueille un micro-ondes standard sur le dessus"]},
   {n:6,cat:"cuisine",name:"Lot de 6 verres",price:24.99,d:"Verres ondulés · 530 ml",
    desc:"Des verres en verre transparent au design ondulé, avec un bord festonné. Parfaits pour les cafés glacés, matchas latte, jus de fruits ou cocktails : ils mettent en valeur toutes les boissons.",
    specs:["Lot de 6 verres","Contenance : 530 ml","Verre transparent, forme ondulée","Pour boissons chaudes ou froides"]},
-  {n:7,cat:"cuisine",name:"Carafe 1,8 L",price:12.99,d:"Verre avec couvercle inox · 1800 ml",
+  {n:7,cat:"cuisine",name:"Carafe grande capacité 1,8 L",price:12.99,d:"Verre avec couvercle inox · 1800 ml",
    desc:"Une grande carafe en verre transparent avec couvercle en inox et poignée. Idéale pour servir l'eau citronnée, les jus maison ou le thé glacé à table et la garder au frais au réfrigérateur.",
    specs:["Contenance : 1800 ml","Verre transparent","Couvercle inox avec bec verseur","Poignée intégrée"]},
-  {n:10,cat:"cuisine",name:"7 boîtes pour frigo",price:29.99,d:"Boîtes transparentes empilables",
+  {n:10,cat:"cuisine",name:"Lot de 7 boîtes pour frigo",price:29.99,d:"Boîtes transparentes empilables",
    desc:"Organisez votre réfrigérateur avec ces 7 boîtes transparentes de plusieurs tailles. Elles s'empilent, laissent voir le contenu d'un coup d'œil et gardent fruits, légumes et petits produits bien rangés.",
    specs:["Lot de 7 boîtes de différentes tailles","Plastique transparent","Avec couvercles, empilables","Pour fruits, légumes, fromages, snacks…"]},
-  {n:11,cat:"cuisine",name:"Lot de 5 boîtes en verre",price:29.99,d:"Couvercles hermétiques · 1040 ml",
+  {n:11,cat:"cuisine",name:"Lot de 5 boîtes en verre",price:34.99,d:"Couvercles hermétiques · 1040 ml",
    desc:"Des boîtes de conservation en verre avec couvercles à 4 clips hermétiques. Pratiques pour préparer vos repas à l'avance, emporter votre déjeuner ou conserver les restes au frais.",
    specs:["Lot de 5 boîtes","Contenance : 1040 ml","Verre transparent","Couvercles hermétiques à 4 clips"]},
+  {n:30,cat:"cuisine",name:"Lot de 14 boîtes en plastique rigide",price:34.99,d:"Couvercles à clips · tailles variées",
+   desc:"Un grand lot de 14 boîtes de conservation en plastique rigide transparent, avec couvercles à clips. Plusieurs tailles qui s’empilent, pour préparer les repas de la semaine, ranger les restes ou emporter son déjeuner.",
+   specs:["Lot de 14 boîtes de différentes tailles","Plastique rigide transparent","Couvercles hermétiques à 4 clips","Empilables"]},
   {n:15,cat:"cuisine",name:"Support à fruits 3 niveaux",price:24.99,d:"Corbeilles sur pied en bois",
    desc:"Trois coupes vert foncé superposées sur une structure en bois, pour présenter fruits et légumes sans les écraser. Décoratif sur un plan de travail ou une table, il libère de la place.",
    specs:["3 coupes vert foncé","Hauteur totale : 35 cm","Coupes de 25, 26,5 et 28 cm de long","Pied en bois"]},
-  {n:17,cat:"cuisine",name:"4 étagères magnétiques frigo",price:24.99,d:"Lot de 4, 2 tailles",
+  {n:17,cat:"cuisine",name:"Lot de 4 magnets pour frigo",price:24.99,d:"Lot de 4, 2 tailles",
    desc:"Des étagères aimantées qui se fixent sur le côté du réfrigérateur, sans perçage. Elles accueillent épices, film alimentaire, papier aluminium ou torchons et font gagner de la place dans la cuisine.",
    specs:["Lot de 4 étagères noires","2 × 27 cm et 2 × 29,5 cm de long","Profondeur 8,5 à 9,5 cm","Fixation magnétique, sans perçage"]},
   {n:27,cat:"cuisine",name:"Tête de robinet orientable",price:24.99,d:"4 modes de jet",
    desc:"Une tête de robinet qui s'adapte sur votre robinet de cuisine et pivote dans tous les sens. Elle propose plusieurs jets, dont un jet cascade large et un mode anti-éclaboussures, pour laver fruits et vaisselle plus facilement.",
    specs:["4 modes : pluie, bulles anti-éclaboussures, cascade, double jet","Rotation multidirectionnelle","Finition chromée","Se fixe sur le bec du robinet"]},
-  {n:28,cat:"cuisine",name:"Kit ustensiles 14 pièces",price:19.99,d:"Silicone et bois, avec pot",
+  {n:28,cat:"cuisine",name:"Kit ustensiles complet 14 pièces",price:19.99,d:"Silicone et bois, avec pot",
    desc:"Un ensemble complet d'ustensiles de cuisine en silicone noir avec manches en bois, livré avec son pot de rangement. Le silicone protège vos poêles et casseroles antiadhésives.",
    specs:["14 pièces avec pot de rangement","Spatules, louche, écumoire, cuillère à pâtes, fouet, pince, pinceau…","Têtes en silicone noir","Manches en bois"]},
-  {n:1,cat:"rangement",name:"Lot de 3 bacs",price:29.99,d:"Bacs avec couvercle · 36,5 × 26 × 24 cm",
+  {n:1,cat:"rangement",name:"Lot de 3 bacs de rangement",price:29.99,d:"Bacs avec couvercle · 36,5 × 26 × 24 cm",
    desc:"Des bacs de rangement blancs avec couvercle et poignées découpées. Idéals pour ranger linge, produits d'entretien ou papier toilette dans une salle de bain, une buanderie ou un placard.",
    specs:["Lot de 3 bacs","Dimensions : 36,5 × 26 × 24 cm","Avec couvercle","Poignées intégrées"]},
-  {n:2,cat:"rangement",name:"3 petits supports",price:29.99,d:"Vendu par lot de 3 · 30 × 20 × 16 cm",
+  {n:2,cat:"rangement",name:"Lot de 3 petits supports en bois",price:29.99,d:"Vendu par lot de 3 · 30 × 20 × 16 cm",
    desc:"Des petites étagères d'appoint pour doubler l'espace dans vos placards ou sur le plan de travail. On range les assiettes dessus et les casseroles dessous.",
    specs:["Vendu par lot de 3","Dimensions : 30 × 20 × 16 cm","Plateau aspect bois, pieds métal blanc","Pour placards, plan de travail, salle de bain"]},
-  {n:3,cat:"rangement",name:"5 petits paniers",price:24.99,d:"Paniers à poignées · lot de 5",
+  {n:3,cat:"rangement",name:"Lot de 5 paniers de rangement",price:24.99,d:"Paniers à poignées · lot de 5",
    desc:"Des paniers blancs avec poignée centrale et anses latérales, faciles à transporter d'une pièce à l'autre. Parfaits pour les produits ménagers, les affaires de bébé, les jouets ou la salle de bain.",
    specs:["Lot de 5 paniers","Dimensions : 30 × 11,5 × 20 cm environ","Poignée centrale et anses latérales","Plastique blanc"]},
-  {n:4,cat:"rangement",name:"Petit meuble à chaussures",price:29.99,d:"3 niveaux · 60 × 24 × 33 cm",
+  {n:4,cat:"rangement",name:"Étagère à chaussures",price:29.99,d:"3 niveaux · 60 × 24 × 33 cm",
    desc:"Un meuble à chaussures compact à 3 étagères aux bords arrondis, aspect bois. Il se glisse facilement dans une entrée ou un couloir et range une dizaine de paires.",
    specs:["3 niveaux","Dimensions : 60 × 24 × 33 cm","Aspect bois, bords arrondis","Format compact pour l'entrée"]},
-  {n:8,cat:"rangement",name:"Porte-vêtements",price:29.99,d:"Sur roulettes · 110 × 150 cm",
+  {n:8,cat:"rangement",name:"Porte-vêtements sur roulettes",price:29.99,d:"Sur roulettes · 110 × 150 cm",
    desc:"Un portant à vêtements en métal noir avec double barre de suspension, crochets latéraux et deux étagères basses pour les chaussures ou les boîtes. Monté sur roulettes, il se déplace facilement.",
    specs:["Dimensions : 110 cm de large, 150 cm de haut","Structure en métal noir","2 étagères basses et crochets latéraux","Sur roulettes"]},
   {n:26,cat:"rangement",name:"Étagère de stockage",price:99.99,d:"Métal · 2 m × 60 cm",
    desc:"Une grande étagère en métal bleu à 4 niveaux, conçue pour le stockage lourd : garage, réserve, atelier ou local professionnel. Elle accueille cartons et charges volumineuses.",
    specs:["4 niveaux","Dimensions : 2 m de long × 60 cm de profondeur × 2 m de haut","Structure en métal bleu","Pour garage, réserve, atelier"]},
-  {n:29,cat:"rangement",name:"Meuble bibliothèque",price:49.99,d:"Cubes décalés · 141,5 cm",
+  {n:29,cat:"rangement",name:"Étagère bibliothèque",price:45.00,d:"Cubes décalés · 141,5 cm",
    desc:"Une bibliothèque design faite de cubes empilés et décalés, en métal fin. Elle range livres, enceinte ou objets déco tout en apportant une touche graphique au salon ou à la chambre.",
    specs:["Hauteur : 141,5 cm","Base : 50 × 28 cm","Cubes de tailles dégressives","Structure en métal"]},
   {n:9,cat:"maison",name:"Étendoir à linge",price:29.99,d:"Plusieurs niveaux · 170 cm",
@@ -777,7 +784,7 @@ const PRODUCTS = [
   {n:24,cat:"maison",name:"Porte-serviettes",price:19.99,d:"3 barres · 44 × 86 cm",
    desc:"Un porte-serviettes sur pied en métal noir avec 3 barres à hauteurs différentes. Il se pose sans perçage dans la salle de bain et permet de faire sécher plusieurs serviettes en même temps.",
    specs:["3 barres à 66, 76 et 86 cm","Largeur 44 cm, profondeur 21 cm","Métal noir","Sur pied, sans perçage"]},
-  {n:16,cat:"maison",name:"Support écran ordinateur",price:29.99,d:"Rehausseur avec rangement",
+  {n:16,cat:"maison",name:"Support pour écran d’ordinateur",price:29.99,d:"Rehausseur avec rangement",
    desc:"Un rehausseur blanc qui place votre écran à la bonne hauteur et libère le bureau. L'espace en dessous accueille téléphone, tablette, carnets ou clavier.",
    specs:["Dimensions : 50 × 20 cm, hauteur 13,5 cm","2 niveaux","Finition blanche","Rangement sous l'écran"]},
   {n:23,cat:"maison",name:"Support jeux vidéo",price:35.00,d:"Tour de rangement manettes et jeux",
@@ -789,10 +796,10 @@ const PRODUCTS = [
   {n:12,cat:"enfants",name:"Mallette de dessin complète",price:29.99,d:"2 modèles au choix",variants:[{name:"Astronaute",img:1},{name:"Licorne",img:2}],
    desc:"Une grande mallette pour les petits artistes, avec crayons de couleur, feutres, pastels, peinture et accessoires, tout rangé dans une valise qui se transporte facilement. Une belle idée cadeau.",
    specs:["Crayons, feutres, pastels, aquarelle et accessoires","Mallette rigide avec poignée","2 modèles : astronaute (bleu) ou licorne (rose)"]},
-  {n:13,cat:"enfants",name:"Harnais de marche bébé",price:24.99,d:"Aide aux premiers pas",
+  {n:13,cat:"enfants",name:"Harnais de marche pour bébé",price:24.99,d:"Aide aux premiers pas",
    desc:"Un harnais qui accompagne bébé dans ses premiers pas. L'adulte le tient par la poignée rembourrée sans avoir à se pencher, et l'enfant marche en sécurité.",
    specs:["Gilet ajustable avec entrejambe","Poignée rembourrée pour l'adulte","Sangles réglables","Coloris bleu"]},
-  {n:14,cat:"enfants",name:"Protège-tête bébé",price:19.99,d:"Coussin dorsal anti-chute",
+  {n:14,cat:"enfants",name:"Protège-tête pour bébé",price:19.99,d:"Coussin dorsal anti-chute",
    desc:"Un petit coussin à porter comme un sac à dos, qui amortit les chutes en arrière quand bébé apprend à s'asseoir ou à marcher. Sa forme de renne amuse les enfants.",
    specs:["Coussin rembourré pour la tête","Se porte comme un sac à dos","Sangles réglables","Motif renne, rouge et vert"]},
   {n:18,cat:"animaux",name:"Arbre à chat",price:69.99,d:"Plusieurs niveaux · 115 cm",
@@ -810,7 +817,7 @@ const PRODUCTS = [
   {n:22,cat:"animaux",name:"Boîte à croquettes",price:4.99,d:"Hermétique avec verseur",
    desc:"Une boîte transparente avec couvercle hermétique, poignée et verre doseur. Elle garde les croquettes fraîches et à l'abri, et facilite le service.",
    specs:["Hauteur : 29 cm, largeur : 15 cm","Couvercle hermétique","Verre doseur inclus","Pour croquettes de chat ou de chien"]}
-].map(p=>{const k=String(p.n).padStart(2,"0");return {...p,id:"a"+k,base:[1,2,3].map(j=>`a${k}-${j}`),imgs:[1,2,3].map(j=>`img/w/a${k}-${j}-720.webp`)}});
+].map(p=>{const k=String(p.n).padStart(2,"0"),id="a"+k,base=PHOTOS[id]||[1,2,3].map(j=>`a${k}-${j}`);return {...p,id,base,imgs:base.map(b=>`img/w/${b}-720.webp`)}});
 // photos allégées : 360 px pour les vignettes, 720 px pour les grands formats
 const SZ_CARD="(max-width:640px) 46vw, (max-width:900px) 31vw, 260px", SZ_BIG="(max-width:700px) 100vw, 480px";
 const srcset=(p,i)=>`img/w/${p.base[i]}-360.webp 360w, img/w/${p.base[i]}-720.webp 720w`;
@@ -827,7 +834,8 @@ const store = {
   get(k,d){try{const v=localStorage.getItem("tz2_"+k);return v?JSON.parse(v):d}catch(e){return d}},
   set(k,v){try{localStorage.setItem("tz2_"+k,JSON.stringify(v))}catch(e){}}
 };
-let outOfStock = new Set(store.get("oos",["a18","a26"])); // 2 ruptures d'exemple
+let outOfStock = new Set(store.get("oos",DISCONTINUED));
+if(store.get("oosv",1)<2){outOfStock.delete("a18");DISCONTINUED.forEach(id=>outOfStock.add(id));store.set("oosv",2);store.set("oos",[...outOfStock])}
 let cart = store.get("cart",{});
 let orders = store.get("orders",[]);
 let cat = "all", query = "", sortBy = "az", drawerView = "cart", sheetId = null, sheetImg = 0, sheetVar = "";
