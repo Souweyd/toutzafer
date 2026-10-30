@@ -516,6 +516,114 @@ label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:5
 .toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--fg);color:var(--bg);border-radius:980px;padding:10px 18px;font-size:14px;opacity:0;transition:.25s;z-index:60;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+#admin .admin{padding-block:28px 40px}
+#admin .banner{border-radius:14px;padding:12px 16px;font-size:14px;margin-top:16px;background:var(--warn-soft);color:var(--warn)}
+#admin .tbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+#admin .tbar .sp{flex:1}
+#admin .btn{border:0;border-radius:980px;padding:10px 18px;font-size:14px;font-weight:600;background:var(--bg-alt);color:var(--fg);white-space:nowrap}
+#admin .btn.pri{background:var(--brand);color:var(--brand-fg)}
+#admin .btn.sm{padding:7px 13px;font-size:13px}
+#admin .btn.danger{background:var(--s4-bg);color:var(--s4)}
+#admin .btn:disabled{opacity:.45;cursor:not-allowed}
+#admin .inp,#admin .sel,#admin .ta{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;width:100%;min-width:0}
+#admin .ta{resize:vertical;min-height:90px;line-height:1.45}
+#admin .tbar .inp{width:auto;flex:1 1 200px}
+#admin .tbar .sel{width:auto}
+#admin .fld{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:var(--muted)}
+#admin .fld small{font-weight:500}
+#admin .frow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:560px){#admin .frow{grid-template-columns:minmax(0,1fr)}}
+/* liste articles */
+.plist{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+#admin .prow{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+#admin .prow:last-child{border-bottom:0}
+#admin .prow:hover{background:var(--bg-alt)}
+#admin .prow .mini{width:56px;height:56px;border-radius:12px;object-fit:cover;background:var(--tile)}
+#admin .prow .t{font-weight:600;font-size:14px;overflow-wrap:anywhere}
+#admin .prow .u{font-size:12px;color:var(--muted)}
+#admin .prow .pills{margin-top:4px}
+#admin .flag{font-size:11px;font-weight:700;border-radius:980px;padding:2px 8px;white-space:nowrap}
+#admin .f-dirty{background:var(--s1-bg);color:var(--s1)}
+#admin .f-desc{background:var(--card-bg);color:var(--card)}
+#admin .f-oos{background:var(--warn-soft);color:var(--warn)}
+#admin .f-hid{background:var(--bg-alt);color:var(--muted)}
+#admin .f-new{background:var(--s2-bg);color:var(--s2)}
+#admin .empty{color:var(--muted);text-align:center;padding:40px 16px;border:1.5px dashed var(--line);border-radius:var(--r);font-size:14px}
+/* imports */
+.imps{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+#admin .imp{display:flex;gap:12px;align-items:flex-start;background:var(--bg-alt);border-radius:14px;padding:12px 14px;font-size:13px}
+#admin .imp .ic{width:34px;height:34px;border-radius:9px;background:var(--s4-bg);color:var(--s4);display:grid;place-items:center;font-weight:800;font-size:10px;flex:none}
+#admin .imp b{display:block;font-size:14px;overflow-wrap:anywhere}
+#admin .imp .res{white-space:pre-wrap;margin-top:6px;color:var(--fg)}
+#admin .imp .meta{color:var(--muted)}
+/* boîte de dialogue */
+dialog{border:0;border-radius:22px;padding:0;width:min(640px,calc(100% - 24px));max-height:calc(100dvh - 24px);box-shadow:0 20px 60px rgba(0,0,0,.25);color:var(--fg);background:var(--bg)}
+#admin dialog::backdrop{background:rgba(0,0,0,.4)}
+#admin .dh{display:flex;align-items:center;gap:12px;padding:18px 20px 8px;position:sticky;top:0;background:var(--bg);z-index:2}
+#admin .dh h2{margin:0;font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-.02em;flex:1}
+#admin .x{border:0;background:var(--bg-alt);width:34px;height:34px;border-radius:50%;font-size:18px;line-height:1}
+#admin .db{padding:8px 20px 20px;display:flex;flex-direction:column;gap:14px}
+#admin .df{display:flex;gap:8px;justify-content:flex-end;padding:12px 20px 18px;position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--line);flex-wrap:wrap}
+#admin .df .sp{flex:1}
+#admin .warnbox{background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:10px 12px;font-size:13px}
+#admin .okbox{background:var(--s3-bg);color:var(--s3);border-radius:12px;padding:10px 12px;font-size:13px}
+#admin .hint{font-size:12px;color:var(--muted);font-weight:500}
+#admin .lines{display:flex;flex-direction:column;gap:6px}
+#admin .lrow{display:grid;grid-template-columns:56px minmax(0,1fr) 96px 34px;gap:6px;align-items:center}
+#admin .lrow .inp{padding:8px 10px}
+#admin .rm{border:0;background:var(--bg-alt);border-radius:10px;height:36px;color:var(--muted)}
+#admin .ltot{display:flex;justify-content:space-between;font-weight:800;font-size:16px;padding-top:4px}
+/* photos */
+.phs{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+#admin .ph{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--tile)}
+#admin .ph img{width:100%;height:100%;object-fit:cover}
+#admin .ph .pa{position:absolute;inset:auto 4px 4px;display:flex;gap:4px;justify-content:space-between}
+#admin .ph .pa button{border:0;background:rgba(255,255,255,.92);border-radius:8px;width:28px;height:28px;font-size:13px;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+#admin .ph .n1{position:absolute;top:4px;left:4px;background:var(--brand);color:#fff;font-size:10px;font-weight:700;border-radius:980px;padding:2px 7px}
+#admin .addph{aspect-ratio:1;border:1.5px dashed var(--line);border-radius:12px;display:grid;place-items:center;text-align:center;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;padding:6px}
+#admin .addph input{display:none}
+#admin .sws{display:flex;flex-wrap:wrap;gap:18px}
+/* barre de publication */
+.pubbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:30;width:min(760px,calc(100% - 24px));background:var(--fg);color:var(--bg);border-radius:20px;padding:10px 10px 10px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#admin .pubbar .pt{flex:1;min-width:0;display:flex;flex-direction:column;font-size:12px;line-height:1.35}
+#admin .pubbar .pt b{font-size:14px}
+#admin .pubbar .pt span{opacity:.75;overflow:hidden;text-overflow:ellipsis}
+#admin .pubbar .btn{background:var(--brand);color:#fff}
+#admin .pubbar.ok .btn{background:rgba(255,255,255,.14)}
+#admin .dotst{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;background:#8e8e93}
+#admin .dotst.run{background:#ffcc00;animation:pulse 1.2s infinite}
+#admin .dotst.ok{background:#34c759}
+#admin .dotst.err{background:#ff453a}
+#admin .dotst.wait{background:#ff9f0a}
+@keyframes pulse{50%{opacity:.35}}
+#admin .setp{border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+#admin .setp h3{margin:0;font-family:var(--font-display);font-size:17px}
+#admin .chips{display:flex;flex-wrap:wrap;gap:8px}
+#admin .chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg-alt);border-radius:980px;padding:6px 6px 6px 12px;font-size:14px;font-weight:600}
+#admin .chip button{border:0;background:var(--bg);border-radius:50%;width:24px;height:24px;color:var(--muted)}
+#admin .addrow{display:flex;gap:8px}
+#admin .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#admin .ocard .tel{color:var(--fg);text-decoration:none}
+#admin .busy{opacity:.6;pointer-events:none}
+#admin .tabbadge.penb{background:var(--s2)}
+#admin .pen{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:14px;align-items:start;padding:14px;border-bottom:1px solid var(--line)}
+#admin .pen:last-child{border-bottom:0}
+#admin .pen .mini{width:56px;height:56px;border-radius:12px;object-fit:cover;background:var(--tile)}
+#admin .pen .ic{width:56px;height:56px;border-radius:12px;background:var(--s4-bg);color:var(--s4);display:grid;place-items:center;font-weight:800;font-size:12px}
+#admin .pen b{font-size:14px;overflow-wrap:anywhere}
+#admin .pen ul{margin:4px 0 4px;padding-left:18px;font-size:13px}
+#admin .pacts{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+@media (max-width:560px){#admin .pen{grid-template-columns:48px minmax(0,1fr)}
+#admin .pen .mini,#admin .pen .ic{width:48px;height:48px}
+#admin .pacts{grid-column:1/-1;flex-direction:row;justify-content:flex-end}}
+#admin #pubGo{cursor:pointer}
+#admin .fld .inp,#admin .fld .sel,#admin .fld .ta{font-weight:400;color:var(--fg)}
+@media (max-width:560px){#admin .lrow{grid-template-columns:64px minmax(0,1fr) 36px}
+#admin .lrow [data-ln]{grid-column:1/-1;order:-1}
+#admin .lrow{padding-bottom:8px;border-bottom:1px solid var(--line)}}
+#admin{padding-bottom:110px}
+#admin .whoami{font-size:13px;color:var(--muted);margin:6px 0 0}
+.top .link[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -525,6 +633,7 @@ label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:5
   <div class="wrap">
     <button class="logo" id="goHome" aria-label="Tout'zafer, accueil">Tout’zafer.</button>
     <div class="sp"></div>
+    <button class="link" id="goAdmin" hidden>Espace vendeur</button>
     <button class="cartbtn" id="openCart" aria-label="Ouvrir le panier">Panier <span class="n tabnum" id="cartCount">0</span></button>
   </div>
 </header>
@@ -577,6 +686,59 @@ label.fl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:5
       <div class="contact-r"><a class="soc soc-wa" id="waLink" target="_blank" rel="noopener"><img src="img/ico/whatsapp.png" alt="" width="24" height="24">WhatsApp</a><a class="soc soc-fb" href="https://www.facebook.com/p/Toutzafer-61572552450737/" target="_blank" rel="noopener"><img src="img/ico/facebook.png" alt="" width="24" height="24">Facebook</a></div>
     </section>
   </div>
+</main>
+
+<main id="admin" hidden>
+<div class="wrap admin">
+  <h1>Espace vendeur</h1><p class="whoami" id="who"></p>
+  <div class="banner" id="offline" hidden>Base de données indisponible : ouvrez cette page depuis claude.ai, connecté à votre compte, pour voir et modifier les données.</div>
+  <div class="tabs" role="tablist">
+    <button role="tab" data-tab="orders" aria-selected="true">Demandes <span id="ordCount" class="tabnum tabbadge" hidden></span></button>
+    <button role="tab" data-tab="products" aria-selected="false">Articles</button>
+    <button role="tab" data-tab="pending" aria-selected="false">À publier <span id="penCount" class="tabnum tabbadge penb" hidden></span></button>
+    <button role="tab" data-tab="synth" aria-selected="false">Synthèse</button>
+    <button role="tab" data-tab="settings" aria-selected="false">Réglages</button>
+  </div>
+
+  <section id="v-orders">
+    <div class="tbar"><button class="btn pri" id="pasteBtn">Coller une demande</button><span class="hint">Copiez le message WhatsApp ou SMS du client, puis collez-le ici.</span></div>
+    <div class="board" id="orderList"></div>
+  </section>
+
+  <section id="v-products" hidden>
+    <div class="tbar">
+      <input class="inp" id="pq" type="search" placeholder="Rechercher un article" aria-label="Rechercher un article">
+      <select class="sel" id="pf" aria-label="Filtrer">
+        <option value="all">Tous les articles</option><option value="dirty">Modifiés, non publiés</option><option value="desc">Description à rédiger</option><option value="oos">En rupture</option><option value="hid">Masqués du site</option>
+      </select>
+      <button class="btn pri" id="newBtn">Nouvel article</button>
+      <label class="btn" id="pdfLbl">Déposer un catalogue PDF<input type="file" id="pdfIn" accept="application/pdf" hidden></label>
+    </div>
+    <div class="imps" id="imps"></div>
+    <div class="plist" id="prodList"></div>
+  </section>
+
+  <section id="v-pending" hidden>
+    <p class="hint" style="margin:0 0 14px;font-size:13px">Ces changements sont déjà visibles sur cette page. Ils partiront sur le site public (souweyd.github.io/toutzafer) quand vous appuierez sur « Publier sur le site public » ; Claude rédigera alors les descriptions laissées vides.</p>
+    <div id="penList"></div>
+  </section>
+
+  <section id="v-synth" hidden><div class="synth" id="synth"></div></section>
+
+  <section id="v-settings" hidden>
+    <div class="setp"><h3>Livreurs</h3><div class="chips" id="livChips"></div>
+      <div class="addrow"><input class="inp" id="livIn" placeholder="Prénom du livreur" aria-label="Prénom du livreur"><button class="btn" id="livAdd">Ajouter</button></div></div>
+    <div class="setp"><h3>Publication sur le site</h3>
+      <p class="hint" style="margin:0;font-size:13px">Vos modifications d’articles s’affichent tout de suite sur cette page Claude. « Publier sur le site public » transmet à Claude les articles modifiés et les catalogues déposés. Claude rédige les descriptions laissées vides, prépare les photos puis met à jour la boutique. Quand le propriétaire appuie, la mise à jour démarre tout de suite. Sinon, la demande est prise en compte au prochain passage, toutes les heures de 8 h à 22 h.</p>
+      <div id="syncInfo" class="hint"></div></div>
+  </section>
+</div>
+<div class="pubbar ok" id="pubbar">
+  <div class="pt" id="pubGo" role="button" tabindex="0" title="Voir le détail"><b id="pubCount">Chargement…</b><span id="pubState"></span></div>
+  <button class="btn" id="pubBtn">Publier sur le site public</button>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlgT"></dialog>
 </main>
 
 <main id="legalView" hidden>
@@ -706,12 +868,14 @@ const CATNAME = Object.fromEntries(CATS);
 
 // Photos du catalogue du 22/09/2026 (prioritaires) ; les autres articles gardent celles du premier catalogue
 /*CATALOGUE-DEBUT*/window.TZ_CATALOGUE=[{"id":"a01","n":1,"cat":"rangement","name":"Lot de 3 bacs de rangement","price":29.99,"d":"Bacs avec couvercle · 36,5 × 26 × 24 cm","desc":"Des bacs de rangement blancs avec couvercle et poignées découpées. Idéals pour ranger linge, produits d'entretien ou papier toilette dans une salle de bain, une buanderie ou un placard.","specs":["Lot de 3 bacs","Dimensions : 36,5 × 26 × 24 cm","Avec couvercle","Poignées intégrées"],"base":["a01-n1","a01-n2","a01-n3","a01-n4"],"oos":false},{"id":"a02","n":2,"cat":"rangement","name":"Lot de 3 petits supports en bois","price":29.99,"d":"Vendu par lot de 3 · 30 × 20 × 16 cm","desc":"Des petites étagères d'appoint pour doubler l'espace dans vos placards ou sur le plan de travail. On range les assiettes dessus et les casseroles dessous.","specs":["Vendu par lot de 3","Dimensions : 30 × 20 × 16 cm","Plateau aspect bois, pieds métal blanc","Pour placards, plan de travail, salle de bain"],"base":["a02-n1","a02-n2","a02-n3"],"oos":false},{"id":"a03","n":3,"cat":"rangement","name":"Lot de 5 paniers de rangement","price":24.99,"d":"Paniers à poignées · lot de 5","desc":"Des paniers blancs avec poignée centrale et anses latérales, faciles à transporter d'une pièce à l'autre. Parfaits pour les produits ménagers, les affaires de bébé, les jouets ou la salle de bain.","specs":["Lot de 5 paniers","Dimensions : 30 × 11,5 × 20 cm environ","Poignée centrale et anses latérales","Plastique blanc"],"base":["a03-n1","a03-n2","a03-n3"],"oos":false},{"id":"a04","n":4,"cat":"rangement","name":"Étagère à chaussures","price":29.99,"d":"3 niveaux · 60 × 24 × 33 cm","desc":"Un meuble à chaussures compact à 3 étagères aux bords arrondis, aspect bois. Il se glisse facilement dans une entrée ou un couloir et range une dizaine de paires.","specs":["3 niveaux","Dimensions : 60 × 24 × 33 cm","Aspect bois, bords arrondis","Format compact pour l'entrée"],"base":["a04-n1","a04-n2","a04-n3"],"oos":false},{"id":"a05","n":5,"cat":"cuisine","name":"Support pour micro-ondes","price":29.99,"d":"Avec porte-ustensiles · 64 × 36 × 46 cm","desc":"Surélevez votre micro-ondes et gagnez un vrai plan de rangement en dessous pour vos épices, bocaux et huiles. Le porte-ustensiles fixé sur le côté garde couverts et spatules à portée de main.","specs":["Dimensions : 64 × 36 × 46 cm (L × P × H)","Structure en métal noir","Porte-ustensiles amovible sur le côté","Accueille un micro-ondes standard sur le dessus"],"base":["a05-n1","a05-n2","a05-n3"],"oos":false},{"id":"a06","n":6,"cat":"cuisine","name":"Lot de 6 verres","price":24.99,"d":"Verres ondulés · 530 ml","desc":"Des verres en verre transparent au design ondulé, avec un bord festonné. Parfaits pour les cafés glacés, matchas latte, jus de fruits ou cocktails : ils mettent en valeur toutes les boissons.","specs":["Lot de 6 verres","Contenance : 530 ml","Verre transparent, forme ondulée","Pour boissons chaudes ou froides"],"base":["a06-n1","a06-n2","a06-n3"],"oos":false},{"id":"a07","n":7,"cat":"cuisine","name":"Carafe grande capacité 1,8 L","price":12.99,"d":"Verre avec couvercle inox · 1800 ml","desc":"Une grande carafe en verre transparent avec couvercle en inox et poignée. Idéale pour servir l'eau citronnée, les jus maison ou le thé glacé à table et la garder au frais au réfrigérateur.","specs":["Contenance : 1800 ml","Verre transparent","Couvercle inox avec bec verseur","Poignée intégrée"],"base":["a07-n1","a07-n2","a07-n3"],"oos":false},{"id":"a08","n":8,"cat":"rangement","name":"Porte-vêtements sur roulettes","price":29.99,"d":"Sur roulettes · 110 × 150 cm","desc":"Un portant à vêtements en métal noir avec double barre de suspension, crochets latéraux et deux étagères basses pour les chaussures ou les boîtes. Monté sur roulettes, il se déplace facilement.","specs":["Dimensions : 110 cm de large, 150 cm de haut","Structure en métal noir","2 étagères basses et crochets latéraux","Sur roulettes"],"base":["a08-n1","a08-n2","a08-n3","a08-n4"],"oos":false},{"id":"a09","n":9,"cat":"maison","name":"Étendoir à linge","price":29.99,"d":"Plusieurs niveaux · 170 cm","desc":"Un étendoir vertical à plusieurs niveaux avec barres de suspension pour cintres, ailes rabattables et étagère basse pour les chaussures. Monté sur roulettes, il passe facilement de l'intérieur au balcon.","specs":["Hauteur : 170 cm, largeur dépliée : 119 cm","Plusieurs niveaux de séchage","Barre pour cintres et étagère basse","Sur roulettes"],"base":["a09-n1","a09-n2","a09-n3"],"oos":false},{"id":"a10","n":10,"cat":"cuisine","name":"Lot de 7 boîtes pour frigo","price":29.99,"d":"Boîtes transparentes empilables","desc":"Organisez votre réfrigérateur avec ces 7 boîtes transparentes de plusieurs tailles. Elles s'empilent, laissent voir le contenu d'un coup d'œil et gardent fruits, légumes et petits produits bien rangés.","specs":["Lot de 7 boîtes de différentes tailles","Plastique transparent","Avec couvercles, empilables","Pour fruits, légumes, fromages, snacks…"],"base":["a10-n1","a10-n2","a10-n3"],"oos":false},{"id":"a11","n":11,"cat":"cuisine","name":"Lot de 5 boîtes en verre","price":34.99,"d":"Couvercles hermétiques · 1040 ml","desc":"Des boîtes de conservation en verre avec couvercles à 4 clips hermétiques. Pratiques pour préparer vos repas à l'avance, emporter votre déjeuner ou conserver les restes au frais.","specs":["Lot de 5 boîtes","Contenance : 1040 ml","Verre transparent","Couvercles hermétiques à 4 clips"],"base":["a11-n1","a11-n2","a11-n3"],"oos":false},{"id":"a12","n":12,"cat":"enfants","name":"Mallette de dessin complète","price":29.99,"d":"2 modèles au choix","desc":"Une grande mallette pour les petits artistes, avec crayons de couleur, feutres, pastels, peinture et accessoires, tout rangé dans une valise qui se transporte facilement. Une belle idée cadeau.","specs":["Crayons, feutres, pastels, aquarelle et accessoires","Mallette rigide avec poignée","2 modèles : astronaute (bleu) ou licorne (rose)"],"base":["a12-n1","a12-n2","a12-n3"],"oos":false,"variants":[{"name":"Astronaute","img":1},{"name":"Licorne","img":2}]},{"id":"a13","n":13,"cat":"enfants","name":"Harnais de marche pour bébé","price":24.99,"d":"Aide aux premiers pas","desc":"Un harnais qui accompagne bébé dans ses premiers pas. L'adulte le tient par la poignée rembourrée sans avoir à se pencher, et l'enfant marche en sécurité.","specs":["Gilet ajustable avec entrejambe","Poignée rembourrée pour l'adulte","Sangles réglables","Coloris bleu"],"base":["a13-n1","a13-n2","a13-n3"],"oos":false},{"id":"a14","n":14,"cat":"enfants","name":"Protège-tête pour bébé","price":19.99,"d":"Coussin dorsal anti-chute","desc":"Un petit coussin à porter comme un sac à dos, qui amortit les chutes en arrière quand bébé apprend à s'asseoir ou à marcher. Sa forme de renne amuse les enfants.","specs":["Coussin rembourré pour la tête","Se porte comme un sac à dos","Sangles réglables","Motif renne, rouge et vert"],"base":["a14-n1","a14-n2","a14-n3"],"oos":false},{"id":"a15","n":15,"cat":"cuisine","name":"Support à fruits 3 niveaux","price":24.99,"d":"Corbeilles sur pied en bois","desc":"Trois coupes vert foncé superposées sur une structure en bois, pour présenter fruits et légumes sans les écraser. Décoratif sur un plan de travail ou une table, il libère de la place.","specs":["3 coupes vert foncé","Hauteur totale : 35 cm","Coupes de 25, 26,5 et 28 cm de long","Pied en bois"],"base":["a15-n1","a15-n2","a15-n3"],"oos":false},{"id":"a16","n":16,"cat":"maison","name":"Support pour écran d’ordinateur","price":29.99,"d":"Rehausseur avec rangement","desc":"Un rehausseur blanc qui place votre écran à la bonne hauteur et libère le bureau. L'espace en dessous accueille téléphone, tablette, carnets ou clavier.","specs":["Dimensions : 50 × 20 cm, hauteur 13,5 cm","2 niveaux","Finition blanche","Rangement sous l'écran"],"base":["a16-n1","a16-n2","a16-n3"],"oos":false},{"id":"a17","n":17,"cat":"cuisine","name":"Lot de 4 magnets pour frigo","price":24.99,"d":"Lot de 4, 2 tailles","desc":"Des étagères aimantées qui se fixent sur le côté du réfrigérateur, sans perçage. Elles accueillent épices, film alimentaire, papier aluminium ou torchons et font gagner de la place dans la cuisine.","specs":["Lot de 4 étagères noires","2 × 27 cm et 2 × 29,5 cm de long","Profondeur 8,5 à 9,5 cm","Fixation magnétique, sans perçage"],"base":["a17-n1","a17-n2","a17-n3"],"oos":false},{"id":"a18","n":18,"cat":"animaux","name":"Arbre à chat","price":69.99,"d":"Plusieurs niveaux · 115 cm","desc":"Un arbre à chat complet avec niche, plateformes, hamac, poteaux griffoirs et jouets suspendus. De quoi grimper, dormir et faire ses griffes au même endroit.","specs":["Hauteur : 115 cm","Base : 50 × 35 cm","Niche, hamac et plateforme sommitale","Poteaux griffoirs et jouets suspendus"],"base":["a18-n1","a18-n2","a18-n3","a18-n4"],"oos":false},{"id":"a19","n":19,"cat":"animaux","name":"Gamelle pour chat","price":29.99,"d":"3 bols inox sur support bois","desc":"Un support surélevé en bois avec 3 bols en inox pour l'eau et les croquettes. La hauteur rend les repas plus confortables pour votre chat et évite d'éparpiller la nourriture.","specs":["3 bols en inox amovibles","Dimensions : 42,7 × 15 cm","Support surélevé en bois","Bols faciles à laver"],"base":["a19-n1","a19-n2","a19-n3"],"oos":false},{"id":"a20","n":20,"cat":"animaux","name":"Petite cabane pour chat","price":29.99,"d":"Niche douillette en peluche","desc":"Une petite maison toute douce en forme de chalet avec une entrée ronde à oreilles d'ourson. Votre chat y trouve un refuge chaud et rassurant pour faire la sieste.","specs":["Niche fermée avec toit","Tissu doux type peluche","Entrée ronde décorée","Pour chat ou petit chien"],"base":["a20-1","a20-2","a20-3"],"oos":true},{"id":"a21","n":21,"cat":"animaux","name":"Hamac pour chat","price":35.0,"d":"Griffoir intégré · 50 × 35 × 32 cm","desc":"Un fauteuil-hamac en bois avec assise en griffoir. Votre chat s'y prélasse et y fait ses griffes, plutôt que sur votre canapé.","specs":["Dimensions : 50 × 35 × 32 cm","Structure en bois","Assise et dossier griffoirs","Design fauteuil"],"base":["a21-n1","a21-n2","a21-n3","a21-n4"],"oos":false},{"id":"a22","n":22,"cat":"animaux","name":"Boîte à croquettes","price":4.99,"d":"Hermétique avec verseur","desc":"Une boîte transparente avec couvercle hermétique, poignée et verre doseur. Elle garde les croquettes fraîches et à l'abri, et facilite le service.","specs":["Hauteur : 29 cm, largeur : 15 cm","Couvercle hermétique","Verre doseur inclus","Pour croquettes de chat ou de chien"],"base":["a22-1","a22-2","a22-3"],"oos":true},{"id":"a23","n":23,"cat":"maison","name":"Support jeux vidéo","price":35.0,"d":"Tour de rangement manettes et jeux","desc":"Une tour de rangement qui centralise votre coin gaming : une colonne pour ranger vos boîtiers de jeux et des supports latéraux pour 4 manettes. Un bureau ou un meuble TV toujours bien rangé.","specs":["Rangement vertical pour boîtiers de jeux","4 supports de manettes","Finition blanche et noire","Socle stable"],"base":["a23-1","a23-2","a23-3"],"oos":true},{"id":"a24","n":24,"cat":"maison","name":"Porte-serviettes","price":19.99,"d":"3 barres · 44 × 86 cm","desc":"Un porte-serviettes sur pied en métal noir avec 3 barres à hauteurs différentes. Il se pose sans perçage dans la salle de bain et permet de faire sécher plusieurs serviettes en même temps.","specs":["3 barres à 66, 76 et 86 cm","Largeur 44 cm, profondeur 21 cm","Métal noir","Sur pied, sans perçage"],"base":["a24-1","a24-2","a24-3"],"oos":true},{"id":"a25","n":25,"cat":"maison","name":"Coffret 46 pièces","price":19.99,"d":"Douilles et cliquet en mallette","desc":"Un coffret à outils compact pour le bricolage, la maison ou la voiture. Il contient un cliquet, des douilles, des embouts de vissage et des rallonges, rangés dans une mallette rouge.","specs":["46 pièces","Cliquet, douilles, embouts, rallonges, clés Allen","Tournevis porte-embouts","Mallette de rangement rouge"],"base":["a25-1","a25-2","a25-3"],"oos":true},{"id":"a26","n":26,"cat":"rangement","name":"Étagère de stockage","price":99.99,"d":"Métal · 2 m × 60 cm","desc":"Une grande étagère en métal bleu à 4 niveaux, conçue pour le stockage lourd : garage, réserve, atelier ou local professionnel. Elle accueille cartons et charges volumineuses.","specs":["4 niveaux","Dimensions : 2 m de long × 60 cm de profondeur × 2 m de haut","Structure en métal bleu","Pour garage, réserve, atelier"],"base":["a26-1","a26-2","a26-3"],"oos":true},{"id":"a27","n":27,"cat":"cuisine","name":"Tête de robinet orientable","price":24.99,"d":"4 modes de jet","desc":"Une tête de robinet qui s'adapte sur votre robinet de cuisine et pivote dans tous les sens. Elle propose plusieurs jets, dont un jet cascade large et un mode anti-éclaboussures, pour laver fruits et vaisselle plus facilement.","specs":["4 modes : pluie, bulles anti-éclaboussures, cascade, double jet","Rotation multidirectionnelle","Finition chromée","Se fixe sur le bec du robinet"],"base":["a27-1","a27-2","a27-3"],"oos":false},{"id":"a28","n":28,"cat":"cuisine","name":"Kit ustensiles complet 14 pièces","price":19.99,"d":"Silicone et bois, avec pot","desc":"Un ensemble complet d'ustensiles de cuisine en silicone noir avec manches en bois, livré avec son pot de rangement. Le silicone protège vos poêles et casseroles antiadhésives.","specs":["14 pièces avec pot de rangement","Spatules, louche, écumoire, cuillère à pâtes, fouet, pince, pinceau…","Têtes en silicone noir","Manches en bois"],"base":["a28-n1","a28-n2"],"oos":false},{"id":"a29","n":29,"cat":"rangement","name":"Étagère bibliothèque","price":45.0,"d":"Cubes décalés · 141,5 cm","desc":"Une bibliothèque design faite de cubes empilés et décalés, en métal fin. Elle range livres, enceinte ou objets déco tout en apportant une touche graphique au salon ou à la chambre.","specs":["Hauteur : 141,5 cm","Base : 50 × 28 cm","Cubes de tailles dégressives","Structure en métal"],"base":["a29-n1","a29-n2"],"oos":false},{"id":"a30","n":30,"cat":"cuisine","name":"Lot de 14 boîtes en plastique rigide","price":34.99,"d":"Couvercles à clips · tailles variées","desc":"Un grand lot de 14 boîtes de conservation en plastique rigide transparent, avec couvercles à clips. Plusieurs tailles qui s’empilent, pour préparer les repas de la semaine, ranger les restes ou emporter son déjeuner.","specs":["Lot de 14 boîtes de différentes tailles","Plastique rigide transparent","Couvercles hermétiques à 4 clips","Empilables"],"base":["a30-n1","a30-n2","a30-n3","a30-n4"],"oos":false}];/*CATALOGUE-FIN*/
-const PRODUCTS=(window.TZ_CATALOGUE||[]).filter(p=>!p.hidden).map(p=>({...p,imgs:p.base.map(b=>`img/w/${b}-720.webp`)}));
+const imgUrl=(b,s)=>String(b).startsWith("/_blob/")?b:`img/w/${b}-${s}.webp`;
+function toShop(L){return L.filter(p=>!p.hidden).map(p=>{const base=p.base||(p.photos||[]).map(x=>x.w||("/_blob/"+x.a));return {...p,base,imgs:base.map(b=>imgUrl(b,720))}}).filter(p=>p.base.length)}
+let PRODUCTS=toShop(window.TZ_CATALOGUE||[]);
 // photos allégées : 360 px pour les vignettes, 720 px pour les grands formats
 const SZ_CARD="(max-width:640px) 46vw, (max-width:900px) 31vw, 260px", SZ_BIG="(max-width:700px) 100vw, 480px";
-const srcset=(p,i)=>`img/w/${p.base[i]}-360.webp 360w, img/w/${p.base[i]}-720.webp 720w`;
-const imgTag=(p,i,attrs="",sizes=SZ_CARD)=>`<img src="img/w/${p.base[i]}-720.webp" srcset="${srcset(p,i)}" sizes="${sizes}" ${attrs}>`;
-const miniSrc=(p,i=0)=>`img/w/${p.base[i]}-360.webp`;
+const srcset=(p,i)=>String(p.base[i]).startsWith("/_blob/")?`${p.base[i]} 720w`:`img/w/${p.base[i]}-360.webp 360w, img/w/${p.base[i]}-720.webp 720w`;
+const imgTag=(p,i,attrs="",sizes=SZ_CARD)=>`<img src="${imgUrl(p.base[i],720)}" srcset="${srcset(p,i)}" sizes="${sizes}" ${attrs}>`;
+const miniSrc=(p,i=0)=>imgUrl(p.base[i],360);
 // panier : clé = id ou id|modèle
 const kid=k=>k.split("|")[0], kvar=k=>k.split("|")[1]||"";
 const lineName=k=>byId(kid(k)).name+(kvar(k)?` — ${kvar(k)}`:"");
@@ -723,7 +887,7 @@ const store = {
   get(k,d){try{const v=localStorage.getItem("tz2_"+k);return v?JSON.parse(v):d}catch(e){return d}},
   set(k,v){try{localStorage.setItem("tz2_"+k,JSON.stringify(v))}catch(e){}}
 };
-const outOfStock = new Set(PRODUCTS.filter(p=>p.oos).map(p=>p.id));
+let outOfStock = new Set(PRODUCTS.filter(p=>p.oos).map(p=>p.id));
 let cart = store.get("cart",{});
 let cat = "all", query = "", sortBy = "az", drawerView = "cart", sheetId = null, sheetImg = 0, sheetVar = "";
 
@@ -818,7 +982,7 @@ function renderGrid(){
     if(grouped&&p.cat!==prevCat){prevCat=p.cat;const k=list.filter(x=>x.cat===p.cat).length;head=`<h2 class="ghead" id="g-${p.cat}" data-cat="${p.cat}">${CATNAME[p.cat]}<span class="tabnum">${k}</span></h2>`}
     const quick=quickHTML(p);
     return head+`<article class="card${out?" out":""}" data-id="${p.id}">
-      <div class="media"><button class="thumb" data-open="${p.id}" aria-label="Voir ${esc(p.name)}">${out?'<span class="badge">En rupture</span>':`<span class="tags">${tagsFor(p)}</span>`}${imgTag(p,0,'alt="" loading="lazy" width="720" height="720"')}${imgTag(p,1,'class="alt" alt="" loading="lazy" width="720" height="720"')}</button>${quick}</div>
+      <div class="media"><button class="thumb" data-open="${p.id}" aria-label="Voir ${esc(p.name)}">${out?'<span class="badge">En rupture</span>':`<span class="tags">${tagsFor(p)}</span>`}${imgTag(p,0,'alt="" loading="lazy" width="720" height="720"')}${p.base.length>1?imgTag(p,1,'class="alt" alt="" loading="lazy" width="720" height="720"'):""}</button>${quick}</div>
       <div class="meta">${grouped?"":`<span class="cat">${CATNAME[p.cat]}</span>`}<button class="name" data-open="${p.id}">${esc(p.name)}</button><span class="price">${priceHTML(p.price)}</span></div>
       </article>`;
   }).join("");
@@ -1023,8 +1187,9 @@ function bindDone(){
 }
 function selectRecap(){const r=document.createRange();r.selectNodeContents($("#recap"));const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Texte sélectionné, copiez-le")}
 
-function showView(v){curView=v;closeSheetRaw();closeCart();$("#shop").hidden=v!=="shop";$("#legalView").hidden=v!=="legal";if(v==="shop")renderGrid();scrollTo(0,0);setTimeout(renderCartBar,0)}
-function route(){const h=location.hash,m=h.match(/^#produit-(a\d+)$/),v=h==="#mentions-legales"?"legal":"shop";
+function showView(v){curView=v;closeSheetRaw();closeCart();$("#shop").hidden=v!=="shop";$("#legalView").hidden=v!=="legal";$("#admin").hidden=v!=="admin";$("#openCart").hidden=v==="admin";
+  $("#goAdmin").textContent=v==="admin"?"Retour à la boutique":"Espace vendeur";if(v==="shop")renderGrid();scrollTo(0,0);setTimeout(renderCartBar,0)}
+function route(){const h=location.hash,m=h.match(/^#produit-(a\d+)$/),v=h==="#mentions-legales"?"legal":h==="#vendeur"&&window.TZ_adminOK?"admin":"shop";
   if(curView!==v)showView(v);
   if(v==="shop"){if(m&&byId(m[1])){if(sheetId!==m[1])openSheetRaw(m[1])}else if(sheetId){closeSheetRaw()}}}
 
@@ -1060,6 +1225,7 @@ $("#scrim").onclick=()=>{closeSheet();closeCart()};
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeSheet();closeCart()}
   if(sheetId&&(e.key==="ArrowRight"||e.key==="ArrowLeft"))goImg(sheetImg+(e.key==="ArrowRight"?1:-1))});
 $("#goHome").onclick=()=>{location.hash="";route()};
+$("#goAdmin").onclick=()=>{location.hash=location.hash==="#vendeur"?"":"vendeur";route()};
 $("#legal").onclick=()=>{location.hash="mentions-legales";route()};
 document.querySelectorAll("[data-home]").forEach(b=>b.onclick=()=>{location.hash="";route()});
 $("#cgv").onclick=()=>toast("Conditions de réservation à rédiger");
@@ -1067,6 +1233,423 @@ addEventListener("hashchange",route);
 
 try{history.scrollRestoration="manual"}catch(e){}
 renderHero();renderCatSelect();renderCount();route();scrollTo(0,0);
+/* Catalogue en direct depuis la base partagée (page Claude uniquement ; le site GitHub garde le catalogue intégré) */
+function applyLive(docs){
+  const heroKey=()=>HERO_SLIDES.filter(([,id])=>byId(id)&&!outOfStock.has(id)).map(x=>x[1]).join();
+  const before=heroKey();
+  PRODUCTS=toShop(docs);outOfStock=new Set(PRODUCTS.filter(p=>p.oos).map(p=>p.id));
+  Object.keys(cart).forEach(k=>{const p=byId(kid(k));if(!p||(p.variants&&!kvar(k)))delete cart[k]});
+  renderCatSelect();if(curView==="shop")renderGrid();renderCount();if(heroKey()!==before)renderHero();
+}
+(async()=>{try{const C=window.claude;if(!C||!C.use)return;const db=await C.use("db");if(!db)return;
+  db.collection("products").onSnapshot(s=>{if(s.docs.length)applyLive(s.docs.map(d=>({...d.data(),id:d.id})))},e=>console.warn(e))}catch(e){}})();
+
+/* ================= Espace vendeur (base partagée) ================= */
+(()=>{
+
+const DEFAULT_LIVREURS=["Jean-Marc","Sandrine","Dylan"];
+const STEPS=[["appeler","À appeler"],["livraison","En livraison"],["livree","Livrée"],["annulee","Annulée"]];
+const STEPNAME=Object.fromEntries(STEPS);
+const CANCEL_REASONS=["Ne souhaite plus l'article","Injoignable","Absent au rendez-vous","Article indisponible","Autre"];
+const cancelOpen=new Set();
+
+const $=s=>document.querySelector(s);
+const eur=n=>(+n||0).toLocaleString("fr-FR",{style:"currency",currency:"EUR"});
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pad=(n,k=2)=>String(n).padStart(k,"0");
+const nowIso=()=>new Date().toISOString();
+const fmtDT=d=>new Date(d).toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+function normTel(t){const d=String(t||"").replace(/[^\d+]/g,"");if(/^0\d{9}$/.test(d))return d;if(/^\+262\d{9}$/.test(d))return "0"+d.slice(4);if(/^262\d{9}$/.test(d))return "0"+d.slice(3);if(/^\+33\d{9}$/.test(d))return "0"+d.slice(3);return d}
+const num=s=>parseFloat(String(s).replace(/[\s  €]/g,"").replace(",","."))||0;
+
+/* ---------- État ---------- */
+let db=null,user=null,assets=null,mcp=null,me=null,isOwner=false;
+let products=[],orders=[],imports=[],settings={},syncState={};
+let loaded={products:false,orders:false};
+const livreurs=()=>settings.livreurs||DEFAULT_LIVREURS;
+const photoSrc=ph=>ph.a?"/_blob/"+ph.a:"img/w/"+ph.w+"-360.webp";
+const PUBF=["name","price","cat","d","desc","specs","photos","variants","oos","hidden"];
+const pubOf=p=>Object.fromEntries(PUBF.map(k=>[k,p[k]===undefined?null:p[k]]));
+const same=(a,b)=>JSON.stringify(a??null)===JSON.stringify(b??null);
+function diffLines(p){
+  const o=p.pub,L=[];
+  if(!o){L.push(`Nouvel article · ${CATNAME[p.cat]||p.cat} · ${eur(p.price)}`);if(needsDesc(p))L.push("Description à rédiger par Claude");if(p.oos)L.push("En rupture");if(p.hidden)L.push("Masqué du site");return L}
+  const cut=s=>{s=String(s||"");return s.length>60?s.slice(0,57)+"…":s};
+  if(!same(o.name,p.name))L.push(`Nom : « ${cut(o.name)} » → « ${cut(p.name)} »`);
+  if(!same(o.price,p.price))L.push(`Prix : ${eur(o.price)} → ${eur(p.price)}`);
+  if(!same(o.cat,p.cat))L.push(`Catégorie : ${CATNAME[o.cat]||o.cat} → ${CATNAME[p.cat]||p.cat}`);
+  if(!same(o.d||"",p.d||""))L.push(`Précision : « ${cut(o.d)||"vide"} » → « ${cut(p.d)||"vide"} »`);
+  if(!same(o.desc||"",p.desc||""))L.push(needsDesc(p)?"Description effacée : Claude en rédigera une nouvelle":"Description modifiée");
+  if(!same(o.specs||[],p.specs||[]))L.push("Caractéristiques modifiées");
+  const po=(o.photos||[]).map(x=>x.w||x.a),pn=(p.photos||[]).map(x=>x.w||x.a);
+  if(!same(po,pn)){const add=pn.filter(x=>!po.includes(x)).length,del=po.filter(x=>!pn.includes(x)).length;L.push(add||del?`Photos : ${[add&&`${add} ajoutée${add>1?"s":""}`,del&&`${del} retirée${del>1?"s":""}`].filter(Boolean).join(", ")}`:"Ordre des photos modifié")}
+  if(!same(o.variants||[],p.variants||[]))L.push("Modèles au choix modifiés");
+  if(!!o.oos!==!!p.oos)L.push(p.oos?"Passé en rupture":"De nouveau en stock");
+  if(!!o.hidden!==!!p.hidden)L.push(p.hidden?"Masqué du site":"Remis sur le site");
+  return L;
+}
+const isDirty=p=>!!p.dirty&&(!p.pub||diffLines(p).length>0);
+const needsDesc=p=>!String(p.desc||"").trim();
+
+const fmtTel2=t=>String(t).replace(/(\d{4})(\d{2})(\d{2})(\d{2})/,"$1 $2 $3 $4");
+function orderCard(o){
+  const st=o.status, when=new Date(o.date).toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+  const pills=[`<span class="st st-p-${st}">${STEPNAME[st]}</span>`];
+  if(o.livreur&&st!=="appeler")pills.push(`<span class="st st-liv">Livreur : ${esc(o.livreur)}</span>`);
+  if(st==="livree")pills.push(o.paiement==="especes"?'<span class="st st-cash">Payé · Espèces</span>':o.paiement==="cb"?'<span class="st st-card">Payé · CB</span>':'<span class="st st-unpaid">Paiement à saisir</span>');
+  if(st==="annulee"){pills.push(`<span class="st st-why">${o.cancelFrom==="livraison"?"À la livraison":"À l'appel"}</span>`);if(o.cancelReason)pills.push(`<span class="st st-why">${esc(o.cancelReason)}</span>`)}
+  if(o.canal==="sms")pills.push('<span class="st st-liv">Reçue par SMS</span>');
+    let act="";
+  const cxUI=cancelOpen.has(o.id)?`<div class="cxbox"><label class="ofield">Motif d'annulation<select id="cxr_${o.id}">${CANCEL_REASONS.map(r=>`<option>${esc(r)}</option>`).join("")}</select></label>
+    <div class="oacts"><button class="bk" data-cxno="${o.id}">Garder la demande</button><button class="mv to-annulee" data-cxok="${o.id}">Confirmer l'annulation</button></div></div>`
+    :`<button class="cx" data-cx="${o.id}">Annuler la demande</button>`;
+  if(st==="appeler") act=`<div class="oacts"><button class="mv to-livraison" data-move="${o.id}" data-to="livraison">Confirmée, passer en livraison →</button></div>${cxUI}`;
+  if(st==="livraison") act=`<label class="ofield">Livreur<select data-livreur="${o.id}"><option value="">Choisir un livreur</option>${[...new Set([...livreurs(),...(o.livreur?[o.livreur]:[])])].map(n=>`<option${o.livreur===n?" selected":""}>${n}</option>`).join("")}</select></label>
+    <div class="oacts"><button class="bk" data-move="${o.id}" data-to="appeler">← À appeler</button><button class="mv to-livree" data-move="${o.id}" data-to="livree"${o.livreur?"":" disabled"}>Marquer livrée ✓</button></div>${cxUI}`;
+  if(st==="livree") act=`<div class="ofield">Mode de paiement<div class="paysel"><button class="pc" data-pay="${o.id}" data-mode="especes" aria-pressed="${o.paiement==="especes"}">Espèces</button><button class="pb" data-pay="${o.id}" data-mode="cb" aria-pressed="${o.paiement==="cb"}">CB</button></div></div>
+    <div class="oacts"><button class="bk" data-move="${o.id}" data-to="livraison">← En livraison</button></div>`;
+  if(st==="annulee") act=`<div class="oacts"><button class="bk" data-move="${o.id}" data-to="${o.cancelFrom||"appeler"}">↺ Rétablir la demande</button></div>`;
+  return `<div class="ocard st-${st}"><div class="oh"><span class="who">${esc(o.prenom)} ${esc(o.nom)}</span><span class="meta2 tabnum">${esc(o.id)}</span></div>
+    <div class="pills">${pills.join("")}</div>
+    <a class="tel tabnum" href="tel:${esc(o.tel)}">${fmtTel2(o.tel)}</a>
+    <span class="meta2">${when} · Livraison : ${esc(o.pick)}</span>
+    <ul>${o.lines.map(l=>`<li>${l.q} × ${esc(l.name)}</li>`).join("")}</ul>
+    <span class="tot tabnum">${eur(o.total)}</span>${act}</div>`;
+}
+const saleDate=o=>new Date(o.deliveredAt||o.date);
+const showOld=new Set();
+let synthPeriod="all",symore=false;
+const monthKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+const monthLabel=k=>{const [y,m]=k.split("-");const t=new Date(+y,+m-1,1).toLocaleDateString("fr-FR",{month:"long",year:"numeric"});return t[0].toUpperCase()+t.slice(1)};
+function bars(rows,cls=""){const max=Math.max(1,...rows.map(r=>r.v));return rows.map(r=>`<div class="brow"><span class="lb">${r.label}${r.sub?`<small>${r.sub}</small>`:""}</span><div class="bar"><i class="${r.cls||cls}" style="width:${(r.v/max*100).toFixed(1)}%"></i></div><span class="vl">${eur(r.v)}</span></div>`).join("")}
+function renderSynth(){
+  const inP=d=>synthPeriod==="all"||monthKey(d)===synthPeriod;
+  const sold=orders.filter(o=>o.status==="livree"&&inP(saleDate(o)));
+  const canc=orders.filter(o=>o.status==="annulee"&&inP(new Date(o.date)));
+  const ca=sold.reduce((a,o)=>a+o.total,0),nb=sold.length,items=sold.reduce((a,o)=>a+o.lines.reduce((x,l)=>x+l.q,0),0);
+  const months=[...new Set(orders.filter(o=>o.status==="livree"||o.status==="annulee").map(o=>monthKey(o.status==="livree"?saleDate(o):new Date(o.date))))].sort().reverse();
+  const enCours=orders.filter(o=>o.status==="appeler"||o.status==="livraison");
+  const pct=(a,b)=>b?Math.round(a/b*100)+" %":"–";
+  // paiement
+  const pay=[["especes","Espèces","cash"],["cb","CB","cb"],[undefined,"Non saisi","none"]].map(([k,l,c])=>{const L=sold.filter(o=>(o.paiement||undefined)===k);const v=L.reduce((a,o)=>a+o.total,0);return{label:l,sub:`${L.length} vente${L.length>1?"s":""} · ${pct(v,ca)}`,v,cls:c}}).filter(r=>r.v>0||r.label!=="Non saisi");
+  // livreur
+  const liv=[...new Set([...livreurs(),...sold.map(o=>o.livreur).filter(Boolean)])].map(n=>{const L=sold.filter(o=>o.livreur===n);const cx=canc.filter(o=>o.livreur===n&&o.cancelFrom==="livraison").length;return{label:n,sub:`${L.length} livraison${L.length>1?"s":""}${cx?` · ${cx} annulée${cx>1?"s":""} sur place`:""}`,v:L.reduce((a,o)=>a+o.total,0)}}).sort((a,b)=>b.v-a.v);
+  // article
+  const art={};sold.forEach(o=>o.lines.forEach(l=>{art[l.name]=art[l.name]||{q:0,v:0};art[l.name].q+=l.q;art[l.name].v+=l.q*l.price}));
+  let arts=Object.entries(art).map(([n,x])=>({label:esc(n),sub:`${x.q} vendu${x.q>1?"s":""}`,v:x.v})).sort((a,b)=>b.v-a.v);
+  const artN=arts.length;if(!symore)arts=arts.slice(0,8);
+  // mois
+  const mrows=months.map(m=>{const S=orders.filter(o=>o.status==="livree"&&monthKey(saleDate(o))===m),C=orders.filter(o=>o.status==="annulee"&&monthKey(new Date(o.date))===m);const sum=f=>S.filter(f).reduce((a,o)=>a+o.total,0);
+    return{m,n:S.length,ca:sum(()=>true),es:sum(o=>o.paiement==="especes"),cb:sum(o=>o.paiement==="cb"),ns:sum(o=>!o.paiement),c:C.length}});
+  const T=mrows.reduce((a,r)=>({n:a.n+r.n,ca:a.ca+r.ca,es:a.es+r.es,cb:a.cb+r.cb,ns:a.ns+r.ns,c:a.c+r.c}),{n:0,ca:0,es:0,cb:0,ns:0,c:0});
+    $("#synth").innerHTML=`<div class="sy-top"><label class="sr" for="syPeriod">Période</label><select id="syPeriod"><option value="all">Toute la période</option>${months.map(m=>`<option value="${m}"${m===synthPeriod?" selected":""}>${monthLabel(m)}</option>`).join("")}</select>
+      </div>
+    <div class="kpis">
+      <div class="kpi main"><span>Chiffre d’affaires livré</span><b>${eur(ca)}</b><small>${nb} vente${nb>1?"s":""}</small></div>
+      <div class="kpi"><span>Panier moyen</span><b>${nb?eur(ca/nb):"–"}</b><small>${items} article${items>1?"s":""} vendus</small></div>
+      <div class="kpi"><span>Espèces / CB</span><b>${pct(sold.filter(o=>o.paiement==="especes").reduce((a,o)=>a+o.total,0),ca)}</b><small>du CA en espèces</small></div>
+      <div class="kpi"><span>Annulations</span><b>${pct(canc.length,canc.length+nb)}</b><small>${canc.length} demande${canc.length>1?"s":""} · ${eur(canc.reduce((a,o)=>a+o.total,0))}</small></div>
+      <div class="kpi"><span>En cours</span><b>${eur(enCours.reduce((a,o)=>a+o.total,0))}</b><small>${enCours.length} à appeler ou en livraison</small></div>
+    </div>
+    <div class="sgrid">
+      <section class="spanel"><h3>Par moyen de paiement</h3>${nb?bars(pay):'<p class="sempty">Aucune vente sur la période.</p>'}</section>
+      <section class="spanel"><h3>Par livreur</h3>${nb?bars(liv):'<p class="sempty">Aucune vente sur la période.</p>'}</section>
+      <section class="spanel"><h3>Par article <small>${artN} article${artN>1?"s":""} vendus</small></h3>${artN?bars(arts):'<p class="sempty">Aucune vente sur la période.</p>'}${artN>8?`<button class="more" data-symore>${symore?"Voir moins":`Voir les ${artN} articles`}</button>`:""}</section>
+      <section class="spanel" style="grid-column:1/-1"><h3>Par mois</h3>${mrows.length?`<div class="stable"><table><thead><tr><th>Mois</th><th>Ventes</th><th>CA</th><th>Espèces</th><th>CB</th><th>Non saisi</th><th>Annulées</th></tr></thead><tbody>
+        ${mrows.map(r=>`<tr><td class="m">${monthLabel(r.m)}</td><td>${r.n}</td><td>${eur(r.ca)}</td><td>${eur(r.es)}</td><td>${eur(r.cb)}</td><td>${eur(r.ns)}</td><td>${r.c}</td></tr>`).join("")}
+        <tr><td>Total</td><td>${T.n}</td><td>${eur(T.ca)}</td><td>${eur(T.es)}</td><td>${eur(T.cb)}</td><td>${eur(T.ns)}</td><td>${T.c}</td></tr></tbody></table></div>`:'<p class="sempty">Aucune vente pour l’instant.</p>'}</section>
+    </div>`;
+}
+
+
+/* ---------- Demandes ---------- */
+function renderOrders(){
+  orders.forEach(o=>{if(!STEPNAME[o.status])o.status="appeler"});
+  const todo=orders.filter(o=>o.status==="appeler").length;
+  $("#ordCount").textContent=todo||"";$("#ordCount").hidden=!todo;
+  const recent=o=>Date.now()-saleDate(o).getTime()<7*864e5;
+  $("#orderList").innerHTML=STEPS.map(([k,label])=>{const all=orders.filter(o=>o.status===k).sort((a,b)=>saleDate(b)-saleDate(a));const sum=all.reduce((a,o)=>a+(+o.total||0),0);
+    const folded=(k==="livree"||k==="annulee")&&!showOld.has(k);const list=folded?all.filter(recent):all;const hiddenN=all.length-list.length;
+    return `<section class="col c-${k}" aria-label="${label}"><div class="colh"><span class="dot"></span><b>${label}</b><span class="n tabnum">${all.length}</span><span class="sum tabnum">${eur(sum)}</span></div>
+    ${list.length?list.map(orderCard).join(""):`<p class="colempty">${!loaded.orders?"Chargement…":k==="appeler"?"Aucune demande à appeler":k==="livraison"?"Aucune livraison en cours":k==="livree"?"Aucune livraison ces 7 derniers jours":"Aucune annulation ces 7 derniers jours"}</p>`}
+    ${hiddenN?`<button class="oldtoggle" data-old="${k}">Voir les ${hiddenN} plus anciennes</button>`:(k==="livree"||k==="annulee")&&showOld.has(k)?`<button class="oldtoggle" data-old="${k}">Masquer les plus anciennes</button>`:""}</section>`}).join("");
+}
+async function patchOrder(id,data,msg){
+  if(!db){toast("Base indisponible");return}
+  try{await db.doc("orders/"+id).update({...data,updatedAt:nowIso(),updatedBy:me});if(msg)toast(msg)}catch(e){toast("Enregistrement impossible : "+(e.message||e.code||e))}
+}
+document.addEventListener("click",e=>{
+  const od=e.target.closest("[data-old]");if(od){const k=od.dataset.old;showOld.has(k)?showOld.delete(k):showOld.add(k);renderOrders();return}
+  const sm=e.target.closest("[data-symore]");if(sm){symore=!symore;renderSynth();return}
+  const cx=e.target.closest("[data-cx]"),cxno=e.target.closest("[data-cxno]"),cxok=e.target.closest("[data-cxok]");
+  if(cx){cancelOpen.add(cx.dataset.cx);renderOrders();return}
+  if(cxno){cancelOpen.delete(cxno.dataset.cxno);renderOrders();return}
+  if(cxok){const o=orders.find(x=>x.id===cxok.dataset.cxok);if(!o)return;const r=document.getElementById("cxr_"+o.id).value;cancelOpen.delete(o.id);
+    patchOrder(o.id,{cancelFrom:o.status,cancelReason:r,status:"annulee"},`${o.prenom} ${o.nom} : demande annulée`);return}
+  const m=e.target.closest("[data-move]"),pb=e.target.closest("[data-pay]");
+  if(m){const o=orders.find(x=>x.id===m.dataset.move);if(!o)return;const to=m.dataset.to;
+    if(to==="livree"&&!o.livreur){toast("Choisissez d'abord un livreur");return}
+    const d={status:to};if(o.status==="annulee"){d.cancelFrom=null;d.cancelReason=null}
+    if(to!=="livree"){d.paiement=null;d.deliveredAt=null}else d.deliveredAt=nowIso();
+    patchOrder(o.id,d,`${o.prenom} ${o.nom} : ${STEPNAME[to]}`);return}
+  if(pb){const o=orders.find(x=>x.id===pb.dataset.pay);if(!o)return;patchOrder(o.id,{paiement:pb.dataset.mode},`Paiement enregistré : ${pb.dataset.mode==="cb"?"CB":"Espèces"}`)}
+});
+document.addEventListener("change",e=>{
+  const id=e.target.dataset?.livreur;if(id){patchOrder(id,{livreur:e.target.value||null},e.target.value?`Livreur : ${e.target.value}`:"");return}
+  if(e.target.id==="syPeriod"){synthPeriod=e.target.value;renderSynth()}
+});
+
+/* Lecture du récapitulatif envoyé par la boutique */
+function parseRecap(t){
+  t=String(t||"").replace(/\r/g,"").replace(/[  ]/g," ");
+  const r={id:"",prenom:"",nom:"",tel:"",pick:"",lines:[],total:0};
+  const mi=t.match(/Demande\s+([A-Za-z0-9-]{3,})/);if(mi)r.id=mi[1];
+  const mw=t.match(/^\s*(.+?)\s*[·•|-]\s*((?:\+|00)?[\d .]{9,})\s*$/m);
+  if(mw&&!/^Demande/.test(mw[1])){const parts=mw[1].trim().split(/\s+/);r.prenom=parts.shift()||"";r.nom=parts.join(" ");r.tel=normTel(mw[2])}
+  else{const mt=t.match(/(?:\+262|0)\s?[67]\d(?:[ .]?\d{2}){4}/);if(mt)r.tel=normTel(mt[0])}
+  const mp=t.match(/Point de livraison\s*:\s*(.+)$/m);
+  if(mp){const raw=mp[1].replace(/\s*\(livraison[^)]*\)\s*$/,"").trim();r.pick=PICKUPS.find(p=>p===raw)||PICKUPS.find(p=>raw&&p.split(" — ")[0]===raw.split(" — ")[0])||raw}
+  const re=/^\s*[•*\-–]\s*(\d+)\s*[×xX]\s*(.+?)\s*\(\s*([\d\s.,]+)\s*€\s*\)\s*$/gm;let m;
+  while((m=re.exec(t))){const q=+m[1],lt=num(m[3]);r.lines.push({q,name:m[2].trim(),price:Math.round(lt/q*100)/100})}
+  const mt2=t.match(/Total[^:\n]*:\s*([\d\s.,]+)\s*€/);r.total=mt2?num(mt2[1]):r.lines.reduce((a,l)=>a+l.q*l.price,0);
+  return r;
+}
+function linesHTML(lines){return lines.map((l,i)=>`<div class="lrow" data-li="${i}"><input class="inp tabnum" type="number" min="1" value="${l.q}" aria-label="Quantité" data-lq><input class="inp" value="${esc(l.name)}" aria-label="Article" data-ln list="artNames"><input class="inp tabnum" type="number" step="0.01" min="0" value="${(l.q*l.price).toFixed(2)}" aria-label="Montant de la ligne" data-lp><button class="rm" type="button" data-lrm="${i}" aria-label="Retirer la ligne">✕</button></div>`).join("")}
+function openPaste(){
+  const d=$("#dlg");
+  d.innerHTML=`<div class="dh"><h2 id="dlgT">Coller une demande</h2><button class="x" data-close aria-label="Fermer">×</button></div>
+  <div class="db"><label class="fld">Message reçu sur WhatsApp ou par SMS<textarea class="ta" id="pTxt" rows="7" placeholder="Bonjour Tout'zafer, voici ma demande :&#10;&#10;Demande TZ-…"></textarea></label>
+  <div><button class="btn" id="pRead">Lire le message</button> <button class="btn" id="pManual">Saisir à la main</button></div>
+  <div id="pForm"></div></div>
+  <div class="df"><button class="btn" data-close>Annuler</button><button class="btn pri" id="pSave" disabled>Ajouter la demande</button></div>`;
+  d.showModal();setTimeout(()=>$("#pTxt").focus(),50);
+  $("#pTxt").addEventListener("paste",()=>setTimeout(()=>fillPaste(parseRecap($("#pTxt").value)),0));
+  $("#pRead").onclick=()=>fillPaste(parseRecap($("#pTxt").value));
+  $("#pManual").onclick=()=>fillPaste({id:"",prenom:"",nom:"",tel:"",pick:PICKUPS[0],lines:[{q:1,name:"",price:0}],total:0},true);
+}
+let draft=null;
+function fillPaste(r,manual){
+  draft=r;if(!r.lines.length)r.lines.push({q:1,name:"",price:0});
+  const dup=r.id&&orders.find(o=>o.id===r.id);
+  const miss=[!r.prenom&&"le nom",!r.tel&&"le téléphone",!r.lines[0].name&&"les articles"].filter(Boolean);
+  $("#pForm").innerHTML=`${dup?`<div class="warnbox">Cette demande (${esc(r.id)}) est déjà enregistrée : ${esc(dup.prenom)} ${esc(dup.nom)}, ${STEPNAME[dup.status]}. L’ajouter créerait un doublon.</div>`:""}
+  ${!manual&&miss.length?`<div class="warnbox">Je n’ai pas trouvé ${miss.join(", ")} dans le message. Complétez ci-dessous.</div>`:!manual?`<div class="okbox">Demande lue. Vérifiez puis ajoutez-la.</div>`:""}
+  <div class="frow"><label class="fld">Prénom<input class="inp" id="fP" value="${esc(r.prenom)}"></label><label class="fld">Nom<input class="inp" id="fN" value="${esc(r.nom)}"></label></div>
+  <div class="frow"><label class="fld">Téléphone<input class="inp tabnum" id="fT" inputmode="tel" value="${esc(r.tel)}"></label>
+  <label class="fld">Point de livraison<select class="sel" id="fK">${[...new Set([...PICKUPS,r.pick].filter(Boolean))].map(p=>`<option${p===r.pick?" selected":""}>${esc(p)}</option>`).join("")}</select></label></div>
+  <div class="fld">Articles <small>quantité · article · montant de la ligne</small><div class="lines" id="fL">${linesHTML(r.lines)}</div>
+  <button class="btn sm" type="button" id="fAdd" style="align-self:flex-start">Ajouter une ligne</button></div>
+  <div class="ltot"><span>Total</span><span class="tabnum" id="fTot"></span></div>
+  <datalist id="artNames">${products.filter(p=>!p.hidden).map(p=>`<option value="${esc(p.name)}">`).join("")}</datalist>`;
+  const sync=()=>{draft.lines=[...document.querySelectorAll("#fL .lrow")].map(row=>{const q=Math.max(1,parseInt(row.querySelector("[data-lq]").value)||1),lt=num(row.querySelector("[data-lp]").value);return{q,name:row.querySelector("[data-ln]").value.trim(),price:Math.round(lt/q*100)/100}});
+    $("#fTot").textContent=eur(draft.lines.reduce((a,l)=>a+l.q*l.price,0));
+    $("#pSave").disabled=!($("#fP").value.trim()&&$("#fT").value.trim()&&draft.lines.some(l=>l.name))};
+  $("#pForm").oninput=e=>{if(e.target.matches("[data-ln]")){const p=products.find(x=>x.name===e.target.value);const row=e.target.closest(".lrow");if(p){const q=parseInt(row.querySelector("[data-lq]").value)||1;row.querySelector("[data-lp]").value=(p.price*q).toFixed(2)}}sync()};
+  $("#pForm").onclick=e=>{const rm=e.target.closest("[data-lrm]");if(rm){rm.closest(".lrow").remove();sync()}if(e.target.id==="fAdd"){$("#fL").insertAdjacentHTML("beforeend",linesHTML([{q:1,name:"",price:0}]));sync()}};
+  sync();
+  $("#pSave").onclick=savePaste;
+}
+async function savePaste(){
+  if(!db){toast("Base indisponible");return}
+  const d=new Date();
+  let id=(draft.id||"").replace(/[^A-Za-z0-9-]/g,"");
+  if(!id||orders.some(o=>o.id===id))id=(id||"M")+"-"+pad(d.getDate())+pad(d.getMonth()+1)+String(d.getFullYear()).slice(2)+"-"+pad(d.getHours())+pad(d.getMinutes())+pad(d.getSeconds());
+  const lines=draft.lines.filter(l=>l.name);
+  const o={id,date:nowIso(),prenom:$("#fP").value.trim(),nom:$("#fN").value.trim(),tel:normTel($("#fT").value),pick:$("#fK").value,lines,
+    total:Math.round(lines.reduce((a,l)=>a+l.q*l.price,0)*100)/100,status:"appeler",canal:/SMS/i.test($("#pTxt").value)?"sms":"",createdBy:me,source:draft.id?"message":"manuel"};
+  $("#pSave").disabled=true;
+  try{await db.doc("orders/"+id).set(o);$("#dlg").close();toast(`Demande de ${o.prenom} ajoutée dans « À appeler »`)}catch(e){$("#pSave").disabled=false;toast("Enregistrement impossible : "+(e.message||e.code||e))}
+}
+
+/* ---------- Articles ---------- */
+let pq="",pf="all";
+function renderProducts(){
+  const imps=imports.slice().sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,5);
+  $("#imps").innerHTML=imps.map(i=>`<div class="imp"><span class="ic">PDF</span><div style="min-width:0;flex:1"><b>${esc(i.name||"Catalogue")}</b>
+    <span class="meta">Déposé le ${fmtDT(i.at)} · ${i.status==="traite"?"Traité"+(i.doneAt?" le "+fmtDT(i.doneAt):""):i.status==="erreur"?"Problème lors du traitement":i.status==="en_cours"?"En cours de traitement par Claude":"En attente : sera traité à la prochaine publication"}</span>
+    ${i.result?`<div class="res">${esc(i.result)}</div>`:""}</div></div>`).join("");
+  let L=products.slice();
+  const q=pq.trim().toLowerCase();
+  if(q)L=L.filter(p=>(p.name+" "+(p.d||"")+" "+p.id).toLowerCase().includes(q));
+  if(pf==="dirty")L=L.filter(isDirty);if(pf==="desc")L=L.filter(needsDesc);if(pf==="oos")L=L.filter(p=>p.oos);if(pf==="hid")L=L.filter(p=>p.hidden);
+  L.sort((a,b)=>(a.cat===b.cat?0:CATS.findIndex(c=>c[0]===a.cat)-CATS.findIndex(c=>c[0]===b.cat))||a.name.localeCompare(b.name,"fr"));
+  if(!loaded.products){$("#prodList").innerHTML=`<p class="empty">Chargement des articles…</p>`;return}
+  $("#prodList").className=L.length?"plist":"";
+  $("#prodList").innerHTML=L.length?L.map(p=>{const ph=(p.photos||[])[0];
+    const fl=[!p.pub&&loaded.products?'<span class="flag f-new">Nouveau</span>':"",isDirty(p)?'<span class="flag f-dirty">Modifié, non publié</span>':"",needsDesc(p)?'<span class="flag f-desc">Description à rédiger par Claude</span>':"",p.oos?'<span class="flag f-oos">En rupture</span>':"",p.hidden?'<span class="flag f-hid">Masqué du site</span>':""].join("");
+    return `<div class="prow" data-edit="${p.id}" role="button" tabindex="0">${ph?`<img class="mini" src="${photoSrc(ph)}" alt="" loading="lazy">`:'<span class="mini"></span>'}
+    <div style="min-width:0"><div class="t">${esc(p.name)}</div><div class="u tabnum">${CATNAME[p.cat]||esc(p.cat)} · ${eur(p.price)}${p.variants?.length?` · ${p.variants.length} modèles`:""}</div>${fl?`<div class="pills">${fl}</div>`:""}</div>
+    <label class="sw" data-stop><span class="lbl ${p.oos?"outl":"in"}">${p.oos?"En rupture":"En stock"}</span><input type="checkbox" data-sw="${p.id}" ${p.oos?"":"checked"} aria-label="${esc(p.name)} en stock"></label></div>`}).join("")
+    :`<p class="empty">${products.length?"Aucun article ne correspond.":"Aucun article pour l’instant."}</p>`;
+}
+document.addEventListener("click",e=>{if(e.target.closest("[data-stop]"))return;const r=e.target.closest("[data-edit]");if(r)openEditor(r.dataset.edit)});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"){const r=e.target.closest?.("[data-edit]");if(r&&e.target===r)openEditor(r.dataset.edit)}});
+document.addEventListener("change",async e=>{const id=e.target.dataset?.sw;if(!id)return;const p=products.find(x=>x.id===id);if(!p||!db)return;
+  const oos=!e.target.checked;try{await db.doc("products/"+id).update({oos,dirty:true,updatedAt:nowIso(),updatedBy:me});toast(`${p.name} : ${oos?"en rupture":"en stock"}`)}catch(err){e.target.checked=!oos;toast("Enregistrement impossible")}});
+$("#pq").addEventListener("input",e=>{pq=e.target.value;renderProducts()});
+$("#pf").addEventListener("change",e=>{pf=e.target.value;renderProducts()});
+
+let ed=null;
+function openEditor(id){
+  const isNew=!id;
+  if(isNew){const n=Math.max(0,...products.map(p=>+p.n||0))+1;ed={id:"a"+pad(n),n,cat:"maison",name:"",price:"",d:"",desc:"",specs:[],photos:[],oos:false,hidden:false,isNew:true}}
+  else ed=JSON.parse(JSON.stringify(products.find(p=>p.id===id)));
+  ed.photos=ed.photos||[];
+  const d=$("#dlg");
+  d.innerHTML=`<div class="dh"><h2 id="dlgT">${isNew?"Nouvel article":"Modifier l’article"}</h2><button class="x" data-close aria-label="Fermer">×</button></div>
+  <div class="db">
+    <label class="fld">Nom<input class="inp" id="eName" value="${esc(ed.name)}" placeholder="Ex. Lot de 3 boîtes hermétiques"></label>
+    <div class="frow"><label class="fld">Catégorie<select class="sel" id="eCat">${CATS.filter(c=>c[0]!=="all").map(([k,l])=>`<option value="${k}"${k===ed.cat?" selected":""}>${l}</option>`).join("")}</select></label>
+    <label class="fld">Prix (€)<input class="inp tabnum" id="ePrice" type="number" step="0.01" min="0" inputmode="decimal" value="${ed.price}"></label></div>
+    <label class="fld">Précision courte <small>affichée sous le nom, ex. « Lot de 3 · 1,2 L »</small><input class="inp" id="eD" value="${esc(ed.d||"")}"></label>
+    <label class="fld">Description <small>laissez vide : Claude la rédigera à la publication à partir des photos et des caractéristiques</small><textarea class="ta" id="eDesc" rows="4">${esc(ed.desc||"")}</textarea></label>
+    <label class="fld">Caractéristiques <small>une par ligne</small><textarea class="ta" id="eSpecs" rows="4" placeholder="Dimensions : 30 × 20 cm&#10;Matière : verre">${esc((ed.specs||[]).join("\n"))}</textarea></label>
+    <label class="fld">Modèles au choix <small>facultatif, un par ligne (ex. Licorne, Astronaute)</small><textarea class="ta" id="eVar" rows="2">${esc((ed.variants||[]).map(v=>v.name).join("\n"))}</textarea></label>
+    <div class="fld">Photos <small>la première est la photo principale</small><div class="phs" id="ePhs"></div></div>
+    <div class="sws"><label class="sw"><input type="checkbox" id="eStock" ${ed.oos?"":"checked"}> En stock</label><label class="sw"><input type="checkbox" id="eVis" ${ed.hidden?"":"checked"}> Visible sur le site</label></div>
+  </div>
+  <div class="df">${isNew?"":`<span class="hint" style="align-self:center">${esc(ed.id)}${ed.descBy==="claude"?" · description rédigée par Claude":""}</span>`}<span class="sp"></span><button class="btn" data-close>Annuler</button><button class="btn pri" id="eSave">${isNew?"Créer l’article":"Enregistrer"}</button></div>`;
+  renderPhotos();d.showModal();
+  $("#eSave").onclick=saveEditor;
+}
+function renderPhotos(){
+  $("#ePhs").innerHTML=ed.photos.map((ph,i)=>`<div class="ph"><img src="${photoSrc(ph)}" alt="Photo ${i+1}">${i===0?'<span class="n1">Principale</span>':""}
+    <div class="pa"><button type="button" data-pm="${i}" data-dir="-1" aria-label="Avancer" ${i===0?"disabled":""}>←</button><button type="button" data-pdel="${i}" aria-label="Retirer">✕</button><button type="button" data-pm="${i}" data-dir="1" aria-label="Reculer" ${i===ed.photos.length-1?"disabled":""}>→</button></div></div>`).join("")
+    +(assets?`<label class="addph" id="addPh">+ Ajouter des photos<input type="file" id="phIn" accept="image/*" multiple></label>`:`<div class="addph">Ajout de photos indisponible</div>`);
+  const inp=$("#phIn");if(inp)inp.onchange=()=>uploadPhotos([...inp.files]);
+}
+document.addEventListener("click",e=>{
+  const pm=e.target.closest("[data-pm]");if(pm&&ed){const i=+pm.dataset.pm,j=i+ +pm.dataset.dir;if(j<0||j>=ed.photos.length)return;[ed.photos[i],ed.photos[j]]=[ed.photos[j],ed.photos[i]];renderPhotos();return}
+  const pd=e.target.closest("[data-pdel]");if(pd&&ed){ed.photos.splice(+pd.dataset.pdel,1);renderPhotos();return}
+  if(e.target.closest("[data-close]")){$("#dlg").close()}
+});
+function shrink(file,max=1600){return new Promise((res)=>{const img=new Image(),u=URL.createObjectURL(file);img.onload=()=>{const k=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>res(b||file),"image/jpeg",.86)};img.onerror=()=>{URL.revokeObjectURL(u);res(file)};img.src=u})}
+async function uploadPhotos(files){
+  if(!assets||!files.length)return;const lbl=$("#addPh");lbl.classList.add("busy");lbl.firstChild.textContent=`Envoi de ${files.length} photo${files.length>1?"s":""}…`;
+  for(const f of files){try{const b=await shrink(f);const r=await assets.upload(b);ed.photos.push({a:r.id})}catch(e){toast("Une photo n’a pas pu être envoyée")}}
+  renderPhotos();
+}
+async function saveEditor(){
+  const name=$("#eName").value.trim(),price=num($("#ePrice").value);
+  if(!name){toast("Donnez un nom à l’article");$("#eName").focus();return}
+  if(!(price>0)){toast("Indiquez un prix");$("#ePrice").focus();return}
+  if(!ed.photos.length){toast("Ajoutez au moins une photo");return}
+  const desc=$("#eDesc").value.trim(),old=products.find(p=>p.id===ed.id);
+  const vnames=$("#eVar").value.split("\n").map(s=>s.trim()).filter(Boolean);
+  const variants=vnames.length?vnames.map((n,i)=>{const prev=(ed.variants||[]).find(v=>v.name===n);return{name:n,img:prev?prev.img:Math.min(i,ed.photos.length-1)}}):null;
+  const doc={...ed,name,price:Math.round(price*100)/100,cat:$("#eCat").value,d:$("#eD").value.trim(),desc,specs:$("#eSpecs").value.split("\n").map(s=>s.trim()).filter(Boolean),
+    oos:!$("#eStock").checked,hidden:!$("#eVis").checked,dirty:true,updatedAt:nowIso(),updatedBy:me};
+  if(variants)doc.variants=variants;else delete doc.variants;
+  if(!old||desc!==(old.desc||""))doc.descBy=desc?"manuel":"";
+  delete doc.base;
+  $("#eSave").disabled=true;
+  try{await db.doc("products/"+ed.id).set(doc);$("#dlg").close();toast(old?"Article enregistré":"Article créé")}catch(e){$("#eSave").disabled=false;toast("Enregistrement impossible : "+(e.message||e.code||e))}
+}
+$("#newBtn").onclick=()=>{if(!db){toast("Base indisponible");return}openEditor(null)};
+$("#pdfIn").onchange=async e=>{
+  const f=e.target.files[0];e.target.value="";if(!f)return;
+  if(!assets||!db){toast("Dépôt indisponible pour votre accès");return}
+  $("#pdfLbl").classList.add("busy");
+  try{const r=await assets.upload(f);const id="imp-"+Date.now();
+    await db.doc("imports/"+id).set({asset:r.id,name:f.name,size:f.size,at:nowIso(),by:me,status:"en_attente"});
+    toast("Catalogue déposé. Appuyez sur « Publier sur le site public » pour que Claude le traite.")}
+  catch(err){toast("Dépôt impossible : "+(err.message||err.code||err))}
+  $("#pdfLbl").classList.remove("busy");
+};
+
+/* ---------- Réglages ---------- */
+function renderSettings(){
+  $("#livChips").innerHTML=livreurs().map(n=>`<span class="chip">${esc(n)}<button data-livdel="${esc(n)}" aria-label="Retirer ${esc(n)}">✕</button></span>`).join("")||'<span class="hint">Aucun livreur</span>';
+  $("#syncInfo").textContent=syncState.doneAt?`Dernière publication : ${fmtDT(syncState.doneAt)}.`:"";
+}
+async function saveSettings(patch){if(!db)return;settings={...settings,...patch};try{await db.doc("settings/app").set(settings)}catch(e){toast("Enregistrement impossible")}}
+$("#livAdd").onclick=()=>{const n=$("#livIn").value.trim();if(!n)return;if(livreurs().includes(n)){toast("Déjà dans la liste");return}saveSettings({livreurs:[...livreurs(),n]});$("#livIn").value=""};
+$("#livIn").addEventListener("keydown",e=>{if(e.key==="Enter")$("#livAdd").click()});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-livdel]");if(b)saveSettings({livreurs:livreurs().filter(n=>n!==b.dataset.livdel)})});
+
+/* ---------- À publier ---------- */
+const undoArm=new Set();
+function renderPending(){
+  const P=products.filter(isDirty).sort((a,b)=>String(b.updatedAt||"").localeCompare(String(a.updatedAt||""))),I=imports.filter(i=>i.status==="en_attente");
+  const n=P.length+I.length;$("#penCount").textContent=n||"";$("#penCount").hidden=!n;
+  if(!n){$("#penList").innerHTML=`<p class="empty">${loaded.products?"Rien à publier : le site est à jour.":"Chargement…"}</p>`;return}
+  const btn=(k,label)=>undoArm.has(k)?`<button class="btn sm danger" data-undo="${k}">Confirmer l’annulation</button>`:`<button class="btn sm" data-undoarm="${k}">${label}</button>`;
+  $("#penList").innerHTML=`<div class="plist">`+I.map(i=>`<div class="pen"><span class="ic">PDF</span><div class="pb"><b>Catalogue à traiter : ${esc(i.name||"catalogue.pdf")}</b><ul><li>Déposé le ${fmtDT(i.at)}</li><li>Claude mettra à jour prix, nouveaux articles, ruptures et photos</li></ul></div><div class="pacts">${btn("i:"+i.id,"Retirer")}</div></div>`).join("")
+   +P.map(p=>{const ph=(p.photos||[])[0];return `<div class="pen">${ph?`<img class="mini" src="${photoSrc(ph)}" alt="" loading="lazy">`:'<span class="mini"></span>'}<div class="pb"><b>${esc(p.name)}</b><ul>${diffLines(p).map(l=>`<li>${esc(l)}</li>`).join("")}</ul><span class="hint">Modifié le ${fmtDT(p.updatedAt)}</span></div>
+     <div class="pacts"><button class="btn sm" data-edit2="${p.id}">Modifier</button>${btn("p:"+p.id,p.pub?"Annuler la modification":"Supprimer l’article")}</div></div>`}).join("")+`</div>`;
+}
+document.addEventListener("click",async e=>{
+  const ar=e.target.closest("[data-undoarm]");if(ar){undoArm.add(ar.dataset.undoarm);renderPending();setTimeout(()=>{undoArm.delete(ar.dataset.undoarm);renderPending()},5000);return}
+  const ed2=e.target.closest("[data-edit2]");if(ed2){openEditor(ed2.dataset.edit2);return}
+  const u=e.target.closest("[data-undo]");if(!u||!db)return;const [t,id]=u.dataset.undo.split(/:(.*)/s);undoArm.delete(u.dataset.undo);
+  try{
+    if(t==="i"){await db.doc("imports/"+id).delete();toast("Catalogue retiré")}
+    else{const p=products.find(x=>x.id===id);if(!p)return;
+      if(!p.pub){await db.doc("products/"+id).delete();toast("Article supprimé")}
+      else{const d={...p,...p.pub,dirty:false,updatedAt:nowIso(),updatedBy:me};delete d.isNew;PUBF.forEach(k=>{if(d[k]===null)delete d[k]});await db.doc("products/"+id).set(d);toast(`${p.pub.name} : modification annulée`)}}
+  }catch(err){toast("Annulation impossible : "+(err.message||err.code||err))}
+});
+
+/* ---------- Publication ---------- */
+function renderPub(){
+  const nd=products.filter(isDirty).length,ni=imports.filter(i=>i.status==="en_attente").length,nDesc=products.filter(p=>needsDesc(p)&&!p.hidden).length;
+  const n=nd+ni,st=syncState.status||"idle";
+  const parts=[];if(nd)parts.push(`${nd} article${nd>1?"s":""}`);if(ni)parts.push(`${ni} catalogue${ni>1?"s":""}`);
+  $("#pubCount").textContent=!loaded.products?"Chargement…":n?parts.join(" · ")+" à publier":"Le site est à jour";
+  let s="",dot="";
+  if(st==="requested"){dot="wait";s=`Publication demandée à ${new Date(syncState.requestedAt).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}, Claude va s’en charger`}
+  else if(st==="running"){dot="run";s="Claude met le site à jour…"}
+  else if(st==="error"){dot="err";s=syncState.message||"La dernière publication a échoué"}
+  else if(syncState.doneAt){dot="ok";s=`Dernière publication le ${fmtDT(syncState.doneAt)}${syncState.message?" · "+syncState.message:""}`}
+  if(n&&nDesc&&st!=="running")s=(s?s+" · ":"")+`${nDesc} description${nDesc>1?"s":""} à rédiger`;
+  $("#pubState").innerHTML=(dot?`<i class="dotst ${dot}"></i>`:"")+esc(s);
+  const busy=st==="requested"||st==="running";
+  $("#pubBtn").disabled=!db||busy||(!n&&st!=="error");
+  $("#pubBtn").textContent=busy?"En cours…":"Publier sur le site public";
+  $("#pubbar").classList.toggle("ok",!n);
+  renderSettings();renderPending();
+}
+$("#pubGo").onclick=()=>{if(products.some(isDirty)||imports.some(i=>i.status==="en_attente")){setTab("pending");scrollTo(0,0)}};
+$("#pubBtn").onclick=async()=>{
+  if(!db)return;
+  const b=$("#pubBtn");b.disabled=true;
+  try{await db.doc("sync/state").set({...syncState,status:"requested",requestedAt:nowIso(),requestedBy:me,message:""})}catch(e){toast("Demande impossible : "+(e.message||e.code||e));b.disabled=false;return}
+  let fired=false;
+  if(isOwner&&mcp&&settings.triggerId){
+    try{await mcp.callTool("Claude Code Remote","fire_trigger",{trigger_id:settings.triggerId,text:"Publication demandée depuis la page Gestion le "+new Date().toLocaleString("fr-FR")+"."});fired=true}catch(e){console.warn("fire_trigger",e)}
+  }
+  toast(fired?"C’est parti : Claude met le site à jour dans quelques minutes.":"Demande enregistrée : Claude la traitera au prochain passage (toutes les heures, de 8 h à 22 h).");
+};
+
+/* ---------- Onglets ---------- */
+function setTab(t){if($("#v-"+t)===null)return;document.querySelectorAll("[data-tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));["orders","products","pending","synth","settings"].forEach(k=>$("#v-"+k).hidden=k!==t);
+  if(t==="synth")renderSynth();try{localStorage.setItem("tzg_tab",t)}catch(e){}}
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+$("#pasteBtn").onclick=()=>{if(!db){toast("Base indisponible");return}openPaste()};
+$("#dlg").addEventListener("close",()=>{ed=null;draft=null});
+
+/* ---------- Démarrage ---------- */
+function renderAll(){renderOrders();renderProducts();renderPub();if(!$("#v-synth").hidden)renderSynth()}
+try{const t=localStorage.getItem("tzg_tab");if(t&&document.querySelector(`[data-tab="${t}"]`))setTab(t)}catch(e){}
+renderAll();
+(async()=>{
+  const C=window.claude;
+  db=C&&C.use?await C.use("db"):null;
+  if(!db){$("#offline").hidden=false;$("#pubCount").textContent="Hors connexion";return}
+  const err=e=>{console.warn(e);$("#offline").hidden=false;$("#offline").textContent="Connexion à la base interrompue. Rechargez la page."};
+  db.collection("products").onSnapshot(s=>{products=s.docs.map(d=>({...d.data(),id:d.id}));loaded.products=true;renderProducts();renderPub()},err);
+  db.collection("orders").onSnapshot(s=>{orders=s.docs.map(d=>({...d.data(),id:d.id}));loaded.orders=true;renderOrders();if(!$("#v-synth").hidden)renderSynth()},err);
+  db.collection("imports").onSnapshot(s=>{imports=s.docs.map(d=>({...d.data(),id:d.id}));renderProducts();renderPub()},err);
+  db.doc("settings/app").onSnapshot(s=>{settings=s.exists?s.data():{};renderOrders();renderPub()},err);
+  db.doc("sync/state").onSnapshot(s=>{syncState=s.exists?s.data():{};renderPub()},err);
+  C.use("user").then(async u=>{user=u;if(!u)return;isOwner=u.isOwner();
+    const ok=isOwner||u.canEdit()||u.can("data.write")===true;window.TZ_adminOK=ok;$("#goAdmin").hidden=!ok;if(ok&&location.hash==="#vendeur")route();
+    try{me=await u.id();const p=await u.me();$("#who").textContent=p?.name?`Connecté : ${p.name}`:""}catch(e){}});
+  C.use("assets").then(a=>{assets=a;$("#pdfLbl").hidden=!a});
+  C.use("mcp").then(m=>{mcp=m});
+})();
+
+})();
 </script>
 
 </body>

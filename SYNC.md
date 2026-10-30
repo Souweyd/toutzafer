@@ -1,12 +1,14 @@
 # Synchronisation Gestion → boutique
 
-Procédure suivie par Claude à chaque passage de la tâche programmée « Tout'zafer : publication » (lancée par le bouton « Publier sur le site » de la page Gestion, ou par le passage horaire de 8 h à 22 h, heure de La Réunion).
+Procédure suivie par Claude à chaque passage de la tâche programmée « Tout'zafer : publication du site » (lancée par le bouton « Publier sur le site public » de l'espace vendeur de la page boutique Claude, ou par le passage horaire de 8 h à 22 h, heure de La Réunion).
 
-Les adresses des deux pages Claude (boutique et Gestion) sont données dans la consigne de la tâche, pas dans ce dépôt public.
+L'adresse de la page boutique Claude est donnée dans la consigne de la tâche, pas dans ce dépôt public. Cette page contient à la fois la boutique, l'espace vendeur et la base de données (articles, demandes, catalogues déposés, réglages, état de la publication) : partout ci-dessous, « la base » et « la page » désignent cette page boutique.
+
+La page boutique Claude lit déjà les articles en direct dans la base. La publication sert à mettre à jour le site public GitHub Pages (et le catalogue de secours intégré à la page), et à rédiger les descriptions vides.
 
 ## 0. Faut-il faire quelque chose ?
 
-Lire `sync/state` dans la base de la page Gestion (`ArtifactData get`, collection `sync`, doc `state`).
+Lire `sync/state` dans la base de la page boutique (`ArtifactData get`, collection `sync`, doc `state`).
 
 - `status` = `requested` → continuer.
 - `status` = `running` depuis plus de 60 min (`startedAt`) → passage précédent interrompu, continuer.
@@ -27,7 +29,7 @@ Lire `sync/state` dans la base de la page Gestion (`ArtifactData get`, collectio
 Pour chacun, dans l'ordre de dépôt :
 
 1. Le passer en `en_cours`.
-2. Télécharger le PDF : `Artifact read`, `url` = page Gestion, `path` = champ `asset`.
+2. Télécharger le PDF : `Artifact read`, `url` = page boutique, `path` = champ `asset`.
 3. Lire le catalogue : `pdftotext -layout`, rendu des pages en images (`pdftoppm -r 110`), `pdfimages -png` pour les photos.
 4. Comparer avec les articles de la base, comme pour le catalogue du 22/09/2026 :
    - **prix** différents → mettre à jour `price` ;
@@ -36,7 +38,7 @@ Pour chacun, dans l'ordre de dépôt :
    - **articles absents du catalogue** → `oos: true` (ne pas supprimer, ne pas masquer) ;
    - pour cette comparaison seulement, lire tous les articles (`ArtifactData list` sur `products`, `out_dir: .sync/all`) : un catalogue PDF concerne toute la gamme ;
    - **articles revenus** dans le catalogue → `oos: false` ;
-   - **photos** : les photos du nouveau catalogue sont prioritaires. Les recadrer sans les bandeaux de prix ni les textes, les téléverser dans la page Gestion (`Artifact publish`, `url` = page Gestion, `asset: true`, `file_paths`) et les mettre en tête du champ `photos` sous la forme `{a: <id>}`.
+   - **photos** : les photos du nouveau catalogue sont prioritaires. Les recadrer sans les bandeaux de prix ni les textes, les téléverser dans la page boutique (`Artifact publish`, `url` = page boutique, `asset: true`, `file_paths`) et les mettre en tête du champ `photos` sous la forme `{a: <id>}`.
    - Tout article modifié reçoit `dirty: true`.
 5. Écrire dans le document d'import : `status: "traite"`, `doneAt`, `result` = compte rendu court en français, une ligne par type de changement (ex. « Prix modifiés : Carafe 1,8 L 12,99 → 13,99 € »). En cas de doute (article ambigu, prix illisible), le signaler dans `result` plutôt que deviner.
 
@@ -55,11 +57,11 @@ Pour chaque article à publier (non masqué) dont `desc` est vide : regarder ses
 ## 5. Publier
 
 1. `git add -A && git commit` (message « Synchronisation Gestion du JJ/MM/AAAA », avec les lignes d'attribution demandées) puis `git push`. GitHub Pages se met à jour en 1 à 2 minutes.
-2. Page boutique : `Artifact read` sur son adresse (obligatoire avant de publier), puis `Artifact publish` avec `url` = boutique, `file_path` = `artifact.html` du dépôt, `root` = racine du dépôt, `files` = la liste `new_files` du compte rendu (rien si vide).
+2. Page boutique : `Artifact read` sur son adresse (obligatoire avant de publier), puis `Artifact publish` avec `url` = boutique, `file_path` = `artifact.html` du dépôt, `root` = racine du dépôt, `files` = la liste `new_files` du compte rendu (rien si vide). **Ne jamais passer `capabilities`** : la page garde ainsi sa base, ses règles d'accès et ses autorisations.
 
 ## 6. Clore
 
-1. Base Gestion, en un `batch` (50 écritures maximum par lot) : pour chaque article publié avec `dirty: true`, `update` avec `if_version` de l'export : `dirty: false`, `pub` = `result.pub[id]`, `photos` = `result.pub[id].photos`, `isNew` supprimé (`{"__delete__": true}`), `publishedAt`. L'onglet « À publier » de Gestion se vide alors. Si un article a été modifié entre-temps (conflit de version), ne pas forcer : il restera « modifié » pour la prochaine publication.
+1. Base de la page boutique, en un `batch` (50 écritures maximum par lot) : pour chaque article publié avec `dirty: true`, `update` avec `if_version` de l'export : `dirty: false`, `pub` = `result.pub[id]`, `photos` = `result.pub[id].photos`, `isNew` supprimé (`{"__delete__": true}`), `publishedAt`. L'onglet « À publier » de l'espace vendeur se vide alors. Si un article a été modifié entre-temps (conflit de version), ne pas forcer : il restera « modifié » pour la prochaine publication.
 2. `sync/state` : `status: "done"`, `doneAt`, `message` = résumé en une ligne (ex. « 3 articles publiés, 1 description rédigée, catalogue du 30/10 traité »).
 3. En cas d'échec à une étape : `sync/state` → `status: "error"`, `message` = cause en une phrase compréhensible par l'entrepreneur ; ne pas laisser `running`.
 
